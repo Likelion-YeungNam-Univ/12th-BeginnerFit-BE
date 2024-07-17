@@ -1,5 +1,6 @@
 package com.example.beginnerfitbe.user.controller;
 
+import com.example.beginnerfitbe.user.dto.SignInReqDto;
 import com.example.beginnerfitbe.user.dto.SignUpReqDto;
 import com.example.beginnerfitbe.user.service.AuthService;
 import com.example.beginnerfitbe.user.service.UserService;
@@ -21,6 +22,10 @@ public class AuthController {
     public ResponseEntity<?> signUp(@RequestBody SignUpReqDto dto) {
         userService.create(authService.signUp(dto));
         return ResponseEntity.created(null).build();
+    }
+    @PostMapping("/sign-in")
+    public ResponseEntity<?> signIn(@RequestBody SignInReqDto dto) {
+        return ResponseEntity.ok(authService.signIn(dto));
     }
 
 }
