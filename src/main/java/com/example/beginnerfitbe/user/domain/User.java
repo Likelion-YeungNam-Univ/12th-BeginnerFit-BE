@@ -1,0 +1,49 @@
+package com.example.beginnerfitbe.user.domain;
+
+import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+
+@Entity
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false, unique = true)
+    private String email;
+
+    @Column(nullable = false)
+    private String name;
+
+    @Column(nullable = false)
+    private String password;
+
+    @Column
+    private int exercisePurpose;
+
+    @Column
+    private int exercisePart;
+
+    @Column
+    private int exerciseTime;
+
+    @Column
+    private int exerciseIntensity;
+
+    @Builder
+    public User(String email, String name, String password, int exercisePurpose, int exercisePart, int exerciseTime, int exerciseIntensity) {
+        this.email=email;
+        this.name = name;
+        this.password = password;
+        this.exercisePurpose=exercisePurpose;
+        this.exercisePart =exercisePart;
+        this.exerciseTime=exerciseTime;
+        this.exerciseIntensity = exerciseIntensity;
+    }
+}
