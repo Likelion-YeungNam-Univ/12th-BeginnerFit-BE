@@ -21,6 +21,11 @@ public class UserController{
     private final UserService userService;
     private final JwtUtil jwtUtil;
 
+    @GetMapping("")
+    @Operation(summary = "사용자 목록 조회 메서드", description = "전체 사용자를 조회합니다.")
+    public ResponseEntity<?> list() {
+        return ResponseEntity.ok(userService.list());
+    }
     @GetMapping("/{id}")
     @Operation(summary = "사용자 상세 조회 메서드", description = "사용자 상세 정보를 조회합니다.")
     public ResponseEntity<?> read(HttpServletRequest request, @PathVariable Long id) {
