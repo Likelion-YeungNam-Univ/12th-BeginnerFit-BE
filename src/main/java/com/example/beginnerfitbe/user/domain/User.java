@@ -46,4 +46,11 @@ public class User {
         this.exerciseTime=exerciseTime;
         this.exerciseIntensity = exerciseIntensity;
     }
+
+    public void update(String name, String password, int exercisePurpose, int exercisePart, int exerciseTime, int exerciseIntensity) {
+        this.name=name;
+        this.password = password;
+        this.exercisePart= exercisePart;
+        this.exerciseIntensity = exerciseIntensity;
+    }
 }
