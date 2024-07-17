@@ -43,6 +43,14 @@ public class UserService {
         userRepository.save(user);
         return ResponseEntity.ok(StateResponse.builder().code("SUCCESS").message("정보를 성공적으로 업데이트했습니다.").build());
     }
+
+    //회원 탈퇴
+    public ResponseEntity<StateResponse> withdrawal(Long id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("User not found"));
+        userRepository.delete(user);
+        return ResponseEntity.ok(StateResponse.builder().code("SUCCESS").message("성공적으로 회원탈퇴 처리되었습니다.").build());
+    }
+
     public Boolean emailCheck(String email) {
         Optional<User> checkUserEmail = userRepository.findByEmail(email);
         return checkUserEmail.isPresent();

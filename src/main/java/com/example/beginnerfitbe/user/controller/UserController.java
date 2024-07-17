@@ -37,6 +37,12 @@ public class UserController{
         Long userId = jwtUtil.getUserId(jwtUtil.resolveToken(request).substring(7));
         return userService.update(userId,requestDto);
     }
+    @PostMapping("/withdrawal")
+    @Operation(summary = "사용자 탈퇴 메서드", description = "사용자가 탈퇴하는 메서드입니다. ")
+    public ResponseEntity<StateResponse> withdrawal(HttpServletRequest request) {
+        Long userId = jwtUtil.getUserId(jwtUtil.resolveToken(request).substring(7));
+        return userService.withdrawal(userId);
+    }
 
     @GetMapping("/emailcheck")
     @Operation(summary="이메일 중복 확인 메서드", description = "이메일을 받아 존재하는지 확인하는 메서드입니다.")
