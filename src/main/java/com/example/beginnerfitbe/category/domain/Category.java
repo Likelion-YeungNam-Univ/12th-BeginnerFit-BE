@@ -1,4 +1,4 @@
-package com.example.beginnerfitbe.category;
+package com.example.beginnerfitbe.category.domain;
 
 import com.example.beginnerfitbe.post.domain.Post;
 import jakarta.persistence.*;
@@ -16,15 +16,15 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String categoryName;
 
     @OneToMany(mappedBy = "category", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<Post> posts;
 
     @Builder
-    public Category(Long id, String categoryName) {
-        this.id = id;
+    public Category(String categoryName) {
         this.categoryName = categoryName;
     }
 }
+

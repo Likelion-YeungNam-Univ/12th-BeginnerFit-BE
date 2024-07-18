@@ -1,6 +1,6 @@
 package com.example.beginnerfitbe.post.domain;
 
-import com.example.beginnerfitbe.category.Category;
+import com.example.beginnerfitbe.category.domain.Category;
 import com.example.beginnerfitbe.user.domain.User;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -28,17 +28,19 @@ public class Post {
     private String content;
 
     @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @ManyToOne
     private Category category;
 
     @CreatedDate
+    @JoinColumn(name = "category_id", nullable = false)
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
     @Builder
-    public Post(String title, String content, LocalDateTime createdAt, Category category, User user) {
+    public Post(String title, String content, LocalDateTime createdAt, User user, Category category) {
         this.title = title;
         this.content = content;
         this.createdAt = createdAt;

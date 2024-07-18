@@ -1,7 +1,6 @@
 package com.example.beginnerfitbe.user.service;
 
 import com.example.beginnerfitbe.user.domain.User;
-import com.example.beginnerfitbe.user.dto.SignUpResDto;
 import com.example.beginnerfitbe.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
