@@ -26,7 +26,7 @@ public class AuthService {
         int exerciseIntensity = dto.getExerciseIntensity();
 
         //중복 가입 확인
-        if(userService.checkEmail(email).isPresent()){
+        if(userService.emailCheck(email)){
             throw new IllegalArgumentException("이미 등록된 사용자입니다.");
         }
         User user = User.builder()
