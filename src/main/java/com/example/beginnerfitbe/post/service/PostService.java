@@ -11,8 +11,8 @@ import com.example.beginnerfitbe.user.domain.User;
 import com.example.beginnerfitbe.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -52,6 +52,15 @@ public class PostService {
         return posts.stream()
                 .map(PostDto::fromEntity)
                 .collect(Collectors.toList());
+    }
+    @Transactional
+    public ResponseEntity<StateResponse> delete(Long postId, Long id){
+        Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("not found post"));
+        Long userId = post.getUser().getId();
+        if(!userId.equals(id)) throw new IllegalArgumentException("작성자만 글을 삭제할 수 있습니다.");
+
+        postRepository.delete(post);
+        return ResponseEntity.ok(StateResponse.builder().code("SUCCESS").message("글을 성공적으로 삭제했습니다.").build());
     }
     public ResponseEntity<StateResponse> create(Long userId, PostCreateDto postCreateDto){
         User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("not found user"));

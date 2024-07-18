@@ -1,5 +1,6 @@
 package com.example.beginnerfitbe.post.controller;
 
+import com.example.beginnerfitbe.error.StateResponse;
 import com.example.beginnerfitbe.jwt.util.JwtUtil;
 import com.example.beginnerfitbe.post.dto.PostCreateDto;
 import com.example.beginnerfitbe.post.service.PostService;
@@ -49,6 +50,13 @@ public class PostController {
         Long userId = jwtUtil.getUserId(jwtUtil.resolveToken(request).substring(7));
 
         return postService.create(userId,createDto);
+    }
+
+    @DeleteMapping("/delete/{postId}")
+    @Operation(summary = "게시글 삭제 메서드", description = "사용자가 커뮤니티 글을 삭제하기 위한 메서드입니다.")
+    ResponseEntity<StateResponse> delete(HttpServletRequest request, @PathVariable Long postId){
+        Long userId = jwtUtil.getUserId(jwtUtil.resolveToken(request).substring(7));
+        return postService.delete(postId, userId);
     }
 
 }
