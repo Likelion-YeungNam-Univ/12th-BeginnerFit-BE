@@ -1,6 +1,7 @@
 package com.example.beginnerfitbe.comment.controller;
 
 import com.example.beginnerfitbe.comment.dto.CommentCreateDto;
+import com.example.beginnerfitbe.comment.dto.CommentUpdateDto;
 import com.example.beginnerfitbe.comment.service.CommentService;
 import com.example.beginnerfitbe.jwt.util.JwtUtil;
 import io.swagger.v3.oas.annotations.Operation;
@@ -47,6 +48,13 @@ public class CommentController {
     @Operation(summary = "게시글 댓글 조회 메소드", description = "게시글에 등록한 댓글을 조회합니다.")
     private ResponseEntity<?> getCommentsByPost(@PathVariable Long postId) {
         return ResponseEntity.ok(commentService.getCommentsByPost(postId));
+    }
+
+    @PostMapping("/update/{commentId}")
+    @Operation(summary = "댓글 수정 메서드", description = "댓글번호/내용을 입력받아 댓글을 수정합니다.")
+    private ResponseEntity<?> update(HttpServletRequest request, @PathVariable Long commentId, @RequestBody CommentUpdateDto commentUpdateDto){
+        Long userId = jwtUtil.getUserId(jwtUtil.resolveToken(request).substring(7));
+        return commentService.update(userId, commentId, commentUpdateDto);
     }
 
 }

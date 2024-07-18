@@ -41,4 +41,8 @@ public class Comment {
         this.user = user;
         this.createdAt = createdAt;
     }
+
+    public void update(String content){
+        this.content = content;
+    }
 }
