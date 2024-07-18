@@ -1,10 +1,13 @@
 package com.example.beginnerfitbe.user.domain;
 
+import com.example.beginnerfitbe.post.domain.Post;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 
 @Entity
@@ -35,6 +38,10 @@ public class User {
 
     @Column
     private int exerciseIntensity;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private List<Post> posts;
+
 
     @Builder
     public User(String email, String name, String password, int exercisePurpose, int exercisePart, int exerciseTime, int exerciseIntensity) {
