@@ -6,6 +6,7 @@ import com.example.beginnerfitbe.error.StateResponse;
 import com.example.beginnerfitbe.post.domain.Post;
 import com.example.beginnerfitbe.post.dto.PostCreateDto;
 import com.example.beginnerfitbe.post.dto.PostDto;
+import com.example.beginnerfitbe.post.dto.PostUpdateDto;
 import com.example.beginnerfitbe.post.repository.PostRepository;
 import com.example.beginnerfitbe.user.domain.User;
 import com.example.beginnerfitbe.user.repository.UserRepository;
@@ -26,6 +27,23 @@ public class PostService {
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
 
+    public ResponseEntity<StateResponse> create(Long userId, PostCreateDto postCreateDto){
+        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("not found user"));
+
+        Category category = categoryRepository.findByCategoryName(postCreateDto.getCategoryName())
+                .orElseThrow(() -> new IllegalArgumentException("not found category"));
+
+        Post post = Post.builder()
+                .title(postCreateDto.getTitle())
+                .content(postCreateDto.getContent())
+                .createdAt(LocalDateTime.now())
+                .user(user)
+                .category(category)
+                .build();
+
+        postRepository.save(post);
+        return ResponseEntity.ok(StateResponse.builder().code("SUCCESS").message("글을 성공적으로 생성했습니다.").build());
+    }
     //전체 글 조회
     public List<PostDto> list(){
         return postRepository.findAll().stream()
@@ -53,6 +71,23 @@ public class PostService {
                 .map(PostDto::fromEntity)
                 .collect(Collectors.toList());
     }
+    public ResponseEntity<StateResponse> update(Long postId, Long id, PostUpdateDto updateDto){
+        Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("not found post"));
+
+        Long userId = post.getUser().getId();
+        if(!userId.equals(id)) throw new IllegalArgumentException("작성자만 글을 수정할 수 있습니다.");
+
+        String title = updateDto.getTitle();
+        String content = updateDto.getContent();
+        String categoryName=updateDto.getCategoryName();
+
+        if (title!=null && content!=null && categoryName!=null) {
+            Category category = categoryRepository.findByCategoryName(categoryName).orElseThrow(() -> new IllegalArgumentException("not found category"));
+            post.update(title, content, category);
+        }
+        postRepository.save(post);
+        return ResponseEntity.ok(StateResponse.builder().code("SUCCESS").message("게시글을 성공적으로 업데이트했습니다.").build());
+    }
     @Transactional
     public ResponseEntity<StateResponse> delete(Long postId, Long id){
         Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("not found post"));
@@ -61,23 +96,6 @@ public class PostService {
 
         postRepository.delete(post);
         return ResponseEntity.ok(StateResponse.builder().code("SUCCESS").message("글을 성공적으로 삭제했습니다.").build());
-    }
-    public ResponseEntity<StateResponse> create(Long userId, PostCreateDto postCreateDto){
-        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("not found user"));
-
-        Category category = categoryRepository.findByCategoryName(postCreateDto.getCategoryName())
-                .orElseThrow(() -> new IllegalArgumentException("not found category"));
-
-        Post post = Post.builder()
-                .title(postCreateDto.getTitle())
-                .content(postCreateDto.getContent())
-                .createdAt(LocalDateTime.now())
-                .user(user)
-                .category(category)
-                .build();
-
-        postRepository.save(post);
-        return ResponseEntity.ok(StateResponse.builder().code("SUCCESS").message("글을 성공적으로 생성했습니다.").build());
     }
 
 }

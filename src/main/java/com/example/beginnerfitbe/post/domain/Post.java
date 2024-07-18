@@ -47,4 +47,10 @@ public class Post {
         this.category = category;
         this.user = user;
     }
+
+    public void update(String title, String content, Category category) {
+        this.title=title;
+        this.content = content;
+        this.category= category;
+    }
 }
