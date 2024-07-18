@@ -57,4 +57,11 @@ public class CommentController {
         return commentService.update(userId, commentId, commentUpdateDto);
     }
 
+    @DeleteMapping("/delete/{commentId}")
+    @Operation(summary = "댓글 삭제 메서드", description = "사용자가 작성한 댓글을 삭제합니다.")
+    private ResponseEntity<?> delete(HttpServletRequest request, @PathVariable Long commentId){
+        Long userId = jwtUtil.getUserId(jwtUtil.resolveToken(request).substring(7));
+        return commentService.delete(userId, commentId);
+    }
+
 }

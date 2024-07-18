@@ -11,6 +11,7 @@ import com.example.beginnerfitbe.post.dto.PostDto;
 import com.example.beginnerfitbe.post.repository.PostRepository;
 import com.example.beginnerfitbe.user.domain.User;
 import com.example.beginnerfitbe.user.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -79,6 +80,17 @@ public class CommentService {
         }
         commentRepository.save(comment);
         return ResponseEntity.ok(StateResponse.builder().code("SUCCESS").message("댓글을 성공적으로 수정했습니다.").build());
+    }
+
+    @Transactional
+    public ResponseEntity<StateResponse> delete(Long id, Long commentId){
+        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new IllegalArgumentException("not found comment"));
+        Long userId = comment.getUser().getId();
+
+        if(!userId.equals(id)) throw new IllegalArgumentException("작성자만 댓글을 삭제할 수 있습니다.");
+
+        commentRepository.delete(comment);
+        return ResponseEntity.ok(StateResponse.builder().code("SUCCESS").message("댓글을 성공적으로 삭제했습니다.").build());
     }
 
 }
