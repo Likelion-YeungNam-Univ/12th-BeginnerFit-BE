@@ -2,6 +2,7 @@ package com.example.beginnerfitbe.category.service;
 
 import com.example.beginnerfitbe.category.domain.Category;
 import com.example.beginnerfitbe.category.repository.CategoryRepository;
+import com.example.beginnerfitbe.post.domain.Post;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

@@ -5,14 +5,19 @@ import com.example.beginnerfitbe.category.repository.CategoryRepository;
 import com.example.beginnerfitbe.error.StateResponse;
 import com.example.beginnerfitbe.post.domain.Post;
 import com.example.beginnerfitbe.post.dto.PostCreateDto;
+import com.example.beginnerfitbe.post.dto.PostDto;
 import com.example.beginnerfitbe.post.repository.PostRepository;
 import com.example.beginnerfitbe.user.domain.User;
 import com.example.beginnerfitbe.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +26,33 @@ public class PostService {
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
 
+    //전체 글 조회
+    public List<PostDto> list(){
+        return postRepository.findAll().stream()
+                .map(PostDto::fromEntity)
+                .collect(Collectors.toList());
+    }
+    //postId로 조회
+    public PostDto read(Long postId){
+        Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("해당 글이 없습니다. id= " + postId));
+        return PostDto.fromEntity(post);
+    }
+    //내가 작성한 글 조회
+    public List<PostDto> me(Long userId){
+        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("not found user"));
+        List<Post> posts= postRepository.findAllByUser(user);
+        return posts.stream()
+                .map(PostDto::fromEntity)
+                .collect(Collectors.toList());
+    }
+    public List<PostDto> getPostsByCategoryName(String categoryName){
+        Category category = categoryRepository.findByCategoryName(categoryName).orElseThrow(() -> new IllegalArgumentException("not found category"));
+        List<Post> posts = postRepository.findPostsByCategory(category);
+
+        return posts.stream()
+                .map(PostDto::fromEntity)
+                .collect(Collectors.toList());
+    }
     public ResponseEntity<StateResponse> create(Long userId, PostCreateDto postCreateDto){
         User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("not found user"));
 

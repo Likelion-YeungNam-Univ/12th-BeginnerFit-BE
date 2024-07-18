@@ -32,10 +32,10 @@ public class Post {
     private User user;
 
     @ManyToOne
+    @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
     @CreatedDate
-    @JoinColumn(name = "category_id", nullable = false)
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
