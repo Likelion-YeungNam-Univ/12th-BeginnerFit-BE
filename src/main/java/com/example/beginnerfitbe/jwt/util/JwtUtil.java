@@ -39,7 +39,7 @@ public class JwtUtil {
                 .setIssuer(issuer)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
-                .signWith(SignatureAlgorithm.HS512, secretKey.getBytes())
+                .signWith(SignatureAlgorithm.HS256, secretKey.getBytes())
                 .compact();
     }
 
@@ -66,4 +66,5 @@ public class JwtUtil {
         Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(secretKey.getBytes()).build().parseClaimsJws(token);
         return claims.getBody().get("userId", Long.class);
     }
+
 }
