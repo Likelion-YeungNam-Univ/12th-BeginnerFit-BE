@@ -1,5 +1,6 @@
 package com.example.beginnerfitbe.post.service;
 
+import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.example.beginnerfitbe.category.domain.Category;
 import com.example.beginnerfitbe.category.repository.CategoryRepository;
 import com.example.beginnerfitbe.error.StateResponse;
@@ -8,16 +9,19 @@ import com.example.beginnerfitbe.post.dto.PostCreateDto;
 import com.example.beginnerfitbe.post.dto.PostDto;
 import com.example.beginnerfitbe.post.dto.PostUpdateDto;
 import com.example.beginnerfitbe.post.repository.PostRepository;
+import com.example.beginnerfitbe.s3.util.S3Uploader;
 import com.example.beginnerfitbe.user.domain.User;
 import com.example.beginnerfitbe.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,23 +30,36 @@ public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
+    private final S3Uploader s3Uploader;
 
-    public ResponseEntity<StateResponse> create(Long userId, PostCreateDto postCreateDto){
-        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("not found user"));
+    //글 생성
+    public ResponseEntity<StateResponse> create(Long userId, PostCreateDto postCreateDto, MultipartFile postPicture) throws IOException {
+        try {
+            User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("not found user"));
 
-        Category category = categoryRepository.findByCategoryName(postCreateDto.getCategoryName())
-                .orElseThrow(() -> new IllegalArgumentException("not found category"));
+            Category category = categoryRepository.findByCategoryName(postCreateDto.getCategoryName())
+                    .orElseThrow(() -> new IllegalArgumentException("not found category"));
 
-        Post post = Post.builder()
-                .title(postCreateDto.getTitle())
-                .content(postCreateDto.getContent())
-                .createdAt(LocalDateTime.now())
-                .user(user)
-                .category(category)
-                .build();
+            String pictureUrl = null;
+            if (postPicture != null && !postPicture.isEmpty()) {
+                pictureUrl = s3Uploader.upload(postPicture, "Post");
+            }
 
-        postRepository.save(post);
-        return ResponseEntity.ok(StateResponse.builder().code("SUCCESS").message("글을 성공적으로 생성했습니다.").build());
+            Post post = Post.builder()
+                    .title(postCreateDto.getTitle())
+                    .content(postCreateDto.getContent())
+                    .pictureUrl(pictureUrl)
+                    .createdAt(LocalDateTime.now())
+                    .user(user)
+                    .category(category)
+                    .build();
+
+            postRepository.save(post);
+
+            return ResponseEntity.ok(StateResponse.builder().code("SUCCESS").message("글을 성공적으로 생성했습니다.").build());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(StateResponse.builder().code("ERROR").message("오류가 발생했습니다: " + e.getMessage()).build());
+        }
     }
     //전체 글 조회
     public List<PostDto> list(){
@@ -96,6 +113,15 @@ public class PostService {
 
         postRepository.delete(post);
         return ResponseEntity.ok(StateResponse.builder().code("SUCCESS").message("글을 성공적으로 삭제했습니다.").build());
+    }
+
+    public String savePicture(MultipartFile postPicture)  {
+        String dirName = "post"; // 디렉토리 이름을 원하는 대로 설정하세요
+        try {
+            return s3Uploader.upload(postPicture, dirName);
+        } catch (IOException e) {
+            throw new RuntimeException("사진 업로드 중 오류가 발생했습니다.", e);
+        }
     }
 
 }

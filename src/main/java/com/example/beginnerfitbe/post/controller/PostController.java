@@ -11,6 +11,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 
 @RestController
@@ -46,11 +49,10 @@ public class PostController {
     }
 
     @PostMapping("/create")
-    @Operation(summary = "게시글 생성 메서드", description = "제목/내용/카테고리이름을 입력받아 게시글을 생성합니다.")
-    public ResponseEntity<?> update(HttpServletRequest request, @RequestBody PostCreateDto createDto) {
+    @Operation(summary = "게시글 생성 메서드", description = "제목/내용/카테고리이름/사진(선택)을 입력받아 게시글을 생성합니다.")
+    public ResponseEntity<?> create(HttpServletRequest request, @RequestPart("createDto") PostCreateDto createDto, @RequestPart(value = "postPicture", required = false) MultipartFile postPicture) throws IOException {
         Long userId = jwtUtil.getUserId(jwtUtil.resolveToken(request).substring(7));
-
-        return postService.create(userId,createDto);
+        return postService.create(userId, createDto, postPicture);
     }
     @PostMapping("/update/{postId}")
     @Operation(summary = "사용자 글 수정 메서드", description = "사용자가 마이페이지에서 자신이 작성한 글을 수정합니다.")
@@ -64,6 +66,5 @@ public class PostController {
         Long userId = jwtUtil.getUserId(jwtUtil.resolveToken(request).substring(7));
         return postService.delete(postId, userId);
     }
-
 
 }
