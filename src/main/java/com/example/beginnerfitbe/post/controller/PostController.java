@@ -18,7 +18,7 @@ import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/community/posts")
+@RequestMapping("/posts")
 public class PostController {
 
     private final PostService postService;
@@ -48,13 +48,13 @@ public class PostController {
         return ResponseEntity.ok(postService.getPostsByCategoryName(categoryName));
     }
 
-    @PostMapping("/create")
+    @PostMapping("")
     @Operation(summary = "게시글 생성 메서드", description = "제목/내용/카테고리이름/사진(선택)을 입력받아 게시글을 생성합니다.")
     public ResponseEntity<?> create(HttpServletRequest request, @RequestPart("createDto") PostCreateDto createDto, @RequestPart(value = "postPicture", required = false) MultipartFile postPicture) throws IOException {
         Long userId = jwtUtil.getUserId(jwtUtil.resolveToken(request).substring(7));
         return postService.create(userId, createDto, postPicture);
     }
-    @PostMapping("/update/{postId}")
+    @PutMapping("/{postId}")
     @Operation(summary = "사용자 글 수정 메서드", description = "사용자가 마이페이지에서 자신이 작성한 글을 수정합니다.")
     ResponseEntity<StateResponse> update(HttpServletRequest request, @PathVariable Long postId, @RequestBody PostUpdateDto postUpdateDto){
         Long userId = jwtUtil.getUserId(jwtUtil.resolveToken(request).substring(7));
