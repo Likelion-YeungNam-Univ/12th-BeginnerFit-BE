@@ -35,7 +35,12 @@ public class UserController{
         }
         return ResponseEntity.ok(userService.read(id));
     }
-
+    @GetMapping("/me")
+    @Operation(summary="나의 정보 조회 메서드", description = "현재 접속한 사용자의 정보를 조회합니다.")
+    ResponseEntity<?> me(HttpServletRequest request){
+        Long userId = jwtUtil.getUserId(jwtUtil.resolveToken(request).substring(7));
+        return ResponseEntity.ok(userService.me(userId));
+    }
     @PutMapping("/update")
     @Operation(summary = "사용자 정보 업데이트 메서드", description = "사용자의 수정된 정보를 받아 업데이트 합니다.")
     public ResponseEntity<StateResponse> update(HttpServletRequest request, @RequestPart("updateDto") UserUpdateDto requestDto, @RequestPart(value = "profilePicture", required = false) MultipartFile profilePicture) {
@@ -54,4 +59,6 @@ public class UserController{
     ResponseEntity<Boolean> emailCheck(@RequestParam(value = "email") String email){
         return ResponseEntity.ok(userService.emailCheck(email));
     }
+
+
 }

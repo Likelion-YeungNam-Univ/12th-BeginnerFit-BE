@@ -2,6 +2,7 @@ package com.example.beginnerfitbe.user.service;
 
 
 import com.example.beginnerfitbe.error.StateResponse;
+import com.example.beginnerfitbe.post.domain.Post;
 import com.example.beginnerfitbe.post.dto.PostDto;
 import com.example.beginnerfitbe.s3.util.S3Uploader;
 import com.example.beginnerfitbe.user.domain.User;
@@ -42,7 +43,11 @@ public class UserService {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("User not found"));
         return UserDto.fromEntity(user);
     }
-
+    public List<UserDto> me(Long id){
+        return userRepository.findById(id).stream()
+                .map(UserDto::fromEntity)
+                .collect(Collectors.toList());
+    }
     //회원정보 수정
     public ResponseEntity<StateResponse> update(Long id, UserUpdateDto requestDto, MultipartFile profilePicture) {
         try {
