@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -36,11 +37,11 @@ public class UserController{
         return ResponseEntity.ok(userService.read(id));
     }
 
-    @PostMapping("/update")
+    @PutMapping("/update")
     @Operation(summary = "사용자 정보 업데이트 메서드", description = "사용자의 수정된 정보를 받아 업데이트 합니다.")
-    public ResponseEntity<StateResponse> update(HttpServletRequest request, @RequestBody UserUpdateDto requestDto) {
+    public ResponseEntity<StateResponse> update(HttpServletRequest request, @RequestPart("updateDto") UserUpdateDto requestDto, @RequestPart(value = "profilePicture", required = false) MultipartFile profilePicture) {
         Long userId = jwtUtil.getUserId(jwtUtil.resolveToken(request).substring(7));
-        return userService.update(userId,requestDto);
+        return userService.update(userId,requestDto,profilePicture);
     }
     @PostMapping("/withdrawal")
     @Operation(summary = "사용자 탈퇴 메서드", description = "사용자가 탈퇴하는 메서드입니다. ")

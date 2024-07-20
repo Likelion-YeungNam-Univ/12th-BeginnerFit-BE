@@ -29,6 +29,9 @@ public class User {
     private String password;
 
     @Column
+    private String profilePictureUrl;
+
+    @Column
     private int exercisePurpose;
 
     @Column
@@ -40,16 +43,12 @@ public class User {
     @Column
     private int exerciseIntensity;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    @JsonIgnore
-    private List<Post> posts;
-
-
     @Builder
-    public User(String email, String name, String password, int exercisePurpose, int exercisePart, int exerciseTime, int exerciseIntensity) {
+    public User(String email, String name, String password, String profilePictureUrl, int exercisePurpose, int exercisePart, int exerciseTime, int exerciseIntensity) {
         this.email=email;
         this.name = name;
         this.password = password;
+        this.profilePictureUrl = profilePictureUrl;
         this.exercisePurpose=exercisePurpose;
         this.exercisePart =exercisePart;
         this.exerciseTime=exerciseTime;
@@ -63,5 +62,9 @@ public class User {
         this.exercisePart= exercisePart;
         this.exerciseTime=exerciseTime;
         this.exerciseIntensity = exerciseIntensity;
+    }
+
+    public void updatePicture(String newPictureUrl){
+        this.profilePictureUrl = newPictureUrl;
     }
 }
