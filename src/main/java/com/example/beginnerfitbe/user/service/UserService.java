@@ -2,8 +2,6 @@ package com.example.beginnerfitbe.user.service;
 
 
 import com.example.beginnerfitbe.error.StateResponse;
-import com.example.beginnerfitbe.post.domain.Post;
-import com.example.beginnerfitbe.post.dto.PostDto;
 import com.example.beginnerfitbe.s3.util.S3Uploader;
 import com.example.beginnerfitbe.user.domain.User;
 import com.example.beginnerfitbe.user.dto.UserDto;
@@ -12,6 +10,7 @@ import com.example.beginnerfitbe.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -55,10 +54,10 @@ public class UserService {
             String previousPictureUrl = user.getProfilePictureUrl();
 
             //정보 업데이트
-            if (requestDto.getName() != null && requestDto.getPassword() != null
-                    && requestDto.getExercisePurpose()!=0 && requestDto.getExercisePart()!=0
+            if (requestDto.getName() != null && requestDto.getExercisePurpose()!=0 && requestDto.getExercisePart()!=0
                     && requestDto.getExerciseTime()!=0 && requestDto.getExerciseIntensity()!=0 ) {
-                user.update(requestDto.getName(), requestDto.getPassword(), requestDto.getExercisePurpose(), requestDto.getExercisePart(), requestDto.getExerciseTime(), requestDto.getExerciseIntensity());
+
+                user.update(requestDto.getName(), requestDto.getExercisePurpose(), requestDto.getExercisePart(), requestDto.getExerciseTime(), requestDto.getExerciseIntensity());
 
             }
             if (previousPictureUrl != null) {
@@ -83,6 +82,13 @@ public class UserService {
     //회원 탈퇴
     public ResponseEntity<StateResponse> withdrawal(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        //버킷 사진 삭제
+        String previousPictureUrl = user.getProfilePictureUrl();
+        if(previousPictureUrl!=null){
+            s3Uploader.delete("User",previousPictureUrl);
+        }
+
         userRepository.delete(user);
         return ResponseEntity.ok(StateResponse.builder().code("SUCCESS").message("성공적으로 회원탈퇴 처리되었습니다.").build());
     }

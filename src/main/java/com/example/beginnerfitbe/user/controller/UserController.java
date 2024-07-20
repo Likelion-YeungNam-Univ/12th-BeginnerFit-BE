@@ -47,7 +47,7 @@ public class UserController{
         Long userId = jwtUtil.getUserId(jwtUtil.resolveToken(request).substring(7));
         return userService.update(userId,requestDto,profilePicture);
     }
-    @PostMapping("/withdrawal")
+    @DeleteMapping("/withdrawal")
     @Operation(summary = "사용자 탈퇴 메서드", description = "사용자가 탈퇴하는 메서드입니다. ")
     public ResponseEntity<StateResponse> withdrawal(HttpServletRequest request) {
         Long userId = jwtUtil.getUserId(jwtUtil.resolveToken(request).substring(7));

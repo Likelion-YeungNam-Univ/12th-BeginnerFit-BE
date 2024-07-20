@@ -55,9 +55,8 @@ public class User {
         this.exerciseIntensity = exerciseIntensity;
     }
 
-    public void update(String name, String password, int exercisePurpose, int exercisePart, int exerciseTime, int exerciseIntensity) {
+    public void update(String name, int exercisePurpose, int exercisePart, int exerciseTime, int exerciseIntensity) {
         this.name=name;
-        this.password = password;
         this.exercisePurpose = exercisePurpose;
         this.exercisePart= exercisePart;
         this.exerciseTime=exerciseTime;
