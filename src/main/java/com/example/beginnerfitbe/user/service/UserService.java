@@ -2,8 +2,10 @@ package com.example.beginnerfitbe.user.service;
 
 
 import com.example.beginnerfitbe.error.StateResponse;
+import com.example.beginnerfitbe.post.dto.PostDto;
 import com.example.beginnerfitbe.s3.util.S3Uploader;
 import com.example.beginnerfitbe.user.domain.User;
+import com.example.beginnerfitbe.user.dto.UserDto;
 import com.example.beginnerfitbe.user.dto.UserUpdateDto;
 import com.example.beginnerfitbe.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -22,18 +25,22 @@ public class UserService {
     private final UserRepository userRepository;
     private final S3Uploader s3Uploader;
 
-    public List<User> list(){
-        return userRepository.findAll();
+    public List<UserDto> list(){
+        return userRepository.findAll().stream()
+                .map(UserDto::fromEntity)
+                .collect(Collectors.toList());
     }
     public void create(User user) {
         userRepository.save(user);
     }
 
-    public User read(Long id) {
-        return userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("User not found"));
+    public UserDto read(Long id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("User not found"));
+        return UserDto.fromEntity(user);
     }
-    public User read(String email) {
-        return userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("User not found"));
+    public UserDto readByEmail(String email) {
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("User not found"));
+        return UserDto.fromEntity(user);
     }
 
     //회원정보 수정

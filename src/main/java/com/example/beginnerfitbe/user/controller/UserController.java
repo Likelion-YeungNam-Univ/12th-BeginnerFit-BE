@@ -2,7 +2,6 @@ package com.example.beginnerfitbe.user.controller;
 
 import com.example.beginnerfitbe.error.StateResponse;
 import com.example.beginnerfitbe.jwt.util.JwtUtil;
-import com.example.beginnerfitbe.user.dto.SignUpResDto;
 import com.example.beginnerfitbe.user.dto.UserUpdateDto;
 import com.example.beginnerfitbe.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;

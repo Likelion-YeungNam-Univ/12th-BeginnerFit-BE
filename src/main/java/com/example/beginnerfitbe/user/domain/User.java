@@ -67,4 +67,5 @@ public class User {
     public void updatePicture(String newPictureUrl){
         this.profilePictureUrl = newPictureUrl;
     }
+
 }
