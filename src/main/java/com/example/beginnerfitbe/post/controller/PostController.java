@@ -50,15 +50,15 @@ public class PostController {
 
     @PostMapping("")
     @Operation(summary = "게시글 생성 메서드", description = "제목/내용/카테고리이름/사진(선택)을 입력받아 게시글을 생성합니다.")
-    public ResponseEntity<?> create(HttpServletRequest request, @RequestPart("createDto") PostCreateDto createDto, @RequestPart(value = "postPicture", required = false) MultipartFile postPicture) throws IOException {
+    public ResponseEntity<?> create(HttpServletRequest request, @RequestPart("createDto") PostCreateDto createDto, @RequestPart(value = "postPicture", required = false) MultipartFile postPicture){
         Long userId = jwtUtil.getUserId(jwtUtil.resolveToken(request).substring(7));
         return postService.create(userId, createDto, postPicture);
     }
     @PutMapping("/{postId}")
-    @Operation(summary = "사용자 글 수정 메서드", description = "사용자가 마이페이지에서 자신이 작성한 글을 수정합니다.")
-    ResponseEntity<StateResponse> update(HttpServletRequest request, @PathVariable Long postId, @RequestBody PostUpdateDto postUpdateDto){
+    @Operation(summary = "사용자 글 수정 메서드", description = "사용자가 자신이 작성한 글을 수정합니다.")
+    ResponseEntity<StateResponse> update(HttpServletRequest request, @PathVariable Long postId, @RequestPart("updateDto") PostUpdateDto updateDto, @RequestPart(value = "postPicture", required = false) MultipartFile postPicture){
         Long userId = jwtUtil.getUserId(jwtUtil.resolveToken(request).substring(7));
-        return postService.update(postId, userId,postUpdateDto);
+        return postService.update(postId, userId, updateDto ,postPicture);
     }
     @DeleteMapping("/delete/{postId}")
     @Operation(summary = "게시글 삭제 메서드", description = "사용자가 커뮤니티 글을 삭제하기 위한 메서드입니다.")

@@ -2,6 +2,7 @@ package com.example.beginnerfitbe.s3.util;
 
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,12 +33,32 @@ public class S3Uploader {
     }
 
     private String upload(File uploadFile, String dirName) {
-        String fileName = dirName + "/" + UUID.randomUUID() + "." + uploadFile.getName();
+        String fileName = dirName + "/" + UUID.randomUUID() + "." + getFileExtension(uploadFile.getName());
         String uploadImageUrl = putS3(uploadFile, fileName);
 
         removeNewFile(uploadFile);
 
         return uploadImageUrl;
+    }
+
+    public void delete(String dirName, String imageUrl) {
+        try {
+            String key = dirName+"/"+imageUrl.substring(imageUrl.lastIndexOf("/") + 1); // .com/ 다음부터 파일 경로가 시작됨
+
+            // 파일이 존재하는지 확인
+            boolean exists = amazonS3Client.doesObjectExist(bucket, key);
+            log.info("파일 존재 여부: {}", exists);
+
+            if (amazonS3Client.doesObjectExist(bucket, key)) {
+                amazonS3Client.deleteObject(new DeleteObjectRequest(bucket, key));
+                log.info("파일이 S3에서 삭제되었습니다: {}", key);
+            } else {
+                log.warn("파일이 존재하지 않습니다: {}", key);
+            }
+        } catch (Exception e) {
+            log.error("S3에서 파일 삭제에 실패했습니다: {}", e.getMessage());
+            throw new RuntimeException("Failed to delete file from S3", e);
+        }
     }
 
     private String putS3(File uploadFile, String fileName) {
@@ -49,21 +70,28 @@ public class S3Uploader {
     }
 
     private void removeNewFile(File targetFile) {
-        if(targetFile.delete()) {
+        if (targetFile.delete()) {
             log.info("파일이 삭제되었습니다.");
-        }else {
+        } else {
             log.info("파일이 삭제되지 못했습니다.");
         }
     }
 
-    private Optional<File> convert(MultipartFile file) throws  IOException {
-        File convertFile = new File(file.getOriginalFilename()); // 업로드한 파일의 이름
-        if(convertFile.createNewFile()) {
+    private Optional<File> convert(MultipartFile file) throws IOException {
+        File convertFile = new File(file.getOriginalFilename());
+        if (convertFile.createNewFile()) {
             try (FileOutputStream fos = new FileOutputStream(convertFile)) {
                 fos.write(file.getBytes());
             }
             return Optional.of(convertFile);
         }
         return Optional.empty();
+    }
+
+    private String getFileExtension(String fileName) {
+        if (fileName == null || fileName.isEmpty() || !fileName.contains(".")) {
+            return "";
+        }
+        return fileName.substring(fileName.lastIndexOf(".") + 1);
     }
 }

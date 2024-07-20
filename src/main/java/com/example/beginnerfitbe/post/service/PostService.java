@@ -1,6 +1,5 @@
 package com.example.beginnerfitbe.post.service;
 
-import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.example.beginnerfitbe.category.domain.Category;
 import com.example.beginnerfitbe.category.repository.CategoryRepository;
 import com.example.beginnerfitbe.error.StateResponse;
@@ -33,7 +32,7 @@ public class PostService {
     private final S3Uploader s3Uploader;
 
     //글 생성
-    public ResponseEntity<StateResponse> create(Long userId, PostCreateDto postCreateDto, MultipartFile postPicture) throws IOException {
+    public ResponseEntity<StateResponse> create(Long userId, PostCreateDto postCreateDto, MultipartFile postPicture){
         try {
             User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("not found user"));
 
@@ -88,23 +87,44 @@ public class PostService {
                 .map(PostDto::fromEntity)
                 .collect(Collectors.toList());
     }
-    public ResponseEntity<StateResponse> update(Long postId, Long id, PostUpdateDto updateDto){
-        Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("not found post"));
+    public ResponseEntity<StateResponse> update(Long postId, Long id, PostUpdateDto updateDto, MultipartFile postPicture) {
+        try {
+            Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("not found post"));
 
-        Long userId = post.getUser().getId();
-        if(!userId.equals(id)) throw new IllegalArgumentException("작성자만 글을 수정할 수 있습니다.");
+            Long userId = post.getUser().getId();
+            String previousPictureUrl = post.getPictureUrl();
 
-        String title = updateDto.getTitle();
-        String content = updateDto.getContent();
-        String categoryName=updateDto.getCategoryName();
+            if (!userId.equals(id)) throw new IllegalArgumentException("작성자만 글을 수정할 수 있습니다.");
 
-        if (title!=null && content!=null && categoryName!=null) {
-            Category category = categoryRepository.findByCategoryName(categoryName).orElseThrow(() -> new IllegalArgumentException("not found category"));
-            post.update(title, content, category);
+            String title = updateDto.getTitle();
+            String content = updateDto.getContent();
+            String categoryName = updateDto.getCategoryName();
+
+            if (title != null && content != null && categoryName != null) {
+                Category category = categoryRepository.findByCategoryName(categoryName).orElseThrow(() -> new IllegalArgumentException("not found category"));
+                post.update(title, content, category);
+            }
+
+            if (previousPictureUrl != null) {
+                s3Uploader.delete("Post",previousPictureUrl);
+            }
+            String newPictureUrl=null;
+            // 사진 수정
+            if (postPicture != null && !postPicture.isEmpty()) {
+                if (previousPictureUrl != null) {
+                    s3Uploader.delete("Post",previousPictureUrl);
+                }
+                newPictureUrl = s3Uploader.upload(postPicture, "Post");
+            }
+            post.updatePicture(newPictureUrl);
+            postRepository.save(post);
+            return ResponseEntity.ok(StateResponse.builder().code("SUCCESS").message("게시글을 성공적으로 업데이트했습니다.").build());
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(StateResponse.builder().code("ERROR").message("오류가 발생했습니다: " + e.getMessage()).build());
         }
-        postRepository.save(post);
-        return ResponseEntity.ok(StateResponse.builder().code("SUCCESS").message("게시글을 성공적으로 업데이트했습니다.").build());
     }
+
     @Transactional
     public ResponseEntity<StateResponse> delete(Long postId, Long id){
         Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("not found post"));
@@ -115,13 +135,5 @@ public class PostService {
         return ResponseEntity.ok(StateResponse.builder().code("SUCCESS").message("글을 성공적으로 삭제했습니다.").build());
     }
 
-    public String savePicture(MultipartFile postPicture)  {
-        String dirName = "post"; // 디렉토리 이름을 원하는 대로 설정하세요
-        try {
-            return s3Uploader.upload(postPicture, dirName);
-        } catch (IOException e) {
-            throw new RuntimeException("사진 업로드 중 오류가 발생했습니다.", e);
-        }
-    }
 
 }
