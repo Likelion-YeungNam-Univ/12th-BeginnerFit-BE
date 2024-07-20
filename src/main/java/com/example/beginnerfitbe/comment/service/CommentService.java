@@ -28,8 +28,8 @@ public class CommentService {
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
 
-    public ResponseEntity<StateResponse> create(Long userId, CommentCreateDto commentCreateDto){
-        Post post = postRepository.findById(commentCreateDto.getPostId()).orElseThrow(() -> new IllegalArgumentException("not found post"));
+    public ResponseEntity<StateResponse> create(Long userId, Long postId,CommentCreateDto commentCreateDto){
+        Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("not found post"));
         User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("not found user"));
 
         Comment comment = Comment.builder()
