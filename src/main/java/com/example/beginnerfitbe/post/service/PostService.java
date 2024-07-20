@@ -131,6 +131,11 @@ public class PostService {
         Long userId = post.getUser().getId();
         if(!userId.equals(id)) throw new IllegalArgumentException("작성자만 글을 삭제할 수 있습니다.");
 
+        String previousPictureUrl = post.getPictureUrl();
+        if(previousPictureUrl!=null){
+            s3Uploader.delete("Post",previousPictureUrl);
+        }
+
         postRepository.delete(post);
         return ResponseEntity.ok(StateResponse.builder().code("SUCCESS").message("글을 성공적으로 삭제했습니다.").build());
     }

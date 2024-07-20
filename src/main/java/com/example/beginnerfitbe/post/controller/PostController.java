@@ -60,7 +60,7 @@ public class PostController {
         Long userId = jwtUtil.getUserId(jwtUtil.resolveToken(request).substring(7));
         return postService.update(postId, userId, updateDto ,postPicture);
     }
-    @DeleteMapping("/delete/{postId}")
+    @DeleteMapping("/{postId}")
     @Operation(summary = "게시글 삭제 메서드", description = "사용자가 커뮤니티 글을 삭제하기 위한 메서드입니다.")
     ResponseEntity<StateResponse> delete(HttpServletRequest request, @PathVariable Long postId){
         Long userId = jwtUtil.getUserId(jwtUtil.resolveToken(request).substring(7));
