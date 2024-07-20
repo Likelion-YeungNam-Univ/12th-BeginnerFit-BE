@@ -15,9 +15,10 @@ public class PostDto {
 
     private Long userId;
     private String userName;
+    private String profileUrl;
     private String categoryName;
 
-    public PostDto(Long id, String title, String content, String pictureUrl, LocalDateTime createdAt, Long userId, String userName, String categoryName) {
+    public PostDto(Long id, String title, String content, String pictureUrl, LocalDateTime createdAt, Long userId, String userName, String profileUrl, String categoryName) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -25,6 +26,7 @@ public class PostDto {
         this.createdAt = createdAt;
         this.userId = userId;
         this.userName = userName;
+        this.profileUrl = profileUrl;
         this.categoryName = categoryName;
     }
 
@@ -37,6 +39,7 @@ public class PostDto {
                 post.getCreatedAt(),
                 post.getUser().getId(),
                 post.getUser().getName(),
+                post.getUser().getProfilePictureUrl(),
                 post.getCategory().getCategoryName()
         );
     }
