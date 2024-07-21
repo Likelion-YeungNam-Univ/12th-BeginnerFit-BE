@@ -1,7 +1,7 @@
 package com.example.beginnerfitbe.playlist.domain;
 
 import com.example.beginnerfitbe.user.domain.User;
-import com.example.beginnerfitbe.youtube.domain.Youtube;
+import com.example.beginnerfitbe.youtube.domain.YoutubeVideo;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -40,10 +40,10 @@ public class Playlist {
     private User user;
 
     @OneToMany(mappedBy = "playlist",  fetch = FetchType.LAZY)
-    private List<Youtube> videos;
+    private List<YoutubeVideo> videos;
 
     @Builder
-    public Playlist(String title, String description, int totalTime, boolean isCompleted, LocalDateTime createdAt, User user, List<Youtube> videos) {
+    public Playlist(String title, String description, int totalTime, boolean isCompleted, LocalDateTime createdAt, User user, List<YoutubeVideo> videos) {
         this.title = title;
         this.description = description;
         this.totalTime = totalTime;

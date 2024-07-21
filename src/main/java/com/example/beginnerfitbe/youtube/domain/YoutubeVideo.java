@@ -9,10 +9,13 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
-public class Youtube {
+public class YoutubeVideo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false, unique = true)
+    private String videoId;
 
     @Column(nullable = false)
     private String title;
@@ -43,8 +46,9 @@ public class Youtube {
     private Playlist playlist;
 
     @Builder
-    public Youtube(String title, String url, String thumbnail, String description, String channel, String publishedAt, String duration, Boolean isWatched, Playlist playlist) {
+    public YoutubeVideo(String title, String videoId, String url, String thumbnail, String description, String channel, String publishedAt, String duration, Boolean isWatched, Playlist playlist) {
         this.title = title;
+        this.videoId = videoId;
         this.url = url;
         this.thumbnail = thumbnail;
         this.description = description;
