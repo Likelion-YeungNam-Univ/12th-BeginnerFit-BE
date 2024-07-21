@@ -1,6 +1,8 @@
 package com.example.beginnerfitbe.youtube.util;
 
+import com.example.beginnerfitbe.youtube.domain.YoutubeVideo;
 import com.example.beginnerfitbe.youtube.dto.YoutubeSearchResDto;
+import com.example.beginnerfitbe.youtube.dto.YoutubeVideoDto;
 import com.example.beginnerfitbe.youtube.repository.YoutubeVideoRepository;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
@@ -27,7 +29,6 @@ public class YoutubeUtil {
 
     private final YoutubeVideoRepository youtubeRepository;
 
-
     // 비디오 검색
     public List<YoutubeSearchResDto> search(String keyword) throws IOException {
         JsonFactory jsonFactory = new JacksonFactory();
@@ -43,7 +44,7 @@ public class YoutubeUtil {
 
         search.setKey(apiKey);
         search.setQ(keyword);
-        search.setMaxResults(10L);
+        search.setMaxResults(20L);
 
         SearchListResponse searchResponse = search.execute();
         List<SearchResult> searchResultList = searchResponse.getItems();
@@ -77,8 +78,8 @@ public class YoutubeUtil {
         return Collections.emptyList();
     }
 
-    //비디오 메타데이터
-    public String videoInfo(YouTube youtube, String videoId){
+    // 비디오 메타데이터
+    public String videoInfo(YouTube youtube, String videoId) {
         try {
             YouTube.Videos.List videosListByIdRequest = youtube.videos().list(Collections.singletonList("contentDetails"));
             videosListByIdRequest.setKey(apiKey);
@@ -87,20 +88,18 @@ public class YoutubeUtil {
             VideoListResponse videoListResponse = videosListByIdRequest.execute();
 
             List<Video> videoList = videoListResponse.getItems();
-            String duration=null;
             if (videoList != null && !videoList.isEmpty()) {
                 Video video = videoList.get(0);
-                duration = convertISO8601Duration(video.getContentDetails().getDuration());
+                return convertISO8601Duration(video.getContentDetails().getDuration());
             }
-            return duration;
         } catch (IOException e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    //ISO 8601 format
-    public  String convertISO8601Duration(String isoDuration) {
+    // ISO 8601 format 변환
+    public String convertISO8601Duration(String isoDuration) {
         Pattern pattern = Pattern.compile("PT(?:(\\d+)H)?(?:(\\d+)M)?(?:(\\d+)S)?");
         Matcher matcher = pattern.matcher(isoDuration);
 
@@ -116,14 +115,100 @@ public class YoutubeUtil {
         int m = Integer.parseInt(minutes);
         int s = Integer.parseInt(seconds);
 
-        if(h>0){
+        if (h > 0) {
             return String.format("%02d:%02d:%02d", h, m, s);
-        }
-        else if (m>0){
+        } else if (m > 0) {
             return String.format("%02d:%02d", m, s);
+        } else {
+            return String.format("00:%02d", s);
         }
-        else{
-            return String.format("%02d",s);
+    }
+
+    //search한 유튜브 영상 중 플레이리스트로 만들 영상 선택
+    public YoutubeVideoDto selectVideos(String keyword, String requestTime) throws IOException {
+        int targetTime = Integer.parseInt(requestTime);
+        List<YoutubeVideo> selectedVideos = new ArrayList<>();
+        double totalTime = 0;
+
+        // 만약 시간을 만족하지 못하면, 검색 api 더 호출
+        while (totalTime < targetTime -3) { //-3분까지는 허용
+            List<YoutubeSearchResDto> youtubeSearchResDtos = search(keyword);
+            if (youtubeSearchResDtos.isEmpty()) {
+                break;
+            }
+            List<YoutubeVideo> newVideos = findOptimalVideos(youtubeSearchResDtos, targetTime - (int) totalTime);
+            selectedVideos.addAll(newVideos);
+
+            totalTime = selectedVideos.stream().mapToDouble(video -> convertDurationToMinutes(video.getDuration())).sum();
         }
+
+        String totalTimeFormatted = convertMinutesToDurationFormat(totalTime);
+
+        System.out.println("전체 시간: " + totalTimeFormatted);
+
+        YoutubeVideoDto youtubeVideoDto = new YoutubeVideoDto();
+        youtubeVideoDto.setYoutubeVideos(selectedVideos);
+        youtubeVideoDto.setTotalTime(totalTimeFormatted);
+
+        return youtubeVideoDto;
+    }
+
+    private List<YoutubeVideo> findOptimalVideos(List<YoutubeSearchResDto> youtubeSearchResDtos, int targetTime) {
+        int n = youtubeSearchResDtos.size();
+        double[] durations = new double[n];
+        YoutubeVideo[] videos = new YoutubeVideo[n];
+
+        for (int i = 0; i < n; i++) {
+            durations[i] = convertDurationToMinutes(youtubeSearchResDtos.get(i).getDuration());
+            videos[i] = youtubeSearchResDtos.get(i).toEntity();
+        }
+
+        List<YoutubeVideo> bestSelection = new ArrayList<>();
+        dfs(videos, durations, 0, targetTime, 0, 0, new ArrayList<>(), bestSelection);
+
+        return bestSelection;
+    }
+
+    //dfs로 최적화 플레이리스트 생성
+    private double dfs(YoutubeVideo[] videos, double[] durations, int index, int targetTime, double currentTime, double closestTime, List<YoutubeVideo> currentSelection, List<YoutubeVideo> bestSelection) {
+        if (currentTime > targetTime + 3) { // 3분 초과까지 허용
+            return closestTime;
+        }
+        if (currentTime > closestTime) {
+            closestTime = currentTime;
+            bestSelection.clear();
+            bestSelection.addAll(new ArrayList<>(currentSelection));
+        }
+        for (int i = index; i < videos.length; i++) {
+            currentSelection.add(videos[i]);
+            closestTime = dfs(videos, durations, i + 1, targetTime, currentTime + durations[i], closestTime, currentSelection, bestSelection);
+            currentSelection.remove(currentSelection.size() - 1);
+        }
+        return closestTime;
+    }
+
+    // 분으로 변환
+    private double convertDurationToMinutes(String duration) {
+        String[] parts = duration.split(":");
+        int minutes = 0;
+        int seconds = 0;
+
+        if (parts.length == 2) { // MM:SS
+            minutes = Integer.parseInt(parts[0]);
+            seconds = Integer.parseInt(parts[1]);
+        } else if (parts.length == 3) { // HH:MM:SS
+            int hours = Integer.parseInt(parts[0]);
+            minutes = hours * 60 + Integer.parseInt(parts[1]);
+            seconds = Integer.parseInt(parts[2]);
+        }
+
+        return minutes + (seconds / 60.0);
+    }
+
+    // 시간 포맷
+    private String convertMinutesToDurationFormat(double totalMinutes) {
+        int minutes = (int) totalMinutes;
+        int seconds = (int) Math.round((totalMinutes - minutes) * 60);
+        return String.format("%02d:%02d", minutes, seconds);
     }
 }

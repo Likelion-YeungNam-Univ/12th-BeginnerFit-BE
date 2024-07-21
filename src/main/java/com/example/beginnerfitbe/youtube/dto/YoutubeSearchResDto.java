@@ -1,5 +1,6 @@
 package com.example.beginnerfitbe.youtube.dto;
 
+import com.example.beginnerfitbe.youtube.domain.YoutubeVideo;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,6 +16,7 @@ public class YoutubeSearchResDto {
     private String channel;
     private String publishedAt;
     private String duration;
+    private Boolean isWatched;
 
     @Builder
     public YoutubeSearchResDto(String videoId, String title, String url, String description, String thumbnail, String channel, String publishedAt, String duration, Boolean isWatched) {
@@ -26,5 +28,20 @@ public class YoutubeSearchResDto {
         this.channel = channel;
         this.publishedAt = publishedAt;
         this.duration = duration;
+        this. isWatched = isWatched;
+    }
+
+    public YoutubeVideo toEntity(){
+        return YoutubeVideo.builder()
+                .videoId(videoId)
+                .title(title)
+                .url(url)
+                .description(description)
+                .thumbnail(thumbnail)
+                .channel(channel)
+                .publishedAt(publishedAt)
+                .duration(duration)
+                .isWatched(false)
+                .build();
     }
 }

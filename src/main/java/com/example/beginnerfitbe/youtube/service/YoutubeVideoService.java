@@ -1,7 +1,9 @@
 package com.example.beginnerfitbe.youtube.service;
 
-import com.example.beginnerfitbe.youtube.dto.YoutubeSearchResDto;
-import com.example.beginnerfitbe.youtube.util.YoutubeUtil;
+import com.example.beginnerfitbe.playlist.domain.Playlist;
+import com.example.beginnerfitbe.youtube.domain.YoutubeVideo;
+import com.example.beginnerfitbe.youtube.dto.YoutubeVideoDto;
+import com.example.beginnerfitbe.youtube.repository.YoutubeVideoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,15 +15,13 @@ import java.util.List;
 @RequiredArgsConstructor
 public class YoutubeVideoService {
 
-    private final YoutubeUtil youtubeUtil;
+    private final YoutubeVideoRepository youtubeVideoRepository;
 
-    public List<YoutubeSearchResDto> search(String query) throws IOException {
-        return youtubeUtil.search(query);
+    public void create(YoutubeVideoDto youtubeVideoDto, Playlist playlist) throws IOException {
+        List<YoutubeVideo> youtubeVideos = youtubeVideoDto.getYoutubeVideos();
+        youtubeVideos.forEach(video -> video.setPlaylist(playlist));
+        youtubeVideoRepository.saveAll(youtubeVideos);
     }
-
-
-
-
 
 
 }

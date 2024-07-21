@@ -14,7 +14,7 @@ public class YoutubeVideo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String videoId;
 
     @Column(nullable = false)
@@ -56,6 +56,10 @@ public class YoutubeVideo {
         this.publishedAt = publishedAt;
         this.duration = duration;
         this.isWatched = isWatched;
+        this.playlist = playlist;
+    }
+
+    public void setPlaylist(Playlist playlist) {
         this.playlist = playlist;
     }
 }
