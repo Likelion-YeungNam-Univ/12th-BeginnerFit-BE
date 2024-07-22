@@ -1,10 +1,14 @@
 package com.example.beginnerfitbe.user.domain;
 
+import com.example.beginnerfitbe.post.domain.Post;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 
 @Entity
@@ -36,6 +40,11 @@ public class User {
     @Column
     private int exerciseIntensity;
 
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @JsonIgnore
+    private List<Post> posts;
+
+
     @Builder
     public User(String email, String name, String password, int exercisePurpose, int exercisePart, int exerciseTime, int exerciseIntensity) {
         this.email=email;
@@ -50,7 +59,9 @@ public class User {
     public void update(String name, String password, int exercisePurpose, int exercisePart, int exerciseTime, int exerciseIntensity) {
         this.name=name;
         this.password = password;
+        this.exercisePurpose = exercisePurpose;
         this.exercisePart= exercisePart;
+        this.exerciseTime=exerciseTime;
         this.exerciseIntensity = exerciseIntensity;
     }
 }
