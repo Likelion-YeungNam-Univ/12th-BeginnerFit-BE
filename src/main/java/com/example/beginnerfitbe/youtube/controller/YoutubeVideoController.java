@@ -1,9 +1,7 @@
 package com.example.beginnerfitbe.youtube.controller;
 
-import com.example.beginnerfitbe.jwt.util.JwtUtil;
 import com.example.beginnerfitbe.youtube.service.YoutubeVideoService;
 import io.swagger.v3.oas.annotations.Operation;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
