@@ -17,10 +17,9 @@ public class PlaylistController {
     private final JwtUtil jwtUtil;
     private final PlaylistService playlistService;
 
-    @PostMapping("/create")
+    @PostMapping("")
     public ResponseEntity<?> createYoutubeVideos(HttpServletRequest request,  @RequestParam(value = "keyword") String query, @RequestParam (value = "duration")String duration) throws IOException {
         Long userId = jwtUtil.getUserId(jwtUtil.resolveToken(request).substring(7));
-        playlistService.create(query, duration, userId);
-        return ResponseEntity.ok("Youtube videos created successfully");
+        return ResponseEntity.ok(playlistService.create(query, duration, userId));
     }
 }

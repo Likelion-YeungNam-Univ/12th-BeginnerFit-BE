@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class YoutubeSearchResDto {
+public class SearchResDto {
     private String videoId;
     private String title;
     private String url;
@@ -19,7 +19,7 @@ public class YoutubeSearchResDto {
     private Boolean isWatched;
 
     @Builder
-    public YoutubeSearchResDto(String videoId, String title, String url, String description, String thumbnail, String channel, String publishedAt, String duration, Boolean isWatched) {
+    public SearchResDto(String videoId, String title, String url, String description, String thumbnail, String channel, String publishedAt, String duration, Boolean isWatched) {
         this.videoId = videoId;
         this.title = title;
         this.url = url;

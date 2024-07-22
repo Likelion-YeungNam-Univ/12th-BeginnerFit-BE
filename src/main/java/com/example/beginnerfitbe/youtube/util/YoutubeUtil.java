@@ -1,8 +1,8 @@
 package com.example.beginnerfitbe.youtube.util;
 
 import com.example.beginnerfitbe.youtube.domain.YoutubeVideo;
-import com.example.beginnerfitbe.youtube.dto.YoutubeSearchResDto;
-import com.example.beginnerfitbe.youtube.dto.YoutubeVideoDto;
+import com.example.beginnerfitbe.youtube.dto.SearchResDto;
+import com.example.beginnerfitbe.youtube.dto.SelectedVideoDto;
 import com.example.beginnerfitbe.youtube.repository.YoutubeVideoRepository;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
@@ -30,7 +30,7 @@ public class YoutubeUtil {
     private final YoutubeVideoRepository youtubeRepository;
 
     // 비디오 검색
-    public List<YoutubeSearchResDto> search(String keyword) throws IOException {
+    public List<SearchResDto> search(String keyword) throws IOException {
         JsonFactory jsonFactory = new JacksonFactory();
         YouTube youtube = new YouTube.Builder(
                 new com.google.api.client.http.javanet.NetHttpTransport(),
@@ -61,7 +61,7 @@ public class YoutubeUtil {
                         String videoThumbnail = searchResult.getSnippet().getThumbnails().getHigh().getUrl();
                         String duration = videoInfo(youtube, videoId);
 
-                        return YoutubeSearchResDto.builder()
+                        return SearchResDto.builder()
                                 .videoId(videoId)
                                 .url("https://www.youtube.com/watch?v=" + videoId)
                                 .title(videoTitle)
@@ -125,18 +125,18 @@ public class YoutubeUtil {
     }
 
     //search한 유튜브 영상 중 플레이리스트로 만들 영상 선택
-    public YoutubeVideoDto selectVideos(String keyword, String requestTime) throws IOException {
+    public SelectedVideoDto selectVideos(String keyword, String requestTime) throws IOException {
         int targetTime = Integer.parseInt(requestTime);
         List<YoutubeVideo> selectedVideos = new ArrayList<>();
         double totalTime = 0;
 
         // 만약 시간을 만족하지 못하면, 검색 api 더 호출
         while (totalTime < targetTime -3) { //-3분까지는 허용
-            List<YoutubeSearchResDto> youtubeSearchResDtos = search(keyword);
-            if (youtubeSearchResDtos.isEmpty()) {
+            List<SearchResDto> searchResDtos = search(keyword);
+            if (searchResDtos.isEmpty()) {
                 break;
             }
-            List<YoutubeVideo> newVideos = findOptimalVideos(youtubeSearchResDtos, targetTime - (int) totalTime);
+            List<YoutubeVideo> newVideos = findOptimalVideos(searchResDtos, targetTime - (int) totalTime);
             selectedVideos.addAll(newVideos);
 
             totalTime = selectedVideos.stream().mapToDouble(video -> convertDurationToMinutes(video.getDuration())).sum();
@@ -146,21 +146,21 @@ public class YoutubeUtil {
 
         System.out.println("전체 시간: " + totalTimeFormatted);
 
-        YoutubeVideoDto youtubeVideoDto = new YoutubeVideoDto();
-        youtubeVideoDto.setYoutubeVideos(selectedVideos);
-        youtubeVideoDto.setTotalTime(totalTimeFormatted);
+        SelectedVideoDto selectVideoDto = new SelectedVideoDto();
+        selectVideoDto.setYoutubeVideos(selectedVideos);
+        selectVideoDto.setTotalTime(totalTimeFormatted);
 
-        return youtubeVideoDto;
+        return selectVideoDto;
     }
 
-    private List<YoutubeVideo> findOptimalVideos(List<YoutubeSearchResDto> youtubeSearchResDtos, int targetTime) {
-        int n = youtubeSearchResDtos.size();
+    private List<YoutubeVideo> findOptimalVideos(List<SearchResDto> searchResDtos, int targetTime) {
+        int n = searchResDtos.size();
         double[] durations = new double[n];
         YoutubeVideo[] videos = new YoutubeVideo[n];
 
         for (int i = 0; i < n; i++) {
-            durations[i] = convertDurationToMinutes(youtubeSearchResDtos.get(i).getDuration());
-            videos[i] = youtubeSearchResDtos.get(i).toEntity();
+            durations[i] = convertDurationToMinutes(searchResDtos.get(i).getDuration());
+            videos[i] = searchResDtos.get(i).toEntity();
         }
 
         List<YoutubeVideo> bestSelection = new ArrayList<>();

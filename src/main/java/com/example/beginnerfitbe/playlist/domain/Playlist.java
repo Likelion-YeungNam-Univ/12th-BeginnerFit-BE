@@ -22,9 +22,6 @@ public class Playlist {
     @Column(nullable = false)
     private String title;
 
-    @Column
-    private String description;
-
     @Column(nullable = false)
     private String totalTime;
 
@@ -43,9 +40,8 @@ public class Playlist {
     private List<YoutubeVideo> videos;
 
     @Builder
-    public Playlist(String title, String description, String totalTime, boolean isCompleted, LocalDateTime createdAt, User user, List<YoutubeVideo> videos) {
+    public Playlist(String title, String totalTime, boolean isCompleted, LocalDateTime createdAt, User user, List<YoutubeVideo> videos) {
         this.title = title;
-        this.description = description;
         this.totalTime = totalTime;
         this.isCompleted = isCompleted;
         this.createdAt = createdAt;
