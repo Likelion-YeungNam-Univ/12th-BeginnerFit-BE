@@ -3,6 +3,7 @@ package com.example.beginnerfitbe.playlist.service;
 import com.example.beginnerfitbe.playlist.domain.Playlist;
 import com.example.beginnerfitbe.playlist.dto.PlaylistDto;
 import com.example.beginnerfitbe.playlist.repository.PlaylistRepository;
+import com.example.beginnerfitbe.youtube.domain.YoutubeVideo;
 import com.example.beginnerfitbe.youtube.dto.SelectedVideoDto;
 import com.example.beginnerfitbe.user.domain.User;
 import com.example.beginnerfitbe.user.repository.UserRepository;
@@ -11,6 +12,7 @@ import com.example.beginnerfitbe.youtube.service.YoutubeVideoService;
 import com.example.beginnerfitbe.youtube.util.YoutubeUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -46,6 +48,19 @@ public class PlaylistService {
         return PlaylistDto.fromEntity(playlist);
     }
 
+    @Transactional
+    public void update(Long playlistId) {
+        List<YoutubeVideoDto> samePlaylistVideos = youtubeVideoService.getYoutubeVideosByPlaylist(playlistId); // 비디오 상태 확인
+
+        boolean allWatched = samePlaylistVideos.stream().allMatch(YoutubeVideoDto::getIsWatched);
+
+        if (allWatched) {
+            Playlist playlist = playlistRepository.findById(playlistId)
+                    .orElseThrow(() -> new IllegalArgumentException("Playlist not found"));
+            playlist.setCompleted(true);
+            playlistRepository.save(playlist);
+        }
+    }
     //재생목록 조회
     public List<PlaylistDto> list(){
         return playlistRepository.findAll().stream()

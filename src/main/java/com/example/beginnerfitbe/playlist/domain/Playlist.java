@@ -26,7 +26,7 @@ public class Playlist {
     private String totalTime;
 
     @Column(nullable = false)
-    private boolean isCompleted;
+    private Boolean isCompleted;
 
     @CreatedDate
     @Column(nullable = false)
@@ -40,12 +40,16 @@ public class Playlist {
     private List<YoutubeVideo> videos;
 
     @Builder
-    public Playlist(String title, String totalTime, boolean isCompleted, LocalDateTime createdAt, User user, List<YoutubeVideo> videos) {
+    public Playlist(String title, String totalTime, Boolean isCompleted, LocalDateTime createdAt, User user, List<YoutubeVideo> videos) {
         this.title = title;
         this.totalTime = totalTime;
         this.isCompleted = isCompleted;
         this.createdAt = createdAt;
         this.user = user;
         this.videos = videos;
+    }
+
+    public void setCompleted(boolean isCompleted) {
+        this.isCompleted = isCompleted;
     }
 }

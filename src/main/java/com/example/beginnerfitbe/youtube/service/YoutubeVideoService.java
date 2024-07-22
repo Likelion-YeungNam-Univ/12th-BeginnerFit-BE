@@ -10,6 +10,7 @@ import com.example.beginnerfitbe.youtube.dto.YoutubeVideoDto;
 import com.example.beginnerfitbe.youtube.repository.YoutubeVideoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,12 +27,15 @@ public class YoutubeVideoService {
 
     public void create(SelectedVideoDto playlistDto, Playlist playlist){
         List<YoutubeVideo> youtubeVideos = playlistDto.getYoutubeVideos();
-        youtubeVideos.forEach(video -> video.setPlaylist(playlist));
+        youtubeVideos.forEach(video -> video.updatePlaylist(playlist));
         youtubeVideoRepository.saveAll(youtubeVideos);
     }
 
-    public YoutubeVideoDto watchVideo(Long videoId) {
+    @Transactional
+    public YoutubeVideoDto watchVideo(Long userId ,Long videoId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
         YoutubeVideo youtubeVideo = youtubeVideoRepository.findById(videoId).orElseThrow(() -> new IllegalArgumentException("Video not found"));
+        if(!user.getId().equals( youtubeVideo.getPlaylist().getUser().getId()))  throw new IllegalArgumentException("재생목록 주인만 시청 상태 변경 가능.");
 
         //시청 true
         youtubeVideo.watched(true);

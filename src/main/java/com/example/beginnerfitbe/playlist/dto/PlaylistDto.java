@@ -37,7 +37,7 @@ public class PlaylistDto {
                 .id(playlist.getId())
                 .title(playlist.getTitle())
                 .totalTime(playlist.getTotalTime())
-                .isCompleted(playlist.isCompleted())
+                .isCompleted(playlist.getIsCompleted())
                 .createdAt(playlist.getCreatedAt())
                 .userId(playlist.getUser().getId())
                 .videos(playlist.getVideos().stream()

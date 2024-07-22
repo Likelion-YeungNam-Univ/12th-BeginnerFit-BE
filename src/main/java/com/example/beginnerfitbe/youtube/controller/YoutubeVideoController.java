@@ -1,10 +1,15 @@
 package com.example.beginnerfitbe.youtube.controller;
 
+import com.example.beginnerfitbe.jwt.util.JwtUtil;
+import com.example.beginnerfitbe.playlist.service.PlaylistService;
+import com.example.beginnerfitbe.youtube.dto.YoutubeVideoDto;
 import com.example.beginnerfitbe.youtube.service.YoutubeVideoService;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 
 @RestController
 @RequestMapping("/playlists")
@@ -12,12 +17,21 @@ import org.springframework.web.bind.annotation.*;
 public class YoutubeVideoController {
 
     private final YoutubeVideoService youtubeVideoService;
+    private final PlaylistService playlistService;
+    private final JwtUtil jwtUtil;
 
-    //비디오 선택 ->  시청 true
+    //비디오 선택 ->  시청 true -> 다 true면 플레이리스트 완료 true
     @PostMapping("/videos/{videoId}")
     @Operation(summary = "비디오 선택 메소드", description = "비디오를 선택하면 시청 한 상태로 업데이트 합니다.")
-    private ResponseEntity<?> watchVideo(@PathVariable Long videoId){
-        return ResponseEntity.ok(youtubeVideoService.watchVideo(videoId));
+    private ResponseEntity<?> watchVideo(HttpServletRequest request, @PathVariable Long videoId) {
+        Long userId = jwtUtil.getUserId(jwtUtil.resolveToken(request).substring(7));
+
+        YoutubeVideoDto youtubeVideoDto = youtubeVideoService.watchVideo(userId, videoId);
+
+        Long playlistId = youtubeVideoDto.getPlaylistId();
+        playlistService.update(playlistId);
+
+        return ResponseEntity.ok("비디오 시청 상태가 업데이트되었습니다.");
     }
 
     @GetMapping("/videos")

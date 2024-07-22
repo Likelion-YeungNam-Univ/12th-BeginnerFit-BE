@@ -59,7 +59,7 @@ public class YoutubeVideo {
         this.playlist = playlist;
     }
 
-    public void setPlaylist(Playlist playlist) {
+    public void updatePlaylist(Playlist playlist) {
         this.playlist = playlist;
     }
     public void watched(Boolean isWatched){
