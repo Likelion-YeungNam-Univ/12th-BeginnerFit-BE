@@ -1,9 +1,7 @@
 package com.example.beginnerfitbe.user.dto;
 
-import com.example.beginnerfitbe.post.dto.PostDto;
 import com.example.beginnerfitbe.user.domain.User;
 import lombok.Data;
-import lombok.Getter;
 
 @Data
 public class UserDto {
