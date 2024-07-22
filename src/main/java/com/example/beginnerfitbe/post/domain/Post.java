@@ -21,14 +21,14 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-//    @Column(nullable = false)
-//    private String pictureUrl;
-
     @Column(nullable = false)
     private String title;
 
     @Column(nullable = false)
     private String content;
+
+    @Column
+    private String pictureUrl;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
@@ -47,18 +47,21 @@ public class Post {
     private List<Comment> comments;
 
     @Builder
-    public Post(String title, String content, LocalDateTime createdAt, User user, Category category, List<Comment> comments) {
+    public Post(String title, String content, String pictureUrl, LocalDateTime createdAt, User user, Category category) {
         this.title = title;
         this.content = content;
+        this.pictureUrl = pictureUrl;
         this.createdAt = createdAt;
         this.category = category;
         this.user = user;
-        this.comments = comments;
     }
 
     public void update(String title, String content, Category category) {
         this.title=title;
         this.content = content;
         this.category= category;
+    }
+    public void updatePicture(String pictureUrl) {
+        this.pictureUrl = pictureUrl;
     }
 }

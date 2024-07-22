@@ -11,11 +11,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/community/posts")
+@RequestMapping("/posts")
 public class PostController {
 
     private final PostService postService;
@@ -39,31 +42,29 @@ public class PostController {
         return ResponseEntity.ok(postService.me(userId));
     }
 
-    @GetMapping("/category/{categoryName}")
+    @GetMapping("/categories/{categoryName}")
     @Operation(summary = "카테고리 별 게시글 조회 메소드", description = "카테고리 이름을 통해 카테고리 별로 게시글을 조회합니다.")
     public ResponseEntity<?> getPostsByCategoryName(@PathVariable String categoryName) {
         return ResponseEntity.ok(postService.getPostsByCategoryName(categoryName));
     }
 
-    @PostMapping("/create")
-    @Operation(summary = "게시글 생성 메서드", description = "제목/내용/카테고리이름을 입력받아 게시글을 생성합니다.")
-    public ResponseEntity<?> update(HttpServletRequest request, @RequestBody PostCreateDto createDto) {
+    @PostMapping("")
+    @Operation(summary = "게시글 생성 메서드", description = "제목/내용/카테고리이름/사진(선택)을 입력받아 게시글을 생성합니다.")
+    public ResponseEntity<?> create(HttpServletRequest request, @RequestPart("createDto") PostCreateDto createDto, @RequestPart(value = "postPicture", required = false) MultipartFile postPicture){
         Long userId = jwtUtil.getUserId(jwtUtil.resolveToken(request).substring(7));
-
-        return postService.create(userId,createDto);
+        return postService.create(userId, createDto, postPicture);
     }
-    @PostMapping("/update/{postId}")
-    @Operation(summary = "사용자 글 수정 메서드", description = "사용자가 마이페이지에서 자신이 작성한 글을 수정합니다.")
-    ResponseEntity<StateResponse> update(HttpServletRequest request, @PathVariable Long postId, @RequestBody PostUpdateDto postUpdateDto){
+    @PutMapping("/{postId}")
+    @Operation(summary = "사용자 글 수정 메서드", description = "사용자가 자신이 작성한 글을 수정합니다.")
+    ResponseEntity<StateResponse> update(HttpServletRequest request, @PathVariable Long postId, @RequestPart("updateDto") PostUpdateDto updateDto, @RequestPart(value = "postPicture", required = false) MultipartFile postPicture){
         Long userId = jwtUtil.getUserId(jwtUtil.resolveToken(request).substring(7));
-        return postService.update(postId, userId,postUpdateDto);
+        return postService.update(postId, userId, updateDto ,postPicture);
     }
-    @DeleteMapping("/delete/{postId}")
+    @DeleteMapping("/{postId}")
     @Operation(summary = "게시글 삭제 메서드", description = "사용자가 커뮤니티 글을 삭제하기 위한 메서드입니다.")
     ResponseEntity<StateResponse> delete(HttpServletRequest request, @PathVariable Long postId){
         Long userId = jwtUtil.getUserId(jwtUtil.resolveToken(request).substring(7));
         return postService.delete(postId, userId);
     }
-
 
 }
