@@ -55,7 +55,7 @@ public class YoutubeVideoService {
 
     public List<YoutubeVideoDto> getYoutubeVideosByPlaylist(Long playlistId) {
         Playlist playlist = playlistRepository.findById(playlistId).orElseThrow(() -> new IllegalArgumentException("Playlist not found"));
-        return youtubeVideoRepository.findByPlaylist(playlist).stream()
+        return youtubeVideoRepository.findVidoesByPlaylist(playlist).stream()
                 .map(YoutubeVideoDto::fromEntity)
                 .collect(Collectors.toList());
     }
