@@ -1,5 +1,6 @@
 package com.example.beginnerfitbe.user.domain;
 
+import com.example.beginnerfitbe.comment.domain.Comment;
 import com.example.beginnerfitbe.post.domain.Post;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -39,11 +40,6 @@ public class User {
 
     @Column
     private int exerciseIntensity;
-
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    @JsonIgnore
-    private List<Post> posts;
-
 
     @Builder
     public User(String email, String name, String password, int exercisePurpose, int exercisePart, int exerciseTime, int exerciseIntensity) {

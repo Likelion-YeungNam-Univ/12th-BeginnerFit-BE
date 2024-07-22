@@ -1,7 +1,9 @@
 package com.example.beginnerfitbe.post.domain;
 
 import com.example.beginnerfitbe.category.domain.Category;
+import com.example.beginnerfitbe.comment.domain.Comment;
 import com.example.beginnerfitbe.user.domain.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,6 +11,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
@@ -38,6 +41,10 @@ public class Post {
     @CreatedDate
     @Column(nullable = false)
     private LocalDateTime createdAt;
+
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @JsonIgnore
+    private List<Comment> comments;
 
     @Builder
     public Post(String title, String content, String pictureUrl, LocalDateTime createdAt, User user, Category category) {
