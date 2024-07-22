@@ -42,7 +42,7 @@ public class PostController {
         return ResponseEntity.ok(postService.me(userId));
     }
 
-    @GetMapping("/category/{categoryName}")
+    @GetMapping("/categories/{categoryName}")
     @Operation(summary = "카테고리 별 게시글 조회 메소드", description = "카테고리 이름을 통해 카테고리 별로 게시글을 조회합니다.")
     public ResponseEntity<?> getPostsByCategoryName(@PathVariable String categoryName) {
         return ResponseEntity.ok(postService.getPostsByCategoryName(categoryName));
