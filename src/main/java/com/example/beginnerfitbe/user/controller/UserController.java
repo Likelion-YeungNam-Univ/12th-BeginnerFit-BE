@@ -41,7 +41,7 @@ public class UserController{
         Long userId = jwtUtil.getUserId(jwtUtil.resolveToken(request).substring(7));
         return ResponseEntity.ok(userService.me(userId));
     }
-    @PutMapping("/update")
+    @PutMapping("")
     @Operation(summary = "사용자 정보 업데이트 메서드", description = "사용자의 수정된 정보를 받아 업데이트 합니다.")
     public ResponseEntity<StateResponse> update(HttpServletRequest request, @RequestPart("updateDto") UserUpdateDto requestDto, @RequestPart(value = "profilePicture", required = false) MultipartFile profilePicture) {
         Long userId = jwtUtil.getUserId(jwtUtil.resolveToken(request).substring(7));
