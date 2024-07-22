@@ -1,6 +1,5 @@
 package com.example.beginnerfitbe.jwt.util;
 
-
 import com.example.beginnerfitbe.user.service.UserService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;

@@ -7,7 +7,6 @@ import com.example.beginnerfitbe.comment.dto.CommentUpdateDto;
 import com.example.beginnerfitbe.comment.repository.CommentRepository;
 import com.example.beginnerfitbe.error.StateResponse;
 import com.example.beginnerfitbe.post.domain.Post;
-import com.example.beginnerfitbe.post.dto.PostDto;
 import com.example.beginnerfitbe.post.repository.PostRepository;
 import com.example.beginnerfitbe.user.domain.User;
 import com.example.beginnerfitbe.user.repository.UserRepository;

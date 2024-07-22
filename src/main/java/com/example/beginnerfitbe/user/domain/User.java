@@ -1,16 +1,10 @@
 package com.example.beginnerfitbe.user.domain;
 
-import com.example.beginnerfitbe.comment.domain.Comment;
-import com.example.beginnerfitbe.post.domain.Post;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
-
 
 @Entity
 @Getter
