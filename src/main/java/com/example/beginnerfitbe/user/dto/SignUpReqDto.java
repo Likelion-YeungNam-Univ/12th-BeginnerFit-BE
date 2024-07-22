@@ -20,6 +20,7 @@ public class SignUpReqDto {
                 .email(email)
                 .name(name)
                 .password(password)
+                .profilePictureUrl(null)
                 .exercisePurpose(exercisePurpose)
                 .exercisePart(exercisePart)
                 .exerciseTime(exerciseTime)

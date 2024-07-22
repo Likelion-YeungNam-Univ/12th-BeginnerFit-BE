@@ -5,6 +5,7 @@ import com.example.beginnerfitbe.user.domain.User;
 import com.example.beginnerfitbe.user.dto.SignInReqDto;
 import com.example.beginnerfitbe.user.dto.SignInResDto;
 import com.example.beginnerfitbe.user.dto.SignUpReqDto;
+import com.example.beginnerfitbe.user.dto.UserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -33,6 +34,7 @@ public class AuthService {
                 .email(email)
                 .name(name)
                 .password(password)
+                .profilePictureUrl(null)
                 .exercisePurpose(exercisePurpose)
                 .exercisePart(exercisePart)
                 .exerciseTime(exerciseTime)
@@ -42,9 +44,9 @@ public class AuthService {
         return user;
     }
     public SignInResDto signIn(SignInReqDto dto) {
-        User user = userService.read(dto.getEmail());
-        if (passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
-            return new SignInResDto(jwtUtil.generateToken(user.getEmail(), user.getId()));
+        UserDto userDto = userService.readByEmail(dto.getEmail());
+        if (passwordEncoder.matches(dto.getPassword(), userDto.getPassword())) {
+            return new SignInResDto(jwtUtil.generateToken(userDto.getEmail(), userDto.getId()));
         } else {
             throw new IllegalArgumentException("Invalid password");
         }

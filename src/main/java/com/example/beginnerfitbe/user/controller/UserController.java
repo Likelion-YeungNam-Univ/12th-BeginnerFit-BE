@@ -2,7 +2,6 @@ package com.example.beginnerfitbe.user.controller;
 
 import com.example.beginnerfitbe.error.StateResponse;
 import com.example.beginnerfitbe.jwt.util.JwtUtil;
-import com.example.beginnerfitbe.user.dto.SignUpResDto;
 import com.example.beginnerfitbe.user.dto.UserUpdateDto;
 import com.example.beginnerfitbe.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -11,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -35,14 +35,19 @@ public class UserController{
         }
         return ResponseEntity.ok(userService.read(id));
     }
-
-    @PostMapping("/update")
-    @Operation(summary = "사용자 정보 업데이트 메서드", description = "사용자의 수정된 정보를 받아 업데이트 합니다.")
-    public ResponseEntity<StateResponse> update(HttpServletRequest request, @RequestBody UserUpdateDto requestDto) {
+    @GetMapping("/me")
+    @Operation(summary="나의 정보 조회 메서드", description = "현재 접속한 사용자의 정보를 조회합니다.")
+    ResponseEntity<?> me(HttpServletRequest request){
         Long userId = jwtUtil.getUserId(jwtUtil.resolveToken(request).substring(7));
-        return userService.update(userId,requestDto);
+        return ResponseEntity.ok(userService.me(userId));
     }
-    @PostMapping("/withdrawal")
+    @PutMapping("")
+    @Operation(summary = "사용자 정보 업데이트 메서드", description = "사용자의 수정된 정보를 받아 업데이트 합니다.")
+    public ResponseEntity<StateResponse> update(HttpServletRequest request, @RequestPart("updateDto") UserUpdateDto requestDto, @RequestPart(value = "profilePicture", required = false) MultipartFile profilePicture) {
+        Long userId = jwtUtil.getUserId(jwtUtil.resolveToken(request).substring(7));
+        return userService.update(userId,requestDto,profilePicture);
+    }
+    @DeleteMapping("/withdrawal")
     @Operation(summary = "사용자 탈퇴 메서드", description = "사용자가 탈퇴하는 메서드입니다. ")
     public ResponseEntity<StateResponse> withdrawal(HttpServletRequest request) {
         Long userId = jwtUtil.getUserId(jwtUtil.resolveToken(request).substring(7));
@@ -54,4 +59,6 @@ public class UserController{
     ResponseEntity<Boolean> emailCheck(@RequestParam(value = "email") String email){
         return ResponseEntity.ok(userService.emailCheck(email));
     }
+
+
 }
