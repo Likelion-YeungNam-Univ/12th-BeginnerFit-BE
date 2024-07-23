@@ -40,6 +40,15 @@ public class FriendController {
         return ResponseEntity.ok(pendingFriendRequests);
     }
 
+    @GetMapping("/waiting")
+    public ResponseEntity<List<OtherUserDto>> getFriendWaitingService(HttpServletRequest request) {
+        String token = jwtUtil.resolveToken(request);
+        Long userId = jwtUtil.getUserId(token.substring(7));
+
+        List<OtherUserDto> friendWaitingService = friendService.getFriendWaitingService(userId);
+        return ResponseEntity.ok(friendWaitingService);
+    }
+
     @GetMapping("/accepted")
     public ResponseEntity<List<OtherUserDto>> getAcceptedFriendRequests(HttpServletRequest request) {
         String token = jwtUtil.resolveToken(request);

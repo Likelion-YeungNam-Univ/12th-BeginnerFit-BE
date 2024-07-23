@@ -83,6 +83,25 @@ public class FriendService {
                 .collect(Collectors.toList());
     }
 
+    public List<OtherUserDto> getFriendWaitingService(Long userId) {
+        List<Friend> FriendWaitingService = friendRepository.findBySenderIdAndIsAcceptedFalse(userId);
+
+        return FriendWaitingService.stream()
+                .map(friend -> {
+                    User receiver = friend.getReceiver();
+                    return new OtherUserDto(
+                            receiver.getId(),
+                            receiver.getEmail(),
+                            receiver.getName(),
+                            receiver.getExercisePurpose(),
+                            receiver.getExercisePart(),
+                            receiver.getExerciseTime(),
+                            receiver.getExerciseIntensity()
+                    );
+                })
+                .collect(Collectors.toList());
+    }
+
     public List<OtherUserDto> getAcceptedFriendRequests(Long userId) {
         // 수신자로서 수락된 친구 요청 목록을 가져옵니다.
         List<Friend> acceptedFriendRequests = friendRepository.findByReceiverIdAndIsAcceptedTrue(userId);
