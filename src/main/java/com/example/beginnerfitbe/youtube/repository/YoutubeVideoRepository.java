@@ -10,7 +10,7 @@ import java.util.Optional;
 
 @Repository
 public interface YoutubeVideoRepository extends JpaRepository<YoutubeVideo, Long> {
-    List<YoutubeVideo> findVidoesByPlaylist(Playlist playlist);
+    List<YoutubeVideo> findVideosByPlaylist(Playlist playlist);
     List<YoutubeVideo> findByPlaylist_UserId(Long userId);
-    Optional<YoutubeVideo> findFirstByPlaylist_UserIdOrderByWatchedTimeDesc(Long userId);
+    YoutubeVideo findFirstByPlaylist_UserIdOrderByWatchedTimeDesc(Long userId);
 }

@@ -59,7 +59,7 @@ public class YoutubeVideoService {
     }
     public List<YoutubeVideoDto> getYoutubeVideosByPlaylist(Long playlistId) {
         Playlist playlist = playlistRepository.findById(playlistId).orElseThrow(() -> new IllegalArgumentException("Playlist not found"));
-        return youtubeVideoRepository.findVidoesByPlaylist(playlist).stream()
+        return youtubeVideoRepository.findVideosByPlaylist(playlist).stream()
                 .map(YoutubeVideoDto::fromEntity)
                 .collect(Collectors.toList());
     }
@@ -73,37 +73,38 @@ public class YoutubeVideoService {
                 .collect(Collectors.toList());
     }
 
-
+    // 다음 영상
     public YoutubeVideoDto getNextVideo(Long userId) {
-        userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found: " + userId));
+        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found: "));
+
+        // 가장 최근 플레이리스트 조회
+        Playlist recentPlaylist = playlistRepository.findFirstByUserOrderByCreatedAtDesc(user)
+                .orElseThrow(() -> new IllegalArgumentException("Recent playlist not found"));
+
+        List<YoutubeVideo> videos = youtubeVideoRepository.findVideosByPlaylist(recentPlaylist);
+        if (videos.isEmpty()) {
+            throw new IllegalArgumentException("video not found");
+        }
 
         // 최근 시청 비디오 조회
-        Optional<YoutubeVideo> lastWatchedVideo = youtubeVideoRepository.findFirstByPlaylist_UserIdOrderByWatchedTimeDesc(userId);
+        YoutubeVideo lastWatchedVideo = youtubeVideoRepository.findFirstByPlaylist_UserIdOrderByWatchedTimeDesc(userId);
 
-        // 최근 시청 비디오가 없는 경우 첫 번째 비디오
-        if (lastWatchedVideo.isEmpty()) {
-            List<YoutubeVideo> videos = youtubeVideoRepository.findByPlaylist_UserId(userId);
-            if (videos.isEmpty()) {
-                throw new IllegalArgumentException("Video not found");
-            }
+        // 최근 시청 비디오가 없는 경우 첫 번째 비디오 반환
+        if (!lastWatchedVideo.getIsWatched()) {
+            System.out.println("아직 아무것도 안봄");
             return YoutubeVideoDto.fromEntity(videos.get(0));
         }
 
+        int lastWatchedIndex = videos.indexOf(lastWatchedVideo);
 
-        Playlist playlist = lastWatchedVideo.get().getPlaylist();
-        if (playlist.getIsCompleted()) {
-            System.out.println("다 봄");
+        if (lastWatchedIndex == videos.size()-1) {
+            System.out.println(" 다 봄");
             return null;
         }
 
-        List<YoutubeVideo> youtubeVideos = playlist.getVideos();
-        int lastWatchedIndex = youtubeVideos.indexOf(lastWatchedVideo.get());
-
-        if (lastWatchedIndex == youtubeVideos.size() - 1) {
-            return null;
-        }
-        YoutubeVideo nextVideo = youtubeVideos.get(lastWatchedIndex + 1);
+        YoutubeVideo nextVideo = videos.get(lastWatchedIndex+1);
         return YoutubeVideoDto.fromEntity(nextVideo);
     }
+
 
 }

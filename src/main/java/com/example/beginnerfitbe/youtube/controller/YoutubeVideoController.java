@@ -52,14 +52,14 @@ public class YoutubeVideoController {
         return ResponseEntity.ok(youtubeVideoService.getYoutubeVideosByPlaylist(playlistId));
     }
 
-    @GetMapping("/videos/me")
+    @GetMapping("/videos/watched")
     public ResponseEntity<?> me(HttpServletRequest request) {
         Long userId = jwtUtil.getUserId(jwtUtil.resolveToken(request).substring(7));
         return ResponseEntity.ok(youtubeVideoService.getWatchedVideo(userId));
     }
 
     //홈화면 다음 비디오 재생
-    @GetMapping("/videos/me/next")
+    @GetMapping("/videos/next")
     public ResponseEntity<?> getRecentVideo(HttpServletRequest request) {
         Long userId = jwtUtil.getUserId(jwtUtil.resolveToken(request).substring(7));
         return ResponseEntity.ok(youtubeVideoService.getNextVideo(userId));
