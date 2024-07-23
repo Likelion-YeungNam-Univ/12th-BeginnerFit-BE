@@ -31,13 +31,22 @@ public class FriendController {
         return ResponseEntity.ok(friendDTO);
     }
 
-    @GetMapping
+    @GetMapping("/pending")
     public ResponseEntity<List<OtherUserDto>> getPendingFriendRequests(HttpServletRequest request) {
         String token = jwtUtil.resolveToken(request);
         Long userId = jwtUtil.getUserId(token.substring(7));
 
         List<OtherUserDto> pendingFriendRequests = friendService.getPendingFriendRequests(userId);
         return ResponseEntity.ok(pendingFriendRequests);
+    }
+
+    @GetMapping("/accepted")
+    public ResponseEntity<List<OtherUserDto>> getAcceptedFriendRequests(HttpServletRequest request) {
+        String token = jwtUtil.resolveToken(request);
+        Long userId = jwtUtil.getUserId(token.substring(7));
+
+        List<OtherUserDto> acceptedFriendRequests = friendService.getAcceptedFriendRequests(userId);
+        return ResponseEntity.ok(acceptedFriendRequests);
     }
 
     @PostMapping("/accept/{senderId}")

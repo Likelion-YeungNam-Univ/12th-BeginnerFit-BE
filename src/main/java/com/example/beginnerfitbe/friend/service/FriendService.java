@@ -83,6 +83,25 @@ public class FriendService {
                 .collect(Collectors.toList());
     }
 
+    public List<OtherUserDto> getAcceptedFriendRequests(Long userId) {
+        List<Friend> acceptedFriendRequests = friendRepository.findByReceiverIdAndIsAcceptedTrue(userId);
+
+        return acceptedFriendRequests.stream()
+                .map(friend -> {
+                    User sender = friend.getSender();
+                    return new OtherUserDto(
+                            sender.getId(),
+                            sender.getEmail(),
+                            sender.getName(),
+                            sender.getExercisePurpose(),
+                            sender.getExercisePart(),
+                            sender.getExerciseTime(),
+                            sender.getExerciseIntensity()
+                    );
+                })
+                .collect(Collectors.toList());
+    }
+
     public void acceptFriendRequest(Long senderId, Long receiverId) {
         Friend friend = friendRepository.findBySenderIdAndReceiverId(senderId, receiverId)
                 .orElseThrow(() -> new RuntimeException("Friend request not found"));
