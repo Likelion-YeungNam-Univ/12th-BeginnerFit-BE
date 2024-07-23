@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @NoArgsConstructor
@@ -41,12 +43,15 @@ public class YoutubeVideo {
     @Column(nullable = false)
     private Boolean isWatched;
 
+    @Column
+    private LocalDateTime watchedTime;
+
     @ManyToOne
     @JoinColumn(name = "playlist_id", nullable = false)
     private Playlist playlist;
 
     @Builder
-    public YoutubeVideo(String title, String videoId, String url, String thumbnail, String description, String channel, String publishedAt, String duration, Boolean isWatched, Playlist playlist) {
+    public YoutubeVideo(String title, String videoId, String url, String thumbnail, String description, String channel, String publishedAt, String duration, Boolean isWatched, LocalDateTime watchedTime, Playlist playlist) {
         this.title = title;
         this.videoId = videoId;
         this.url = url;
@@ -56,6 +61,7 @@ public class YoutubeVideo {
         this.publishedAt = publishedAt;
         this.duration = duration;
         this.isWatched = isWatched;
+        this.watchedTime = watchedTime;
         this.playlist = playlist;
     }
 
@@ -64,5 +70,6 @@ public class YoutubeVideo {
     }
     public void watched(Boolean isWatched){
         this.isWatched = isWatched;
+        this.watchedTime = LocalDateTime.now();
     }
 }

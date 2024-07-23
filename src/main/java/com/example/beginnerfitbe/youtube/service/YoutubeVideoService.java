@@ -39,6 +39,7 @@ public class YoutubeVideoService {
 
         //시청 true
         youtubeVideo.watched(true);
+
         youtubeVideoRepository.save(youtubeVideo);
 
         return YoutubeVideoDto.fromEntity(youtubeVideo);

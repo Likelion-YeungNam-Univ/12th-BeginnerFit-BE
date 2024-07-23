@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Data
 @NoArgsConstructor
 public class YoutubeVideoDto {
@@ -17,10 +19,11 @@ public class YoutubeVideoDto {
     private String publishedAt;
     private String duration;
     private Boolean isWatched;
+    private LocalDateTime watchedTime;
     private Long playlistId;
 
     @Builder
-    public YoutubeVideoDto(Long id, String videoId, String title, String url, String thumbnail, String description, String channel, String publishedAt, String duration, Boolean isWatched, Long playlistId) {
+    public YoutubeVideoDto(Long id, String videoId, String title, String url, String thumbnail, String description, String channel, String publishedAt, String duration, Boolean isWatched, LocalDateTime watchedTime, Long playlistId) {
         this.id = id;
         this.title = title;
         this.url = url;
@@ -30,6 +33,7 @@ public class YoutubeVideoDto {
         this.publishedAt = publishedAt;
         this.duration = duration;
         this.isWatched = isWatched;
+        this.watchedTime = watchedTime;
         this.playlistId = playlistId;
     }
 
@@ -44,6 +48,7 @@ public class YoutubeVideoDto {
                 .publishedAt(youtubeVideo.getPublishedAt())
                 .duration(youtubeVideo.getDuration())
                 .isWatched(youtubeVideo.getIsWatched())
+                .watchedTime(youtubeVideo.getWatchedTime())
                 .playlistId(youtubeVideo.getPlaylist().getId())
                 .build();
     }
