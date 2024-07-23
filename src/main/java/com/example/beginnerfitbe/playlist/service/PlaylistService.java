@@ -3,7 +3,6 @@ package com.example.beginnerfitbe.playlist.service;
 import com.example.beginnerfitbe.playlist.domain.Playlist;
 import com.example.beginnerfitbe.playlist.dto.PlaylistDto;
 import com.example.beginnerfitbe.playlist.repository.PlaylistRepository;
-import com.example.beginnerfitbe.youtube.domain.YoutubeVideo;
 import com.example.beginnerfitbe.youtube.dto.SelectedVideoDto;
 import com.example.beginnerfitbe.user.domain.User;
 import com.example.beginnerfitbe.user.repository.UserRepository;
@@ -28,10 +27,10 @@ public class PlaylistService {
     private final YoutubeVideoService youtubeVideoService;
     private final YoutubeUtil youtubeUtil;
 
-    public PlaylistDto create(String query, String duration, Long userId) throws IOException {
-        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
-
-        SelectedVideoDto selectVideoDto = youtubeUtil.selectVideos(query, duration);
+    public PlaylistDto create(User user) throws IOException {
+        String query = searchKeyword(user);
+        String requestTime = String.valueOf(user.getExerciseTime());
+        SelectedVideoDto selectVideoDto = youtubeUtil.selectVideos(query, requestTime);
 
         Playlist playlist = Playlist.builder()
                 .title(query + " 집중 공략하기 플리")
@@ -45,7 +44,23 @@ public class PlaylistService {
         playlist = playlistRepository.save(playlist);
 
         youtubeVideoService.create(selectVideoDto, playlist);
+        System.out.println("플레이리스트 생성");
         return PlaylistDto.fromEntity(playlist);
+    }
+
+    private String searchKeyword(User user) {
+
+        String query= null;
+        if(user.getExerciseIntensity()<=3){
+            query = user.getExercisePart() + " " + user.getExercisePurpose() +" 쉬운 운동";
+        }
+        else if(user.getExerciseIntensity()>=7){
+            query = user.getExercisePart() + " " + user.getExercisePurpose() +" 매운맛 운동";
+        }
+        else{
+            query = user.getExercisePart() + " " + user.getExercisePurpose()+" 운동";
+        }
+        return query;
     }
 
     @Transactional

@@ -27,8 +27,6 @@ public class YoutubeUtil {
     @Value("${youtube.api.key}")
     private String apiKey;
 
-    private final YoutubeVideoRepository youtubeRepository;
-
     // 비디오 검색
     public List<SearchResDto> search(String keyword) throws IOException {
         JsonFactory jsonFactory = new JacksonFactory();

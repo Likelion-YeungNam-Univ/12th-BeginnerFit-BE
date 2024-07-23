@@ -19,13 +19,6 @@ public class PlaylistController {
     private final JwtUtil jwtUtil;
     private final PlaylistService playlistService;
 
-    @PostMapping("")
-    @Operation(summary = "플레이리스 생성 메소드", description = "사용자가 입력한 키워드를 기반으로 플레이리스트를 생성합니다.")
-    public ResponseEntity<?> createYoutubeVideos(HttpServletRequest request,  @RequestParam(value = "keyword") String keyword, @RequestParam (value = "duration")String duration) throws IOException, IOException {
-        Long userId = jwtUtil.getUserId(jwtUtil.resolveToken(request).substring(7));
-        return ResponseEntity.ok(playlistService.create(keyword, duration, userId));
-    }
-
     @GetMapping("")
     @Operation(summary = "플레이리스 전체 조회 메소드", description = "전체 플레이리스트를 조회합니다.")
     public ResponseEntity<?> list(){

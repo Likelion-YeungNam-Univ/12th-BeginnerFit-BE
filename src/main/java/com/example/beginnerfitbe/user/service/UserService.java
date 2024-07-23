@@ -2,6 +2,7 @@ package com.example.beginnerfitbe.user.service;
 
 
 import com.example.beginnerfitbe.error.StateResponse;
+import com.example.beginnerfitbe.playlist.service.PlaylistService;
 import com.example.beginnerfitbe.s3.util.S3Uploader;
 import com.example.beginnerfitbe.user.domain.User;
 import com.example.beginnerfitbe.user.dto.UserDto;
@@ -13,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -23,14 +25,18 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final S3Uploader s3Uploader;
+    private final PlaylistService playlistService;
 
     public List<UserDto> list(){
         return userRepository.findAll().stream()
                 .map(UserDto::fromEntity)
                 .collect(Collectors.toList());
     }
-    public void create(User user) {
+    public void create(User user) throws IOException {
         userRepository.save(user);
+
+        //플레이리스트 생성
+        playlistService.create(user);
     }
 
     public UserDto read(Long id) {
@@ -53,7 +59,7 @@ public class UserService {
             String previousPictureUrl = user.getProfilePictureUrl();
 
             //정보 업데이트
-            if (requestDto.getName() != null && requestDto.getExercisePurpose()!=0 && requestDto.getExercisePart()!=0
+            if (requestDto.getName() != null && requestDto.getExercisePurpose()!=null && requestDto.getExercisePart()!=null
                     && requestDto.getExerciseTime()!=0 && requestDto.getExerciseIntensity()!=0 ) {
 
                 user.update(requestDto.getName(), requestDto.getExercisePurpose(), requestDto.getExercisePart(), requestDto.getExerciseTime(), requestDto.getExerciseIntensity());
@@ -72,6 +78,10 @@ public class UserService {
             }
             user.updatePicture(pictureUrl);
             userRepository.save(user);
+
+            //플레이리스 생성
+            playlistService.create(user);
+
             return ResponseEntity.ok(StateResponse.builder().code("SUCCESS").message("정보를 성공적으로 업데이트했습니다.").build());
         } catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(StateResponse.builder().code("ERROR").message("오류가 발생했습니다: " + e.getMessage()).build());

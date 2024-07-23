@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/auth")
@@ -19,7 +21,7 @@ public class AuthController {
     private final UserService userService;
 
     @PostMapping("/sign-up")
-    public ResponseEntity<?> signUp(@RequestBody SignUpReqDto dto) {
+    public ResponseEntity<?> signUp(@RequestBody SignUpReqDto dto) throws IOException {
         userService.create(authService.signUp(dto));
         return ResponseEntity.created(null).build();
     }

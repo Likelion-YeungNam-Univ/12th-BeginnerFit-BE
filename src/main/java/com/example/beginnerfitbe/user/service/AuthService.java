@@ -21,8 +21,8 @@ public class AuthService {
         String email=dto.getEmail();
         String name=dto.getName();
         String password=passwordEncoder.encode(dto.getPassword());
-        int exercisePurpose = dto.getExercisePurpose();
-        int exercisePart =dto.getExercisePart();
+        String exercisePurpose = dto.getExercisePurpose();
+        String exercisePart =dto.getExercisePart();
         int exerciseTime = dto.getExerciseTime();
         int exerciseIntensity = dto.getExerciseIntensity();
 

@@ -10,8 +10,8 @@ public class SignUpReqDto {
     private String email;
     private String name;
     private String password;
-    private int exercisePurpose;
-    private int exercisePart;
+    private String exercisePurpose;
+    private String exercisePart;
     private int exerciseTime;
     private int exerciseIntensity;
 
