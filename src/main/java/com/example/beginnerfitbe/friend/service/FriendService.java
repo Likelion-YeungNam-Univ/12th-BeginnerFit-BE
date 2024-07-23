@@ -153,4 +153,29 @@ public class FriendService {
         friendRepository.delete(friend);
     }
 
+    public OtherUserDto getFriendInfo(Long senderId, String receiverEmail) {
+        // 이메일로 User 찾기
+        User friend = userRepository.findByEmail(receiverEmail)
+                .orElseThrow(() -> new RuntimeException("해당 친구가 존재하지 않습니다."));
+
+        // 친구 목록에 있는지 확인
+        boolean isFriend = friendRepository.existsByReceiverIdAndSenderIdAndIsAcceptedTrue(senderId, friend.getId())
+                || friendRepository.existsByReceiverIdAndSenderIdAndIsAcceptedTrue(friend.getId(), senderId);
+
+        if (!isFriend) {
+            throw new RuntimeException("해당 친구가 존재하지 않습니다.");
+        }
+
+        // OtherUserDto로 변환
+        return new OtherUserDto(
+                friend.getId(),
+                friend.getEmail(),
+                friend.getName(),
+                friend.getExercisePurpose(),
+                friend.getExercisePart(),
+                friend.getExerciseTime(),
+                friend.getExerciseIntensity()
+        );
+    }
+
 }

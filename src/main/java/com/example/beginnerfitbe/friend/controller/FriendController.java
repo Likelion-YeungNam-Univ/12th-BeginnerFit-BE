@@ -23,10 +23,7 @@ public class FriendController {
     @PostMapping("/request")
     public ResponseEntity<FriendDTO> sendFriendRequest(HttpServletRequest request, @RequestBody FriendRequestDTO friendRequestDTO) {
         String token = jwtUtil.resolveToken(request);
-        System.out.println("Resolved Token: " + token);
-
         Long senderId = jwtUtil.getUserId(jwtUtil.resolveToken(request).substring(7));
-        System.out.println("Sender ID: " + senderId);
         FriendDTO friendDTO = friendService.sendFriendRequest(senderId, friendRequestDTO.getReceiverEmail());
         return ResponseEntity.ok(friendDTO);
     }
@@ -77,6 +74,17 @@ public class FriendController {
         friendService.rejectFriendRequest(senderId, receiverId);
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping ("/info")
+    public ResponseEntity<OtherUserDto> getFriendInfo(HttpServletRequest request, @RequestBody FriendRequestDTO friendRequestDTO) {
+        String token = jwtUtil.resolveToken(request);
+        Long senderId = jwtUtil.getUserId(jwtUtil.resolveToken(request).substring(7));
+
+        OtherUserDto friendInfo  = friendService.getFriendInfo(senderId, friendRequestDTO.getReceiverEmail());
+        return ResponseEntity.ok(friendInfo );
+    }
+
+
 
 
 }

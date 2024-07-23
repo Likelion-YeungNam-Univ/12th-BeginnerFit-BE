@@ -49,8 +49,5 @@ public class Friend {
         this.isAccepted = false;
     }
 
-
-
-
 }
 
