@@ -2,7 +2,6 @@ package com.example.beginnerfitbe.user.controller;
 
 import com.example.beginnerfitbe.error.StateResponse;
 import com.example.beginnerfitbe.jwt.util.JwtUtil;
-import com.example.beginnerfitbe.user.dto.SignUpResDto;
 import com.example.beginnerfitbe.user.dto.UserUpdateDto;
 import com.example.beginnerfitbe.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -26,6 +25,8 @@ public class UserController{
     public ResponseEntity<?> list() {
         return ResponseEntity.ok(userService.list());
     }
+
+
     @GetMapping("/{id}")
     @Operation(summary = "사용자 상세 조회 메서드", description = "사용자 상세 정보를 조회합니다.")
     public ResponseEntity<?> read(HttpServletRequest request, @PathVariable Long id) {

@@ -5,6 +5,7 @@ import com.example.beginnerfitbe.friend.dto.FriendRequestDTO;
 import com.example.beginnerfitbe.friend.service.FriendService;
 import com.example.beginnerfitbe.jwt.util.JwtUtil;
 import com.example.beginnerfitbe.user.dto.OtherUserDto;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,7 @@ public class FriendController {
     private final JwtUtil jwtUtil;
 
     @PostMapping("/request")
+    @Operation(summary = "친구 요청 메서드", description = "친구를 맺고싶은 유저의 이메일을 입력하여 친구 요청을 합니다.")
     public ResponseEntity<FriendDTO> sendFriendRequest(HttpServletRequest request, @RequestBody FriendRequestDTO friendRequestDTO) {
         String token = jwtUtil.resolveToken(request);
         Long senderId = jwtUtil.getUserId(jwtUtil.resolveToken(request).substring(7));
@@ -29,6 +31,7 @@ public class FriendController {
     }
 
     @GetMapping("/pending")
+    @Operation(summary = "친구 요청 대기 목록 조회 메서드", description = "나에게 친구 요청이 온 사용자들의 목록을 조회합니다.")
     public ResponseEntity<List<OtherUserDto>> getPendingFriendRequests(HttpServletRequest request) {
         String token = jwtUtil.resolveToken(request);
         Long userId = jwtUtil.getUserId(token.substring(7));
@@ -38,6 +41,7 @@ public class FriendController {
     }
 
     @GetMapping("/waiting")
+    @Operation(summary = "요청중인 친구 목록 조회 메서드", description = "내가 보낸 친구 요청 중 아직 수락되지 않은 목록을 조회합니다.")
     public ResponseEntity<List<OtherUserDto>> getFriendWaitingService(HttpServletRequest request) {
         String token = jwtUtil.resolveToken(request);
         Long userId = jwtUtil.getUserId(token.substring(7));
@@ -46,7 +50,8 @@ public class FriendController {
         return ResponseEntity.ok(friendWaitingService);
     }
 
-    @GetMapping("/accepted")
+    @GetMapping("")
+    @Operation(summary = "친구 목록 조회 메서드", description = "친구로 맺어진 사용자들의 목록을 조회합니다.")
     public ResponseEntity<List<OtherUserDto>> getAcceptedFriendRequests(HttpServletRequest request) {
         String token = jwtUtil.resolveToken(request);
         Long userId = jwtUtil.getUserId(token.substring(7));
@@ -55,7 +60,8 @@ public class FriendController {
         return ResponseEntity.ok(acceptedFriendRequests);
     }
 
-    @PostMapping("/accept/{senderId}")
+    @PutMapping("/accept/{senderId}")
+    @Operation(summary = "친구 수락 메서드", description = "친구 요청을 수락합니다.")
     public ResponseEntity<Void> acceptFriendRequest(HttpServletRequest request, @PathVariable Long senderId) {
         String token = jwtUtil.resolveToken(request);
         Long receiverId = jwtUtil.getUserId(token.substring(7));
@@ -65,7 +71,8 @@ public class FriendController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/reject/{senderId}")
+    @DeleteMapping("/{senderId}")
+    @Operation(summary = "친구 삭제 및 친구 거절 메서드", description = "친구를 삭제 및 친구요청을 거절합니다.")
     public ResponseEntity<Void> rejectFriendRequest(HttpServletRequest request, @PathVariable Long senderId) {
         String token = jwtUtil.resolveToken(request);
         Long receiverId = jwtUtil.getUserId(token.substring(7));
@@ -75,7 +82,8 @@ public class FriendController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping ("/info")
+    @GetMapping ("/search")
+    @Operation(summary = "친구 검색 메서드", description = "친구목록 리스트에서 이메일을 입력하여 원하는 사용자를 찾습니다.")
     public ResponseEntity<OtherUserDto> getFriendInfo(HttpServletRequest request, @RequestBody FriendRequestDTO friendRequestDTO) {
         String token = jwtUtil.resolveToken(request);
         Long senderId = jwtUtil.getUserId(jwtUtil.resolveToken(request).substring(7));
