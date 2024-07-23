@@ -54,7 +54,7 @@ public class YoutubeVideoController {
 
     @GetMapping("/videos/watched")
     @Operation(summary = "시청한 비디오 목록 조회", description = "사용자가 시청했던 비디오 목록을 조회합니다.")
-    public ResponseEntity<?> me(HttpServletRequest request) {
+    public ResponseEntity<?> getWatchedVideo(HttpServletRequest request) {
         Long userId = jwtUtil.getUserId(jwtUtil.resolveToken(request).substring(7));
         return ResponseEntity.ok(youtubeVideoService.getWatchedVideo(userId));
     }

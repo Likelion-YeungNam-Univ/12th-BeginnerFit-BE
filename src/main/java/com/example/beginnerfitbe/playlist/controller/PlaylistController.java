@@ -18,13 +18,13 @@ public class PlaylistController {
     private final PlaylistService playlistService;
 
     @GetMapping("")
-    @Operation(summary = "플레이리스 전체 조회 메소드", description = "전체 플레이리스트를 조회합니다.")
+    @Operation(summary = "플레이리스트 전체 조회 메소드", description = "전체 플레이리스트를 조회합니다.")
     public ResponseEntity<?> list(){
         return ResponseEntity.ok(playlistService.list());
     }
 
     @GetMapping("/{playlistId}")
-    @Operation(summary = "플레이리스 상세 조회 메소드", description = "플레이리스트 상세 정보를 조회합니다.")
+    @Operation(summary = "플레이리스트 상세 조회 메소드", description = "플레이리스트 상세 정보를 조회합니다.")
     public ResponseEntity<?> read(@PathVariable Long playlistId){
         return ResponseEntity.ok(playlistService.read(playlistId));
     }
