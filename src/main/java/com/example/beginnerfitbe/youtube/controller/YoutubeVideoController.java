@@ -53,6 +53,7 @@ public class YoutubeVideoController {
     }
 
     @GetMapping("/videos/watched")
+    @Operation(summary = "시청한 비디오 목록 조회", description = "사용자가 시청했던 비디오 목록을 조회합니다.")
     public ResponseEntity<?> me(HttpServletRequest request) {
         Long userId = jwtUtil.getUserId(jwtUtil.resolveToken(request).substring(7));
         return ResponseEntity.ok(youtubeVideoService.getWatchedVideo(userId));
@@ -60,6 +61,7 @@ public class YoutubeVideoController {
 
     //홈화면 다음 비디오 재생
     @GetMapping("/videos/next")
+    @Operation(summary = "다음 비디오 조회", description = "사용자가 마지막으로 시청한 다음 비디오 정보를 조회합니다.")
     public ResponseEntity<?> getRecentVideo(HttpServletRequest request) {
         Long userId = jwtUtil.getUserId(jwtUtil.resolveToken(request).substring(7));
         return ResponseEntity.ok(youtubeVideoService.getNextVideo(userId));

@@ -36,7 +36,7 @@ public class PlaylistController {
         return ResponseEntity.ok(playlistService.me(userId));
     }
 
-    @GetMapping("/me/recent")
+    @GetMapping("/recent")
     @Operation(summary = "홈화면에 뜰 플레이리스트를 조회합니다.", description = "가장 최신 플레이리스트를 조회합니다.")
     public ResponseEntity<?> getRecentPlaylist(HttpServletRequest request){
         Long userId = jwtUtil.getUserId(jwtUtil.resolveToken(request).substring(7));
