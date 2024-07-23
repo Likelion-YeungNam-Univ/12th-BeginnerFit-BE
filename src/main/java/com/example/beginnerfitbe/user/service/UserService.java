@@ -58,9 +58,18 @@ public class UserService {
             User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("User not found"));
             String previousPictureUrl = user.getProfilePictureUrl();
 
+            boolean createSignal = true;
             //정보 업데이트
             if (requestDto.getName() != null && requestDto.getExercisePurpose()!=null && requestDto.getExercisePart()!=null
                     && requestDto.getExerciseTime()!=0 && requestDto.getExerciseIntensity()!=0 ) {
+
+                //건강정보 안바뀜 -> 플레이리스트 그대로
+                if(requestDto.getExercisePurpose().equals(user.getExercisePurpose())
+                && requestDto.getExercisePart().equals(user.getExercisePart())
+                && requestDto.getExerciseIntensity()==user.getExerciseIntensity()
+                && requestDto.getExerciseTime()==user.getExerciseTime()){
+                    createSignal=false;
+                }
 
                 user.update(requestDto.getName(), requestDto.getExercisePurpose(), requestDto.getExercisePart(), requestDto.getExerciseTime(), requestDto.getExerciseIntensity());
 
@@ -79,8 +88,10 @@ public class UserService {
             user.updatePicture(pictureUrl);
             userRepository.save(user);
 
-            //플레이리스 생성
-            playlistService.create(user);
+            //플레이리스트 생성
+            if(createSignal){
+                playlistService.create(user);
+            }
 
             return ResponseEntity.ok(StateResponse.builder().code("SUCCESS").message("정보를 성공적으로 업데이트했습니다.").build());
         } catch (Exception e){

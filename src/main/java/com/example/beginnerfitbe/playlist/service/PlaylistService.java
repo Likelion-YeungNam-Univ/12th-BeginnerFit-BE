@@ -16,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -47,6 +46,9 @@ public class PlaylistService {
         youtubeVideoService.create(selectVideoDto, playlist);
         System.out.println("플레이리스트 생성");
         return PlaylistDto.fromEntity(playlist);
+    }
+    public void checkDiff(User user){
+
     }
 
     private String searchKeyword(User user) {
