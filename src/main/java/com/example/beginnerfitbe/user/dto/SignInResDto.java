@@ -7,6 +7,6 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public class SignInResDto {
-    private String accssToken;
+    private String accessToken;
 }
 

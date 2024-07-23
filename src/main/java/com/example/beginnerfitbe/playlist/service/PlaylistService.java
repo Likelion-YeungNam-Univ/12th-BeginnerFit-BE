@@ -10,6 +10,10 @@ import com.example.beginnerfitbe.youtube.dto.YoutubeVideoDto;
 import com.example.beginnerfitbe.youtube.service.YoutubeVideoService;
 import com.example.beginnerfitbe.youtube.util.YoutubeUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,7 +24,10 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class PlaylistService {
+
+    private static final Logger logger = LoggerFactory.getLogger(PlaylistService.class);
 
     private final PlaylistRepository playlistRepository;
     private final UserRepository userRepository;
@@ -44,11 +51,20 @@ public class PlaylistService {
         playlist = playlistRepository.save(playlist);
 
         youtubeVideoService.create(selectVideoDto, playlist);
-        System.out.println("플레이리스트 생성");
         return PlaylistDto.fromEntity(playlist);
     }
-    public void checkDiff(User user){
 
+
+    // 매일 자정에 실행
+    @Scheduled(cron = "0 0 0 * * *", zone = "Asia/Seoul")
+    public void createPlaylistDaily() {
+        userRepository.findAll().forEach(user -> {
+            try {
+                create(user);
+            } catch (IOException e) {
+                logger.error("플레이리스트 생성 중 오류 발생", e);
+            }
+        });
     }
 
     private String searchKeyword(User user) {
