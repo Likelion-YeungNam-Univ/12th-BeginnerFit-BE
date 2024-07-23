@@ -8,8 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
-
 
 @RestController
 @RequestMapping("/playlists")
@@ -33,8 +31,15 @@ public class PlaylistController {
 
     @GetMapping("/me")
     @Operation(summary = "사용자의 플레이리스트 목록을 조회합니다.", description = "사용자의 플레이리스트 목록을 조회합니다.")
-    public ResponseEntity<?> getPlaylistsByUser(HttpServletRequest request){
+    public ResponseEntity<?> me(HttpServletRequest request){
         Long userId = jwtUtil.getUserId(jwtUtil.resolveToken(request).substring(7));
-        return ResponseEntity.ok(playlistService.getPlaylistsByUser(userId));
+        return ResponseEntity.ok(playlistService.me(userId));
+    }
+
+    @GetMapping("/me/recent")
+    @Operation(summary = "홈화면에 뜰 플레이리스트를 조회합니다.", description = "가장 최신 플레이리스트를 조회합니다.")
+    public ResponseEntity<?> getRecentPlaylist(HttpServletRequest request){
+        Long userId = jwtUtil.getUserId(jwtUtil.resolveToken(request).substring(7));
+        return ResponseEntity.ok(playlistService.getRecentPlaylist(userId));
     }
 }

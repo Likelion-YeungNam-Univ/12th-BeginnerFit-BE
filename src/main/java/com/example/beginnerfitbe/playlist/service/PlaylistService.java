@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -88,11 +89,19 @@ public class PlaylistService {
         return PlaylistDto.fromEntity(playlist);
     }
 
-    public List<PlaylistDto> getPlaylistsByUser(Long userId){
+    //사용자 플레이리스트 목록
+    public List<PlaylistDto> me(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
-        return playlistRepository.findPlaylistByUser(user).stream()
+        return playlistRepository.findByUserOrderByCreatedAtDesc(user).stream()
                 .map(PlaylistDto::fromEntity)
                 .collect(Collectors.toList());
+    }
+
+    //가장 최신 플레이리스트 (홈화면에 뜰 플레이리스트 )
+    public PlaylistDto getRecentPlaylist(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
+        Playlist playlist = playlistRepository.findFirstByUserOrderByCreatedAtDesc(user).orElseThrow(() -> new IllegalArgumentException("Playlist not found"));
+        return PlaylistDto.fromEntity(playlist);
     }
 
 }
