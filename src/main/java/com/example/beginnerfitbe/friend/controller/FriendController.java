@@ -68,4 +68,6 @@ public class FriendController {
         friendService.rejectFriendRequest(senderId, receiverId);
         return ResponseEntity.ok().build();
     }
+
+
 }

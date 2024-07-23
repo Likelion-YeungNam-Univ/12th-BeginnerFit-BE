@@ -84,9 +84,12 @@ public class FriendService {
     }
 
     public List<OtherUserDto> getAcceptedFriendRequests(Long userId) {
+        // 수신자로서 수락된 친구 요청 목록을 가져옵니다.
         List<Friend> acceptedFriendRequests = friendRepository.findByReceiverIdAndIsAcceptedTrue(userId);
+        List<Long> receiverIds = friendRepository.findReceiverIdsBySenderId(userId);
+        List<User> receivers = userRepository.findAllById(receiverIds);
 
-        return acceptedFriendRequests.stream()
+        List<OtherUserDto> acceptedRequestsDtos = acceptedFriendRequests.stream()
                 .map(friend -> {
                     User sender = friend.getSender();
                     return new OtherUserDto(
@@ -100,6 +103,20 @@ public class FriendService {
                     );
                 })
                 .collect(Collectors.toList());
+
+        for (User receiver : receivers) {
+            acceptedRequestsDtos.add(new OtherUserDto(
+                    receiver.getId(),
+                    receiver.getEmail(),
+                    receiver.getName(),
+                    receiver.getExercisePurpose(),
+                    receiver.getExercisePart(),
+                    receiver.getExerciseTime(),
+                    receiver.getExerciseIntensity()
+            ));
+        }
+
+        return acceptedRequestsDtos;
     }
 
     public void acceptFriendRequest(Long senderId, Long receiverId) {
