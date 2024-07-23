@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -39,7 +40,6 @@ public class YoutubeVideoService {
 
         //시청 true
         youtubeVideo.watched(true);
-
         youtubeVideoRepository.save(youtubeVideo);
 
         return YoutubeVideoDto.fromEntity(youtubeVideo);
@@ -57,12 +57,53 @@ public class YoutubeVideoService {
 
         return YoutubeVideoDto.fromEntity(youtubeVideo);
     }
-
     public List<YoutubeVideoDto> getYoutubeVideosByPlaylist(Long playlistId) {
         Playlist playlist = playlistRepository.findById(playlistId).orElseThrow(() -> new IllegalArgumentException("Playlist not found"));
         return youtubeVideoRepository.findVidoesByPlaylist(playlist).stream()
                 .map(YoutubeVideoDto::fromEntity)
                 .collect(Collectors.toList());
+    }
+
+    // 사용자 비디오 목록 조회
+    public List<YoutubeVideoDto> getWatchedVideo(Long userId) {
+        userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
+        return youtubeVideoRepository.findByPlaylist_UserId(userId).stream()
+                .filter(YoutubeVideo::getIsWatched) // 시청한 비디오만 필터링
+                .map(YoutubeVideoDto::fromEntity)
+                .collect(Collectors.toList());
+    }
+
+
+    public YoutubeVideoDto getNextVideo(Long userId) {
+        userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found: " + userId));
+
+        // 최근 시청 비디오 조회
+        Optional<YoutubeVideo> lastWatchedVideo = youtubeVideoRepository.findFirstByPlaylist_UserIdOrderByWatchedTimeDesc(userId);
+
+        // 최근 시청 비디오가 없는 경우 첫 번째 비디오
+        if (lastWatchedVideo.isEmpty()) {
+            List<YoutubeVideo> videos = youtubeVideoRepository.findByPlaylist_UserId(userId);
+            if (videos.isEmpty()) {
+                throw new IllegalArgumentException("Video not found");
+            }
+            return YoutubeVideoDto.fromEntity(videos.get(0));
+        }
+
+
+        Playlist playlist = lastWatchedVideo.get().getPlaylist();
+        if (playlist.getIsCompleted()) {
+            System.out.println("다 봄");
+            return null;
+        }
+
+        List<YoutubeVideo> youtubeVideos = playlist.getVideos();
+        int lastWatchedIndex = youtubeVideos.indexOf(lastWatchedVideo.get());
+
+        if (lastWatchedIndex == youtubeVideos.size() - 1) {
+            return null;
+        }
+        YoutubeVideo nextVideo = youtubeVideos.get(lastWatchedIndex + 1);
+        return YoutubeVideoDto.fromEntity(nextVideo);
     }
 
 }

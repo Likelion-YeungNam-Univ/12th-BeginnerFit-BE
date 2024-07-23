@@ -46,11 +46,23 @@ public class YoutubeVideoController {
         return ResponseEntity.ok(youtubeVideoService.read(videoId));
     }
 
-
     @GetMapping("/{playlistId}/videos")
     @Operation(summary = "플레이리스트 별 비디오 조회", description = "플레이리스트에 해당하는 비디오를 조회합니다.")
     private ResponseEntity<?> getYoutubeVideosByPlaylist(@PathVariable Long playlistId){
         return ResponseEntity.ok(youtubeVideoService.getYoutubeVideosByPlaylist(playlistId));
+    }
+
+    @GetMapping("/videos/me")
+    public ResponseEntity<?> me(HttpServletRequest request) {
+        Long userId = jwtUtil.getUserId(jwtUtil.resolveToken(request).substring(7));
+        return ResponseEntity.ok(youtubeVideoService.getWatchedVideo(userId));
+    }
+
+    //홈화면 다음 비디오 재생
+    @GetMapping("/videos/me/next")
+    public ResponseEntity<?> getRecentVideo(HttpServletRequest request) {
+        Long userId = jwtUtil.getUserId(jwtUtil.resolveToken(request).substring(7));
+        return ResponseEntity.ok(youtubeVideoService.getNextVideo(userId));
     }
 
 }

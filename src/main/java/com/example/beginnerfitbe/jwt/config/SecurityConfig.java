@@ -27,8 +27,6 @@ public class SecurityConfig {
             "/auth/sign-in",
             "/auth/sign-up",
             "/users/emailcheck",
-            "/video",
-            "/playlist",
             "/swagger-ui.html",
             "/swagger-ui/**",
             "/v3/api-docs/**",
