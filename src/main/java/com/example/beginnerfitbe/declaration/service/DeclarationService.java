@@ -7,6 +7,7 @@ import com.example.beginnerfitbe.declaration.repository.DeclarationRepository;
 import com.example.beginnerfitbe.declaration.util.DeclarationReason;
 import com.example.beginnerfitbe.post.domain.Post;
 import com.example.beginnerfitbe.post.repository.PostRepository;
+import com.example.beginnerfitbe.post.service.PostService;
 import com.example.beginnerfitbe.user.domain.User;
 import com.example.beginnerfitbe.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ public class DeclarationService {
     private final UserRepository userRepository;
     private final PostRepository postRepository;
     private final DeclarationRepository declarationRepository;
+    private final PostService postService;
 
     public DeclarationDto create(Long userId, Long postId, DeclarationReqDto declarationReqDto) {
         User user = userRepository.findById(userId)
@@ -41,7 +43,7 @@ public class DeclarationService {
 
         Optional<Declaration> existingReport = declarationRepository.findByUserAndPost(user, post);
 
-        //이미 한번 신고함 -> 사유만 변경
+        //신고사유만 변경
         if (existingReport.isPresent()) {
             Declaration report = existingReport.get();
             report.updateReason(reason);
@@ -49,6 +51,10 @@ public class DeclarationService {
             return DeclarationDto.fromEntity(report);
         } else {
             post.updateDeclarationCnt(post.getDeclarationCnt() + 1);
+            if (post.getDeclarationCnt() >= 10) {
+                postService.delete(postId, post.getUser().getId()); // 게시글 삭제
+                return null; // 게시글이 삭제된 경우 null 반환
+            }
             Declaration declaration = Declaration.builder()
                     .post(post)
                     .user(user)
@@ -58,6 +64,4 @@ public class DeclarationService {
             return DeclarationDto.fromEntity(declaration);
         }
     }
-
-
 }

@@ -20,14 +20,13 @@ public class DeclarationController {
 
     @PostMapping("/{postId}/declarations")
     @Operation(summary = "게시글 신고 메서드", description = "게시글을 신고합니다.")
-    public ResponseEntity<String> create(HttpServletRequest request, @PathVariable Long postId,  @RequestBody DeclarationReqDto declarationReqDto){
+    public ResponseEntity<String> create(HttpServletRequest request, @PathVariable Long postId, @RequestBody DeclarationReqDto declarationReqDto) {
         Long userId = jwtUtil.getUserId(jwtUtil.resolveToken(request).substring(7));
         DeclarationDto declarationDto = declarationService.create(userId, postId, declarationReqDto);
-        if(declarationDto!=null){
-            return ResponseEntity.ok("댓글이 성공적으로 신고되었습니다!");
-        }
-        else{
-            return ResponseEntity.badRequest().body("댓글 신고에 실패했습니다.");
+        if (declarationDto != null) {
+            return ResponseEntity.ok("게시글이 성공적으로 신고되었습니다!");
+        } else {
+            return ResponseEntity.ok("게시글이 10회 이상 신고되어 삭제되었습니다.");
         }
     }
 
