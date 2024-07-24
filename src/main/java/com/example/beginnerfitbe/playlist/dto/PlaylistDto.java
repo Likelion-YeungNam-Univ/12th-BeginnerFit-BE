@@ -1,6 +1,7 @@
 package com.example.beginnerfitbe.playlist.dto;
 
 import com.example.beginnerfitbe.playlist.domain.Playlist;
+import com.example.beginnerfitbe.youtube.dto.SimpleVideoDto;
 import com.example.beginnerfitbe.youtube.dto.YoutubeVideoDto;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,10 +20,10 @@ public class PlaylistDto {
     private Boolean isCompleted;
     private LocalDateTime createdAt;
     private Long userId;
-    private List<YoutubeVideoDto> videos;
+    private List<SimpleVideoDto> videos;
 
     @Builder
-    public PlaylistDto(Long id, String title, String totalTime, Boolean isCompleted, LocalDateTime createdAt, Long userId, List<YoutubeVideoDto> videos) {
+    public PlaylistDto(Long id, String title, String totalTime, Boolean isCompleted, LocalDateTime createdAt, Long userId, List<SimpleVideoDto> videos) {
         this.id = id;
         this.title = title;
         this.totalTime = totalTime;
@@ -41,7 +42,7 @@ public class PlaylistDto {
                 .createdAt(playlist.getCreatedAt())
                 .userId(playlist.getUser().getId())
                 .videos(playlist.getVideos().stream()
-                        .map(YoutubeVideoDto::fromEntity)
+                        .map(SimpleVideoDto::fromEntity)
                         .collect(Collectors.toList()))
                 .build();
     }
