@@ -7,11 +7,8 @@ import com.example.beginnerfitbe.jwt.util.JwtUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,7 +18,7 @@ public class DeclarationController {
     private final DeclarationService declarationService;
     private final JwtUtil jwtUtil;
 
-    @PostMapping("/{postId}/reports")
+    @PostMapping("/{postId}/declarations")
     @Operation(summary = "게시글 신고 메서드", description = "게시글을 신고합니다.")
     public ResponseEntity<String> create(HttpServletRequest request, @PathVariable Long postId,  @RequestBody DeclarationReqDto declarationReqDto){
         Long userId = jwtUtil.getUserId(jwtUtil.resolveToken(request).substring(7));
