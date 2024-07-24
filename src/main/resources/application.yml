@@ -28,3 +28,7 @@ cloud:
     credentials:
       accessKey: ${BUCKET_ACCESS}
       secretKey: ${BUCKET_SECRET}
+
+youtube:
+  api:
+    key: ${API_KEY}

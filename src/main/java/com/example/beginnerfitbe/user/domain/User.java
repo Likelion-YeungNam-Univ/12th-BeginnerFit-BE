@@ -27,10 +27,10 @@ public class User {
     private String profilePictureUrl;
 
     @Column
-    private int exercisePurpose;
+    private String exercisePurpose;
 
     @Column
-    private int exercisePart;
+    private String exercisePart;
 
     @Column
     private int exerciseTime;
@@ -39,7 +39,7 @@ public class User {
     private int exerciseIntensity;
 
     @Builder
-    public User(String email, String name, String password, String profilePictureUrl, int exercisePurpose, int exercisePart, int exerciseTime, int exerciseIntensity) {
+    public User(String email, String name, String password, String profilePictureUrl, String exercisePurpose, String exercisePart, int exerciseTime, int exerciseIntensity) {
         this.email=email;
         this.name = name;
         this.password = password;
@@ -50,7 +50,7 @@ public class User {
         this.exerciseIntensity = exerciseIntensity;
     }
 
-    public void update(String name, int exercisePurpose, int exercisePart, int exerciseTime, int exerciseIntensity) {
+    public void update(String name, String exercisePurpose, String exercisePart, int exerciseTime, int exerciseIntensity) {
         this.name=name;
         this.exercisePurpose = exercisePurpose;
         this.exercisePart= exercisePart;

@@ -10,12 +10,12 @@ public class UserDto {
     private String name;
     private String password;
     private String profilePictureUrl;
-    private int exercisePurpose;
-    private int exercisePart;
+    private String exercisePurpose;
+    private String exercisePart;
     private int exerciseTime;
     private int exerciseIntensity;
 
-    public UserDto(Long id, String email, String name, String password, String profilePictureUrl, int exercisePurpose, int exercisePart, int exerciseTime, int exerciseIntensity) {
+    public UserDto(Long id, String email, String name, String password, String profilePictureUrl, String exercisePurpose, String exercisePart, int exerciseTime, int exerciseIntensity) {
         this.id = id;
         this.email = email;
         this.name = name;

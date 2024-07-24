@@ -6,8 +6,8 @@ import lombok.Data;
 @Data
 public class UserUpdateDto {
     private String name;
-    private int exercisePurpose;
-    private int exercisePart;
+    private String exercisePurpose;
+    private String exercisePart;
     private int exerciseTime;
     private int exerciseIntensity;
 
