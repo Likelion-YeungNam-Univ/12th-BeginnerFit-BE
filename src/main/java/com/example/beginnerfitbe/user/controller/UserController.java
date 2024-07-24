@@ -26,6 +26,8 @@ public class UserController{
     public ResponseEntity<?> list() {
         return ResponseEntity.ok(userService.list());
     }
+
+
     @GetMapping("/{id}")
     @Operation(summary = "사용자 상세 조회 메서드", description = "사용자 상세 정보를 조회합니다.")
     public ResponseEntity<?> read(HttpServletRequest request, @PathVariable Long id) {
