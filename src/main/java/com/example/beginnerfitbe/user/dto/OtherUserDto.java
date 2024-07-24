@@ -11,10 +11,11 @@ public class OtherUserDto {
     private Long id;
     private String email;
     private String name;
-    private int exercisePurpose;
-    private int exercisePart;
+    private String exercisePurpose;
+    private String exercisePart;
     private int exerciseTime;
     private int exerciseIntensity;
+    private String profilePictureUrl;
 
     public User toEntity() {
         return User.builder()
@@ -25,6 +26,7 @@ public class OtherUserDto {
                 .exercisePart(exercisePart)
                 .exerciseTime(exerciseTime)
                 .exerciseIntensity(exerciseIntensity)
+                .profilePictureUrl(profilePictureUrl)
                 .build();
     }
 }
