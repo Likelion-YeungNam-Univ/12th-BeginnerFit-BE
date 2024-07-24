@@ -18,7 +18,9 @@ public class PostDto {
     private String profileUrl;
     private String categoryName;
 
-    public PostDto(Long id, String title, String content, String pictureUrl, LocalDateTime createdAt, Long userId, String userName, String profileUrl, String categoryName) {
+    private int declarationCnt;
+
+    public PostDto(Long id, String title, String content, String pictureUrl, LocalDateTime createdAt, Long userId, String userName, String profileUrl, String categoryName, int declarationCnt) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -28,6 +30,7 @@ public class PostDto {
         this.userName = userName;
         this.profileUrl = profileUrl;
         this.categoryName = categoryName;
+        this.declarationCnt =declarationCnt;
     }
 
     public static PostDto fromEntity(Post post) {
@@ -40,7 +43,8 @@ public class PostDto {
                 post.getUser().getId(),
                 post.getUser().getName(),
                 post.getUser().getProfilePictureUrl(),
-                post.getCategory().getCategoryName()
+                post.getCategory().getCategoryName(),
+                post.getDeclarationCnt()
         );
     }
 }

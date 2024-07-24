@@ -1,6 +1,6 @@
 package com.example.beginnerfitbe.declaration.util;
 
-public enum ReportReason {
+public enum DeclarationReason {
     마음에들지않아요,
     선정적이에요,
     테러를조장해요,
