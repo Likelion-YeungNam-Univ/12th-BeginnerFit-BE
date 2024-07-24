@@ -5,6 +5,7 @@ import com.example.beginnerfitbe.playlist.repository.PlaylistRepository;
 import com.example.beginnerfitbe.user.domain.User;
 import com.example.beginnerfitbe.user.repository.UserRepository;
 import com.example.beginnerfitbe.youtube.domain.YoutubeVideo;
+import com.example.beginnerfitbe.youtube.dto.RecentVideoDto;
 import com.example.beginnerfitbe.youtube.dto.SelectedVideoDto;
 import com.example.beginnerfitbe.youtube.dto.YoutubeVideoDto;
 import com.example.beginnerfitbe.youtube.repository.YoutubeVideoRepository;
@@ -74,7 +75,7 @@ public class YoutubeVideoService {
     }
 
     // 다음 영상
-    public YoutubeVideoDto getNextVideo(Long userId) {
+    public RecentVideoDto getNextVideo(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found: "));
 
         // 가장 최근 플레이리스트 조회
@@ -92,7 +93,7 @@ public class YoutubeVideoService {
         // 최근 시청 비디오가 없는 경우 첫 번째 비디오 반환
         if (!lastWatchedVideo.getIsWatched()) {
             System.out.println("아직 아무것도 안봄");
-            return YoutubeVideoDto.fromEntity(videos.get(0));
+            return RecentVideoDto.fromEntity(videos.get(0));
         }
 
         int lastWatchedIndex = videos.indexOf(lastWatchedVideo);
@@ -103,7 +104,7 @@ public class YoutubeVideoService {
         }
 
         YoutubeVideo nextVideo = videos.get(lastWatchedIndex+1);
-        return YoutubeVideoDto.fromEntity(nextVideo);
+        return RecentVideoDto.fromEntity(nextVideo);
     }
 
 
