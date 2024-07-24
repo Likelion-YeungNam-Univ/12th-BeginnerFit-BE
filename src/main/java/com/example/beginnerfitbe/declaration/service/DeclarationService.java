@@ -13,7 +13,9 @@ import com.example.beginnerfitbe.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -63,5 +65,11 @@ public class DeclarationService {
             declarationRepository.save(declaration);
             return DeclarationDto.fromEntity(declaration);
         }
+    }
+
+    public List<DeclarationDto> list(){
+        return declarationRepository.findAll().stream()
+                .map(DeclarationDto::fromEntity)
+                .collect(Collectors.toList());
     }
 }

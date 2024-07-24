@@ -30,4 +30,11 @@ public class DeclarationController {
         }
     }
 
+    @GetMapping("/declarations")
+    @Operation(summary = "신고 목록 조회 메서드", description = "전체 신고 목록을 조회합니다.")
+    public ResponseEntity<?> list() {
+        return ResponseEntity.ok(declarationService.list());
+    }
+
+
 }
