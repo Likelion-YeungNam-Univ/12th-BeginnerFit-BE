@@ -2,6 +2,7 @@ package com.example.beginnerfitbe.post.domain;
 
 import com.example.beginnerfitbe.category.domain.Category;
 import com.example.beginnerfitbe.comment.domain.Comment;
+import com.example.beginnerfitbe.declaration.domain.Declaration;
 import com.example.beginnerfitbe.like.domain.PostLike;
 import com.example.beginnerfitbe.user.domain.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -48,6 +49,11 @@ public class Post {
     private List<Comment> comments;
 
     @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @JsonIgnore
+    private List<Declaration> declarations;
+  
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @JsonIgnore
     private List<PostLike> postLikes;
 
 
