@@ -50,6 +50,7 @@ public class Post {
     @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<PostLike> postLikes;
 
+
     @Builder
     public Post(String title, String content, String pictureUrl, LocalDateTime createdAt, User user, Category category) {
         this.title = title;

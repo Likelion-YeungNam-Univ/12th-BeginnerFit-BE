@@ -17,8 +17,9 @@ public class PostDto {
     private String userName;
     private String profileUrl;
     private String categoryName;
+    private int likeCnt;
 
-    public PostDto(Long id, String title, String content, String pictureUrl, LocalDateTime createdAt, Long userId, String userName, String profileUrl, String categoryName) {
+    public PostDto(Long id, String title, String content, String pictureUrl, LocalDateTime createdAt, Long userId, String userName, String profileUrl, String categoryName, int likeCnt) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -28,6 +29,7 @@ public class PostDto {
         this.userName = userName;
         this.profileUrl = profileUrl;
         this.categoryName = categoryName;
+        this. likeCnt = likeCnt;
     }
 
     public static PostDto fromEntity(Post post) {
@@ -40,7 +42,8 @@ public class PostDto {
                 post.getUser().getId(),
                 post.getUser().getName(),
                 post.getUser().getProfilePictureUrl(),
-                post.getCategory().getCategoryName()
+                post.getCategory().getCategoryName(),
+                post.getPostLikes().size()
         );
     }
 }
