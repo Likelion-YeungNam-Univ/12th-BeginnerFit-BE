@@ -45,7 +45,7 @@ public class PostDto {
                 post.getUser().getName(),
                 post.getUser().getProfilePictureUrl(),
                 post.getCategory().getCategoryName(),
-                post.getDeclarations().size()
+                post.getDeclarations().size(),
                 post.getPostLikes().size()
         );
     }
