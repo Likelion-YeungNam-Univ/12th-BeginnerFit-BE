@@ -111,6 +111,7 @@ public class PlaylistService {
     public List<PlaylistDto> me(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
         return playlistRepository.findByUserOrderByCreatedAtDesc(user).stream()
+                .limit(5)
                 .map(PlaylistDto::fromEntity)
                 .collect(Collectors.toList());
     }
