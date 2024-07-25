@@ -1,10 +1,13 @@
 package com.example.beginnerfitbe.user.domain;
 
+import com.example.beginnerfitbe.weight.domain.WeightRecord;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Entity
 @Getter
@@ -24,42 +27,55 @@ public class User {
     private String password;
 
     @Column
-    private String profilePictureUrl;
+    private int height;
 
     @Column
-    private String exercisePurpose;
+    private int weight;
 
     @Column
-    private String exercisePart;
+    private int targetWeight;
+
+    @Column
+    private String targetDate;
 
     @Column
     private int exerciseTime;
 
-    @Column
-    private int exerciseIntensity;
+    @ElementCollection
+    private List<String> exerciseIntensity;
+
+    @ElementCollection
+    private List<String> exerciseGoals;
+
+    @ElementCollection
+    private List<String> concernedAreas;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<WeightRecord> weightRecords;
 
     @Builder
-    public User(String email, String name, String password, String profilePictureUrl, String exercisePurpose, String exercisePart, int exerciseTime, int exerciseIntensity) {
-        this.email=email;
+    public User(String email, String name, String password, int height, int weight, int targetWeight, String targetDate, int exerciseTime, List<String> exerciseIntensity, List<String> exerciseGoals, List<String> concernedAreas) {
+        this.email = email;
         this.name = name;
         this.password = password;
-        this.profilePictureUrl = profilePictureUrl;
-        this.exercisePurpose=exercisePurpose;
-        this.exercisePart =exercisePart;
-        this.exerciseTime=exerciseTime;
+        this.height = height;
+        this.weight = weight;
+        this.targetWeight = targetWeight;
+        this.targetDate = targetDate;
+        this.exerciseTime = exerciseTime;
         this.exerciseIntensity = exerciseIntensity;
+        this.exerciseGoals = exerciseGoals;
+        this.concernedAreas = concernedAreas;
     }
 
-    public void update(String name, String exercisePurpose, String exercisePart, int exerciseTime, int exerciseIntensity) {
-        this.name=name;
-        this.exercisePurpose = exercisePurpose;
-        this.exercisePart= exercisePart;
-        this.exerciseTime=exerciseTime;
+    public void updateHealthInfo(int height, int weight, int targetWeight, String targetDate, int exerciseTime, List<String> exerciseIntensity, List<String> exerciseGoals, List<String> concernedAreas) {
+        this.height = height;
+        this.weight = weight;
+        this.targetWeight = targetWeight;
+        this.targetDate = targetDate;
+        this.exerciseTime = exerciseTime;
         this.exerciseIntensity = exerciseIntensity;
+        this.exerciseGoals = exerciseGoals;
+        this.concernedAreas = concernedAreas;
     }
-
-    public void updatePicture(String newPictureUrl){
-        this.profilePictureUrl = newPictureUrl;
-    }
-
 }
