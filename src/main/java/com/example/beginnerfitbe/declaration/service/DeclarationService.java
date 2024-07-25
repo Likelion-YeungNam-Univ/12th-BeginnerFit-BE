@@ -74,4 +74,14 @@ public class DeclarationService {
                 .map(DeclarationDto::fromEntity)
                 .collect(Collectors.toList());
     }
+
+    public List<DeclarationDto> getDeclarationsByPost(Long postId){
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("Post not found"));
+
+        return declarationRepository.findByPost(post).stream()
+                .map(DeclarationDto::fromEntity)
+                .collect(Collectors.toList());
+    }
+
 }
