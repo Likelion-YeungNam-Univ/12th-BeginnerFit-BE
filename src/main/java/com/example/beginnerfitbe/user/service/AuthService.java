@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -21,27 +23,27 @@ public class AuthService {
         String email=dto.getEmail();
         String name=dto.getName();
         String password=passwordEncoder.encode(dto.getPassword());
-        String exercisePurpose = dto.getExercisePurpose();
-        String exercisePart =dto.getExercisePart();
-        int exerciseTime = dto.getExerciseTime();
-        int exerciseIntensity = dto.getExerciseIntensity();
 
         //중복 가입 확인
         if(userService.emailCheck(email)){
             throw new IllegalArgumentException("이미 등록된 사용자입니다.");
         }
-        User user = User.builder()
+        //회원 기본 정보만 입력
+        return User.builder()
                 .email(email)
                 .name(name)
                 .password(password)
-                .profilePictureUrl(null)
-                .exercisePurpose(exercisePurpose)
-                .exercisePart(exercisePart)
-                .exerciseTime(exerciseTime)
-                .exerciseIntensity(exerciseIntensity)
+                .height(0)
+                .weight(0)
+                .targetWeight(0)
+                .date(null)
+                .targetDate(null)
+                .exerciseTime(0)
+                .exerciseIntensity(new ArrayList<>())
+                .concernedAreas(new ArrayList<>())
+                .exerciseGoals(new ArrayList<>())
                 .build();
 
-        return user;
     }
     public SignInResDto signIn(SignInReqDto dto) {
         UserDto userDto = userService.readByEmail(dto.getEmail());
