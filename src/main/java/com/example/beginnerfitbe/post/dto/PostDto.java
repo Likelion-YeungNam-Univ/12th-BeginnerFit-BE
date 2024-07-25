@@ -39,7 +39,7 @@ public class PostDto {
                 post.getCreatedAt(),
                 post.getUser().getId(),
                 post.getUser().getName(),
-                post.getUser().getProfilePictureUrl(),
+                post.getUser().getProfileUrl(),
                 post.getCategory().getCategoryName()
         );
     }

@@ -1,6 +1,5 @@
 package com.example.beginnerfitbe.user.domain;
 
-import com.example.beginnerfitbe.weight.domain.WeightRecord;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -27,6 +26,9 @@ public class User {
     private String password;
 
     @Column
+    private String profileUrl;
+
+    @Column
     private int height;
 
     @Column
@@ -34,6 +36,9 @@ public class User {
 
     @Column
     private int targetWeight;
+
+    @Column
+    private String date;
 
     @Column
     private String targetDate;
@@ -50,16 +55,19 @@ public class User {
     @ElementCollection
     private List<String> concernedAreas;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<WeightRecord> weightRecords;
+
+//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<WeightRecord> weightRecords;
 
     @Builder
-    public User(String email, String name, String password, int height, int weight, int targetWeight, String targetDate, int exerciseTime, List<String> exerciseIntensity, List<String> exerciseGoals, List<String> concernedAreas) {
+    public User(String email, String name, String password, String profileUrl, int height, int weight, int targetWeight, String date, String targetDate, int exerciseTime, List<String> exerciseIntensity, List<String> exerciseGoals, List<String> concernedAreas) {
         this.email = email;
         this.name = name;
         this.password = password;
+        this.profileUrl=profileUrl;
         this.height = height;
         this.weight = weight;
+        this.date= date;
         this.targetWeight = targetWeight;
         this.targetDate = targetDate;
         this.exerciseTime = exerciseTime;
@@ -68,14 +76,18 @@ public class User {
         this.concernedAreas = concernedAreas;
     }
 
-    public void updateHealthInfo(int height, int weight, int targetWeight, String targetDate, int exerciseTime, List<String> exerciseIntensity, List<String> exerciseGoals, List<String> concernedAreas) {
+    public void updateHealthInfo(int height, int weight, int targetWeight, String date, String targetDate, int exerciseTime, List<String> exerciseIntensity, List<String> exerciseGoals, List<String> concernedAreas) {
         this.height = height;
         this.weight = weight;
         this.targetWeight = targetWeight;
+        this.date = date;
         this.targetDate = targetDate;
         this.exerciseTime = exerciseTime;
         this.exerciseIntensity = exerciseIntensity;
         this.exerciseGoals = exerciseGoals;
         this.concernedAreas = concernedAreas;
+    }
+    public void updateName(String newName){
+        this.name= newName;
     }
 }

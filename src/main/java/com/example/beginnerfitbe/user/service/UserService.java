@@ -7,6 +7,7 @@ import com.example.beginnerfitbe.s3.util.S3Uploader;
 import com.example.beginnerfitbe.user.domain.User;
 import com.example.beginnerfitbe.user.dto.HealthInfoReqDto;
 import com.example.beginnerfitbe.user.dto.UserDto;
+import com.example.beginnerfitbe.user.dto.UserUpdateDto;
 import com.example.beginnerfitbe.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +23,6 @@ import java.util.stream.Collectors;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final S3Uploader s3Uploader;
     private final PlaylistService playlistService;
 
     public List<UserDto> list(){
@@ -76,6 +76,18 @@ public class UserService {
                 .build();
     }
 
+    public StateResponse update(Long userId, UserUpdateDto dto){
+        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
+        user.updateName(dto.getName());
+
+        userRepository.save(user);
+
+        return StateResponse.builder()
+                .code("SUCCESS")
+                .message("사용자 이름이 업데이트 되었습니다.")
+                .build();
+
+    }
     //회원 탈퇴
     public ResponseEntity<StateResponse> withdrawal(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("User not found"));

@@ -46,12 +46,13 @@ public class UserController{
         Long userId = jwtUtil.getUserId(jwtUtil.resolveToken(request).substring(7));
         return ResponseEntity.ok(userService.me(userId));
     }
-//    @PutMapping("")
-//    @Operation(summary = "사용자 정보 업데이트 메서드", description = "사용자의 수정된 정보를 받아 업데이트 합니다.")
-//    public ResponseEntity<StateResponse> update(HttpServletRequest request, @RequestPart("updateDto") UserUpdateDto requestDto, @RequestPart(value = "profilePicture", required = false) MultipartFile profilePicture) {
-//        Long userId = jwtUtil.getUserId(jwtUtil.resolveToken(request).substring(7));
-//        return userService.update(userId,requestDto,profilePicture);
-//    }
+
+    @PutMapping("")
+    @Operation(summary = "사용자 정보 업데이트 메서드", description = "사용자의 이름을 수정합니다.")
+    public ResponseEntity<?> update(HttpServletRequest request, @RequestBody UserUpdateDto requestDto) {
+        Long userId = jwtUtil.getUserId(jwtUtil.resolveToken(request).substring(7));
+        return ResponseEntity.ok(userService.update(userId,requestDto));
+    }
 
     @PutMapping("/health-info")
     @Operation(summary = "사용자 건강 정보 업데이트 메서드", description = "사용자의 건강 정보를 업데이트합니다.")
