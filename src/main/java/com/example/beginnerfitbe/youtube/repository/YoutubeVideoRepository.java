@@ -12,4 +12,8 @@ public interface YoutubeVideoRepository extends JpaRepository<YoutubeVideo, Long
     List<YoutubeVideo> findVideosByPlaylist(Playlist playlist);
     List<YoutubeVideo> findByPlaylist_UserId(Long userId);
     YoutubeVideo findFirstByPlaylist_UserIdOrderByWatchedTimeDesc(Long userId);
+
+    List<YoutubeVideo> findByPlaylist_UserIdAndIsWatchedOrderByWatchedTimeDesc(Long userId, boolean isWatched);
+
+    List<YoutubeVideo> findTop3ByPlaylist_UserIdAndIsWatchedOrderByWatchedTimeDesc(Long userId, boolean isWatched);
 }

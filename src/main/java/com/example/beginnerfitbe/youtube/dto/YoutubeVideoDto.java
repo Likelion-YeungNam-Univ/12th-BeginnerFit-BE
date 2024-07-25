@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class YoutubeVideoDto {
     private Long id;
+    private String videoId;
     private String title;
     private String url;
     private String thumbnail;
@@ -25,6 +26,7 @@ public class YoutubeVideoDto {
     @Builder
     public YoutubeVideoDto(Long id, String videoId, String title, String url, String thumbnail, String description, String channel, String publishedAt, String duration, Boolean isWatched, LocalDateTime watchedTime, Long playlistId) {
         this.id = id;
+        this.videoId = videoId;
         this.title = title;
         this.url = url;
         this.thumbnail = thumbnail;
@@ -40,6 +42,7 @@ public class YoutubeVideoDto {
     public static YoutubeVideoDto fromEntity(YoutubeVideo youtubeVideo) {
         return YoutubeVideoDto.builder()
                 .id(youtubeVideo.getId())
+                .videoId(youtubeVideo.getVideoId())
                 .title(youtubeVideo.getTitle())
                 .url(youtubeVideo.getUrl())
                 .thumbnail(youtubeVideo.getThumbnail())

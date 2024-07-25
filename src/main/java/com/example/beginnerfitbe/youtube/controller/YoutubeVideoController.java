@@ -59,6 +59,13 @@ public class YoutubeVideoController {
         return ResponseEntity.ok(youtubeVideoService.getWatchedVideo(userId));
     }
 
+    @GetMapping("/videos/recent-watched")
+    @Operation(summary = "시청한 비디오 목록 3개 조회", description = "사용자가 시청했던 비디오 목록 중 최신 순으로 3개 조회합니다.")
+    public ResponseEntity<?> getRecentWatchedVideo(HttpServletRequest request) {
+        Long userId = jwtUtil.getUserId(jwtUtil.resolveToken(request).substring(7));
+        return ResponseEntity.ok(youtubeVideoService.getRecentWatchedVideo(userId));
+    }
+
     //홈화면 다음 비디오 재생
     @GetMapping("/videos/next")
     @Operation(summary = "다음 비디오 조회", description = "사용자가 마지막으로 시청한 다음 비디오 정보를 조회합니다.")
