@@ -68,11 +68,19 @@ public class YoutubeVideoService {
     // 사용자 비디오 목록 조회
     public List<YoutubeVideoDto> getWatchedVideo(Long userId) {
         userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
-        return youtubeVideoRepository.findByPlaylist_UserId(userId).stream()
-                .filter(YoutubeVideo::getIsWatched) // 시청한 비디오만 필터링
+        return youtubeVideoRepository.findByPlaylist_UserIdAndIsWatchedOrderByWatchedTimeDesc(userId, true).stream()
                 .map(YoutubeVideoDto::fromEntity)
                 .collect(Collectors.toList());
     }
+
+    public List<YoutubeVideoDto> getRecentWatchedVideo(Long userId) {
+        userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
+        return youtubeVideoRepository.findTop3ByPlaylist_UserIdAndIsWatchedOrderByWatchedTimeDesc(userId, true).stream()
+                .map(YoutubeVideoDto::fromEntity)
+                .collect(Collectors.toList());
+    }
+
+
 
     // 다음 영상
     public RecentVideoDto getNextVideo(Long userId) {
