@@ -51,18 +51,14 @@ public class Post {
     @JsonIgnore
     private List<Declaration> declarations;
 
-    @Column(nullable = false)
-    private int declarationCnt;
-
     @Builder
-    public Post(String title, String content, String pictureUrl, LocalDateTime createdAt, User user, Category category, int declarationCnt) {
+    public Post(String title, String content, String pictureUrl, LocalDateTime createdAt, User user, Category category) {
         this.title = title;
         this.content = content;
         this.pictureUrl = pictureUrl;
         this.createdAt = createdAt;
         this.category = category;
         this.user = user;
-        this.declarationCnt = declarationCnt;
     }
 
     public void update(String title, String content, Category category) {
@@ -72,8 +68,5 @@ public class Post {
     }
     public void updatePicture(String pictureUrl) {
         this.pictureUrl = pictureUrl;
-    }
-    public void updateDeclarationCnt(int newCnt){
-        this.declarationCnt = newCnt;
     }
 }

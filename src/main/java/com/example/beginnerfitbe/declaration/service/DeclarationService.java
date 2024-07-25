@@ -26,7 +26,7 @@ public class DeclarationService {
     private final DeclarationRepository declarationRepository;
     private final PostService postService;
 
-    public DeclarationDto create(Long userId, Long postId, DeclarationReqDto declarationReqDto) {
+    public String create(Long userId, Long postId, DeclarationReqDto declarationReqDto) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         Post post = postRepository.findById(postId)
@@ -49,21 +49,23 @@ public class DeclarationService {
         if (existingReport.isPresent()) {
             Declaration report = existingReport.get();
             report.updateReason(reason);
+
             declarationRepository.save(report);
-            return DeclarationDto.fromEntity(report);
+            return "신고 사유가 변경되었습니다.";
         } else {
-            post.updateDeclarationCnt(post.getDeclarationCnt() + 1);
-            if (post.getDeclarationCnt() >= 10) {
+
+            if (post.getDeclarations().size() >= 9) {
                 postService.delete(postId, post.getUser().getId()); // 게시글 삭제
-                return null; // 게시글이 삭제된 경우 null 반환
+                return "신고 10번 누적으로 게시글이 삭제되었습니다.";
             }
+
             Declaration declaration = Declaration.builder()
                     .post(post)
                     .user(user)
                     .reason(reason)
                     .build();
             declarationRepository.save(declaration);
-            return DeclarationDto.fromEntity(declaration);
+            return "SUCCESS 게시글이 정상적으로 신고되었습니다.";
         }
     }
 

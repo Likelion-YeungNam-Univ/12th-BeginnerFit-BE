@@ -50,7 +50,6 @@ public class PostService {
                     .createdAt(LocalDateTime.now())
                     .user(user)
                     .category(category)
-                    .declarationCnt(0)
                     .build();
 
             postRepository.save(post);
