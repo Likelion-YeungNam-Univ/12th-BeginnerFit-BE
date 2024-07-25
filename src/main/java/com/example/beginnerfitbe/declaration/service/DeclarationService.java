@@ -84,4 +84,18 @@ public class DeclarationService {
                 .collect(Collectors.toList());
     }
 
+    public String delete(Long userId, Long postId){
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("Post not found"));
+        Optional<Declaration> existingReport = declarationRepository.findByUserAndPost(user, post);
+
+        if (existingReport.isPresent()) {
+            declarationRepository.delete(existingReport.get());
+            return  "SUCCESS 신고가 취소되었습니다.";
+        }
+        return "신고 내역이 없습니다.";
+    }
+
 }

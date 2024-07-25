@@ -37,5 +37,12 @@ public class DeclarationController {
         return ResponseEntity.ok(declarationService.getDeclarationsByPost(postId));
     }
 
+    @DeleteMapping("/{postId}/declarations")
+    @Operation(summary = "게시글 신고 메서드", description = "게시글을 신고합니다.")
+    public ResponseEntity<String> delete(HttpServletRequest request, @PathVariable Long postId) {
+        Long userId = jwtUtil.getUserId(jwtUtil.resolveToken(request).substring(7));
+        return ResponseEntity.ok(declarationService.delete(userId, postId));
+    }
+
 
 }
