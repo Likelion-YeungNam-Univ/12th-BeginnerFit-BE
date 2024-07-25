@@ -9,6 +9,7 @@ import java.util.List;
 @AllArgsConstructor
 
 public class HealthInfoReqDto {
+    private String email;
     private int height;
     private int weight;
     private int targetWeight;

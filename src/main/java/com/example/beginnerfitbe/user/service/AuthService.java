@@ -33,6 +33,7 @@ public class AuthService {
                 .email(email)
                 .name(name)
                 .password(password)
+                .profileUrl(null)
                 .height(0)
                 .weight(0)
                 .targetWeight(0)

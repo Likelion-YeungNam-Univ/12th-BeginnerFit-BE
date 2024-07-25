@@ -5,14 +5,12 @@ import com.example.beginnerfitbe.error.StateResponse;
 import com.example.beginnerfitbe.playlist.service.PlaylistService;
 import com.example.beginnerfitbe.s3.util.S3Uploader;
 import com.example.beginnerfitbe.user.domain.User;
+import com.example.beginnerfitbe.user.dto.HealthInfoReqDto;
 import com.example.beginnerfitbe.user.dto.UserDto;
-import com.example.beginnerfitbe.user.dto.UserUpdateDto;
 import com.example.beginnerfitbe.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
@@ -35,8 +33,6 @@ public class UserService {
     public void create(User user) throws IOException {
         userRepository.save(user);
 
-        //플레이리스트 생성
-        playlistService.create(user);
     }
 
     public UserDto read(Long id) {
@@ -52,62 +48,37 @@ public class UserService {
                 .map(UserDto::fromEntity)
                 .collect(Collectors.toList());
     }
-    //회원정보 수정
-    public ResponseEntity<StateResponse> update(Long id, UserUpdateDto requestDto, MultipartFile profilePicture) {
-        try {
-            User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("User not found"));
-            String previousPictureUrl = user.getProfilePictureUrl();
 
-            boolean createSignal = true;
-            //정보 업데이트
-            if (requestDto.getName() != null && requestDto.getExercisePurpose()!=null && requestDto.getExercisePart()!=null
-                    && requestDto.getExerciseTime()!=0 && requestDto.getExerciseIntensity()!=0 ) {
+    //건강정보 업데이트
+    public StateResponse updateHealthInfo(HealthInfoReqDto dto) throws IOException {
+        User user = userRepository.findByEmail(dto.getEmail()).orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-                //건강정보 안바뀜 -> 플레이리스트 그대로
-                if(requestDto.getExercisePurpose().equals(user.getExercisePurpose())
-                && requestDto.getExercisePart().equals(user.getExercisePart())
-                && requestDto.getExerciseIntensity()==user.getExerciseIntensity()
-                && requestDto.getExerciseTime()==user.getExerciseTime()){
-                    createSignal=false;
-                }
+        user.updateHealthInfo(
+                dto.getHeight(),
+                dto.getWeight(),
+                dto.getTargetWeight(),
+                dto.getDate(),
+                dto.getTargetDate(),
+                dto.getExerciseTime(),
+                dto.getExerciseIntensity(),
+                dto.getExerciseGoals(),
+                dto.getConcernedAreas()
+        );
 
-                user.update(requestDto.getName(), requestDto.getExercisePurpose(), requestDto.getExercisePart(), requestDto.getExerciseTime(), requestDto.getExerciseIntensity());
+        userRepository.save(user);
 
-            }
-            if (previousPictureUrl != null) {
-                s3Uploader.delete("User",previousPictureUrl);
-            }
-            //사진 업로드 or 변경
-            String pictureUrl = null;
-            if (profilePicture != null && !profilePicture.isEmpty()) {
-                if (previousPictureUrl != null) {
-                    s3Uploader.delete("User",previousPictureUrl);
-                }
-                pictureUrl = s3Uploader.upload(profilePicture, "User");
-            }
-            user.updatePicture(pictureUrl);
-            userRepository.save(user);
+        //플레이리스트 생성
+        playlistService.create(user);
 
-            //플레이리스트 생성
-            if(createSignal){
-                playlistService.create(user);
-            }
-
-            return ResponseEntity.ok(StateResponse.builder().code("SUCCESS").message("정보를 성공적으로 업데이트했습니다.").build());
-        } catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(StateResponse.builder().code("ERROR").message("오류가 발생했습니다: " + e.getMessage()).build());
-        }
+        return StateResponse.builder()
+                .code("SUCCESS")
+                .message("건강정보가 업데이트 되었습니다.")
+                .build();
     }
 
     //회원 탈퇴
     public ResponseEntity<StateResponse> withdrawal(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("User not found"));
-
-        //버킷 사진 삭제
-        String previousPictureUrl = user.getProfilePictureUrl();
-        if(previousPictureUrl!=null){
-            s3Uploader.delete("User",previousPictureUrl);
-        }
 
         userRepository.delete(user);
         return ResponseEntity.ok(StateResponse.builder().code("SUCCESS").message("성공적으로 회원탈퇴 처리되었습니다.").build());
