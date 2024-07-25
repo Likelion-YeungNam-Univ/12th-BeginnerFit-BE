@@ -32,13 +32,13 @@ public class DeclarationController {
     }
 
     @GetMapping("/{postId}/declarations")
-    @Operation(summary = "신고 목록 조회 메서드", description = "전체 신고 목록을 조회합니다.")
+    @Operation(summary = "게시글 별 신고 목록 조회 메서드", description = "게시글 별 신고 목록을 조회합니다.")
     public ResponseEntity<?> getDeclarationsByPost(@PathVariable Long postId) {
         return ResponseEntity.ok(declarationService.getDeclarationsByPost(postId));
     }
 
     @DeleteMapping("/{postId}/declarations")
-    @Operation(summary = "게시글 신고 메서드", description = "게시글을 신고합니다.")
+    @Operation(summary = "게시글 신고 취소 메서드", description = "게시글을 신고를 취소 합니다.")
     public ResponseEntity<String> delete(HttpServletRequest request, @PathVariable Long postId) {
         Long userId = jwtUtil.getUserId(jwtUtil.resolveToken(request).substring(7));
         return ResponseEntity.ok(declarationService.delete(userId, postId));
