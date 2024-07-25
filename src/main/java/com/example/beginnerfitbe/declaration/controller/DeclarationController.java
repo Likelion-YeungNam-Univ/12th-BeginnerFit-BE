@@ -20,7 +20,7 @@ public class DeclarationController {
 
     @PostMapping("/{postId}/declarations")
     @Operation(summary = "게시글 신고 메서드", description = "게시글을 신고합니다.")
-    public ResponseEntity<String> create(HttpServletRequest request, @PathVariable Long postId, @RequestBody DeclarationReqDto declarationReqDto) {
+    public ResponseEntity<?> create(HttpServletRequest request, @PathVariable Long postId, @RequestBody DeclarationReqDto declarationReqDto) {
         Long userId = jwtUtil.getUserId(jwtUtil.resolveToken(request).substring(7));
         return ResponseEntity.ok(declarationService.create(userId, postId, declarationReqDto));
     }
@@ -39,7 +39,7 @@ public class DeclarationController {
 
     @DeleteMapping("/{postId}/declarations")
     @Operation(summary = "게시글 신고 취소 메서드", description = "게시글을 신고를 취소 합니다.")
-    public ResponseEntity<String> delete(HttpServletRequest request, @PathVariable Long postId) {
+    public ResponseEntity<?> delete(HttpServletRequest request, @PathVariable Long postId) {
         Long userId = jwtUtil.getUserId(jwtUtil.resolveToken(request).substring(7));
         return ResponseEntity.ok(declarationService.delete(userId, postId));
     }

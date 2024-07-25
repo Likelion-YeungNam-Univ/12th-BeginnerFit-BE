@@ -5,6 +5,7 @@ import com.example.beginnerfitbe.declaration.dto.DeclarationDto;
 import com.example.beginnerfitbe.declaration.dto.DeclarationReqDto;
 import com.example.beginnerfitbe.declaration.repository.DeclarationRepository;
 import com.example.beginnerfitbe.declaration.util.DeclarationReason;
+import com.example.beginnerfitbe.error.StateResponse;
 import com.example.beginnerfitbe.post.domain.Post;
 import com.example.beginnerfitbe.post.repository.PostRepository;
 import com.example.beginnerfitbe.post.service.PostService;
@@ -26,7 +27,7 @@ public class DeclarationService {
     private final DeclarationRepository declarationRepository;
     private final PostService postService;
 
-    public String create(Long userId, Long postId, DeclarationReqDto declarationReqDto) {
+    public StateResponse create(Long userId, Long postId, DeclarationReqDto declarationReqDto) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         Post post = postRepository.findById(postId)
@@ -51,12 +52,18 @@ public class DeclarationService {
             report.updateReason(reason);
 
             declarationRepository.save(report);
-            return "신고 사유가 변경되었습니다.";
+            return StateResponse.builder()
+                    .code("SUCCESS")
+                    .message("신고 사유가 변경되었습니다.")
+                    .build();
         } else {
 
             if (post.getDeclarations().size() >= 9) {
                 postService.delete(postId, post.getUser().getId()); // 게시글 삭제
-                return "신고 10번 누적으로 게시글이 삭제되었습니다.";
+                return StateResponse.builder()
+                        .code("SUCCESS")
+                        .message("신고 10번 누적으로 게시글이 삭제되었습니다.")
+                        .build();
             }
 
             Declaration declaration = Declaration.builder()
@@ -65,7 +72,10 @@ public class DeclarationService {
                     .reason(reason)
                     .build();
             declarationRepository.save(declaration);
-            return "SUCCESS 게시글이 정상적으로 신고되었습니다.";
+            return StateResponse.builder()
+                    .code("SUCCESS")
+                    .message("SUCCESS 게시글이 정상적으로 신고되었습니다.")
+                    .build();
         }
     }
 
@@ -84,7 +94,7 @@ public class DeclarationService {
                 .collect(Collectors.toList());
     }
 
-    public String delete(Long userId, Long postId){
+    public StateResponse delete(Long userId, Long postId){
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         Post post = postRepository.findById(postId)
@@ -93,9 +103,14 @@ public class DeclarationService {
 
         if (existingReport.isPresent()) {
             declarationRepository.delete(existingReport.get());
-            return  "SUCCESS 신고가 취소되었습니다.";
+            return StateResponse.builder()
+                    .code("SUCCESS")
+                    .message("신고가 취소되었습니다.")
+                    .build();
         }
-        return "신고 내역이 없습니다.";
+        return StateResponse.builder()
+                .code("FAIL")
+                .message("신고 내역이 없습니다.")
+                .build();
     }
-
 }
