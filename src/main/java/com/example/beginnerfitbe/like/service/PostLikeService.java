@@ -6,6 +6,7 @@ import com.example.beginnerfitbe.post.domain.Post;
 import com.example.beginnerfitbe.post.repository.PostRepository;
 import com.example.beginnerfitbe.user.domain.User;
 import com.example.beginnerfitbe.user.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -38,6 +39,20 @@ public class PostLikeService {
             postLikeRepository.save(postLike);
             return "SUCCESS 좋아요가 완료되었습니다.";
         }
+    }
+
+    public String delete(Long userId, Long postId){
+        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("not found user"));
+        Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("not found post"));
+
+        Optional<PostLike> postLikeOpt = postLikeRepository.findByUserAndPost(user, post);
+
+        if(postLikeOpt.isPresent()){
+            //취소
+            postLikeRepository.delete(postLikeOpt.get());
+            return "SUCCESS 좋아요가 취소되었습니다.";
+        }
+        return "좋아요가 존재하지 않습니다.";
     }
 
 }

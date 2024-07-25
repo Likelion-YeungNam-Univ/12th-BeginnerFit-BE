@@ -5,10 +5,7 @@ import com.example.beginnerfitbe.like.service.PostLikeService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -16,9 +13,16 @@ import org.springframework.web.bind.annotation.RestController;
 public class PostLikeController {
     private final JwtUtil jwtUtil;
     private final PostLikeService postLikeService;
+
     @PostMapping("/{postId}")
     public ResponseEntity<?> addLike(HttpServletRequest request, @PathVariable Long postId){
         Long userId = jwtUtil.getUserId(jwtUtil.resolveToken(request).substring(7));
         return ResponseEntity.ok(postLikeService.create(userId, postId));
+    }
+
+    @DeleteMapping("/{postId}")
+    public ResponseEntity<?> deleteLike(HttpServletRequest request, @PathVariable Long postId){
+        Long userId = jwtUtil.getUserId(jwtUtil.resolveToken(request).substring(7));
+        return ResponseEntity.ok(postLikeService.delete(userId, postId));
     }
 }
