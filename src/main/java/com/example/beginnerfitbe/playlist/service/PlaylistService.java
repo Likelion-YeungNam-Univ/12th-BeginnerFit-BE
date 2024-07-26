@@ -69,16 +69,16 @@ public class PlaylistService {
 
     private String searchKeyword(User user) {
 
-        String query= null;
-        if(user.getExerciseIntensity()<=3){
-            query = user.getExercisePart() + " " + user.getExercisePurpose() +" 쉬운 운동";
-        }
-        else if(user.getExerciseIntensity()>=7){
-            query = user.getExercisePart() + " " + user.getExercisePurpose() +" 매운맛 운동";
-        }
-        else{
-            query = user.getExercisePart() + " " + user.getExercisePurpose()+" 운동";
-        }
+        String query= "운동";
+//        if(user.getExerciseIntensity()<=3){
+//            query = user.getExercisePart() + " " + user.getExercisePurpose() +" 쉬운 운동";
+//        }
+//        else if(user.getExerciseIntensity()>=7){
+//            query = user.getExercisePart() + " " + user.getExercisePurpose() +" 매운맛 운동";
+//        }
+//        else{
+//            query = user.getExercisePart() + " " + user.getExercisePurpose()+" 운동";
+//        }
         return query;
     }
 

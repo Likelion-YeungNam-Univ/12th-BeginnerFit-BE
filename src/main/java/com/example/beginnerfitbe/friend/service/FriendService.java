@@ -74,11 +74,15 @@ public class FriendService {
                             sender.getId(),
                             sender.getEmail(),
                             sender.getName(),
-                            sender.getExercisePurpose(),
-                            sender.getExercisePart(),
+                            sender.getHeight(),
+                            sender.getWeight(),
+                            sender.getTargetWeight(),
+                            sender.getDate(),
+                            sender.getTargetDate(),
                             sender.getExerciseTime(),
-                            sender.getExerciseIntensity(),
-                            sender.getProfilePictureUrl()
+                            sender.getExerciseGoals(),
+                            sender.getConcernedAreas(),
+                            sender.getExerciseIntensity()
                     );
                 })
                 .collect(Collectors.toList());
@@ -94,11 +98,15 @@ public class FriendService {
                             receiver.getId(),
                             receiver.getEmail(),
                             receiver.getName(),
-                            receiver.getExercisePurpose(),
-                            receiver.getExercisePart(),
+                            receiver.getHeight(),
+                            receiver.getWeight(),
+                            receiver.getTargetWeight(),
+                            receiver.getDate(),
+                            receiver.getTargetDate(),
                             receiver.getExerciseTime(),
-                            receiver.getExerciseIntensity(),
-                            receiver.getProfilePictureUrl()
+                            receiver.getExerciseGoals(),
+                            receiver.getConcernedAreas(),
+                            receiver.getExerciseIntensity()
                     );
                 })
                 .collect(Collectors.toList());
@@ -117,11 +125,15 @@ public class FriendService {
                             sender.getId(),
                             sender.getEmail(),
                             sender.getName(),
-                            sender.getExercisePurpose(),
-                            sender.getExercisePart(),
+                            sender.getHeight(),
+                            sender.getWeight(),
+                            sender.getTargetWeight(),
+                            sender.getDate(),
+                            sender.getTargetDate(),
                             sender.getExerciseTime(),
-                            sender.getExerciseIntensity(),
-                            sender.getProfilePictureUrl()
+                            sender.getExerciseGoals(),
+                            sender.getConcernedAreas(),
+                            sender.getExerciseIntensity()
                     );
                 })
                 .collect(Collectors.toList());
@@ -131,11 +143,15 @@ public class FriendService {
                     receiver.getId(),
                     receiver.getEmail(),
                     receiver.getName(),
-                    receiver.getExercisePurpose(),
-                    receiver.getExercisePart(),
+                    receiver.getHeight(),
+                    receiver.getWeight(),
+                    receiver.getTargetWeight(),
+                    receiver.getDate(),
+                    receiver.getTargetDate(),
                     receiver.getExerciseTime(),
-                    receiver.getExerciseIntensity(),
-                    receiver.getProfilePictureUrl()
+                    receiver.getExerciseGoals(),
+                    receiver.getConcernedAreas(),
+                    receiver.getExerciseIntensity()
             ));
         }
 
@@ -175,11 +191,15 @@ public class FriendService {
                 friend.getId(),
                 friend.getEmail(),
                 friend.getName(),
-                friend.getExercisePurpose(),
-                friend.getExercisePart(),
+                friend.getHeight(),
+                friend.getWeight(),
+                friend.getTargetWeight(),
+                friend.getDate(),
+                friend.getTargetDate(),
                 friend.getExerciseTime(),
-                friend.getExerciseIntensity(),
-                friend.getProfilePictureUrl()
+                friend.getExerciseGoals(),
+                friend.getConcernedAreas(),
+                friend.getExerciseIntensity()
         );
     }
 
