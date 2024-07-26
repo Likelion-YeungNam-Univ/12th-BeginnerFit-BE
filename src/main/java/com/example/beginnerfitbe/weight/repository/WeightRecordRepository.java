@@ -10,4 +10,5 @@ import java.util.List;
 @Repository
 public interface WeightRecordRepository extends JpaRepository<WeightRecord, Long> {
     List<WeightRecord> findByUserOrderByDateAsc(User user);
+    List<WeightRecord> findTop5ByUserOrderByDateDesc(User user);
 }
