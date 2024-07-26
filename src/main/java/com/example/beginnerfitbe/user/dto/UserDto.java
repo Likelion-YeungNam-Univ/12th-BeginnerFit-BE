@@ -17,11 +17,11 @@ public class UserDto {
     private String date;
     private String targetDate;
     private int exerciseTime;
-    private List<String> exercisePurpose;
-    private List<String> exercisePart;
+    private List<String> exerciseGoals;
+    private List<String> concernedAreas;
     private List<String> exerciseIntensity;
 
-    public UserDto(Long id, String email, String name, String password, double height, double weight, double targetWeight, String date, String targetDate, int exerciseTime, List<String> exercisePurpose, List<String> exercisePart, List<String> exerciseIntensity) {
+    public UserDto(Long id, String email, String name, String password, double height, double weight, double targetWeight, String date, String targetDate, int exerciseTime, List<String> exerciseGoals, List<String> concernedAreas, List<String> exerciseIntensity) {
         this.id = id;
         this.email = email;
         this.name = name;
@@ -32,8 +32,8 @@ public class UserDto {
         this.date = date;
         this.targetDate = targetDate;
         this.exerciseTime = exerciseTime;
-        this.exercisePurpose = exercisePurpose;
-        this.exercisePart = exercisePart;
+        this.exerciseGoals = exerciseGoals;
+        this.concernedAreas = concernedAreas;
         this.exerciseIntensity = exerciseIntensity;
     }
 
@@ -49,9 +49,9 @@ public class UserDto {
                 user.getDate(),
                 user.getTargetDate(),
                 user.getExerciseTime(),
-                user.getExerciseIntensity(),
                 user.getExerciseGoals(),
-                user.getConcernedAreas()
+                user.getConcernedAreas(),
+                user.getExerciseIntensity()
         );
     }
 }
