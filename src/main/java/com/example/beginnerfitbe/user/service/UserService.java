@@ -69,7 +69,7 @@ public class UserService {
         userRepository.save(user);
 
         //플레이리스트 생성
-//        playlistService.create(user);
+        playlistService.create(user);
 
         //몸무게 기록
         weightRecordService.create(user.getId(), user.getWeight());
