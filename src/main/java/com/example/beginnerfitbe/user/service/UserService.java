@@ -3,12 +3,12 @@ package com.example.beginnerfitbe.user.service;
 
 import com.example.beginnerfitbe.error.StateResponse;
 import com.example.beginnerfitbe.playlist.service.PlaylistService;
-import com.example.beginnerfitbe.s3.util.S3Uploader;
 import com.example.beginnerfitbe.user.domain.User;
 import com.example.beginnerfitbe.user.dto.HealthInfoReqDto;
 import com.example.beginnerfitbe.user.dto.UserDto;
 import com.example.beginnerfitbe.user.dto.UserUpdateDto;
 import com.example.beginnerfitbe.user.repository.UserRepository;
+import com.example.beginnerfitbe.weight.service.WeightRecordService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -24,6 +24,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PlaylistService playlistService;
+    private final WeightRecordService weightRecordService;
 
     public List<UserDto> list(){
         return userRepository.findAll().stream()
@@ -69,6 +70,9 @@ public class UserService {
 
         //플레이리스트 생성
         playlistService.create(user);
+
+        //몸무게 기록
+        weightRecordService.create(user.getId(), user.getWeight());
 
         return StateResponse.builder()
                 .code("SUCCESS")

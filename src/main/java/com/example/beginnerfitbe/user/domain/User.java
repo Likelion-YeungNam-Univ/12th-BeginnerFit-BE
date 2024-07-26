@@ -1,5 +1,6 @@
 package com.example.beginnerfitbe.user.domain;
 
+import com.example.beginnerfitbe.weight.domain.WeightRecord;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -29,13 +30,13 @@ public class User {
     private String profileUrl;
 
     @Column
-    private int height;
+    private double height;
 
     @Column
-    private int weight;
+    private double weight;
 
     @Column
-    private int targetWeight;
+    private double targetWeight;
 
     @Column
     private String date;
@@ -56,11 +57,11 @@ public class User {
     private List<String> concernedAreas;
 
 
-//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<WeightRecord> weightRecords;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<WeightRecord> weightRecords;
 
     @Builder
-    public User(String email, String name, String password, String profileUrl, int height, int weight, int targetWeight, String date, String targetDate, int exerciseTime, List<String> exerciseIntensity, List<String> exerciseGoals, List<String> concernedAreas) {
+    public User(String email, String name, String password, String profileUrl, double height, double weight, double targetWeight, String date, String targetDate, int exerciseTime, List<String> exerciseIntensity, List<String> exerciseGoals, List<String> concernedAreas) {
         this.email = email;
         this.name = name;
         this.password = password;
@@ -76,7 +77,7 @@ public class User {
         this.concernedAreas = concernedAreas;
     }
 
-    public void updateHealthInfo(int height, int weight, int targetWeight, String date, String targetDate, int exerciseTime, List<String> exerciseIntensity, List<String> exerciseGoals, List<String> concernedAreas) {
+    public void updateHealthInfo(double height, double weight, double targetWeight, String date, String targetDate, int exerciseTime, List<String> exerciseIntensity, List<String> exerciseGoals, List<String> concernedAreas) {
         this.height = height;
         this.weight = weight;
         this.targetWeight = targetWeight;

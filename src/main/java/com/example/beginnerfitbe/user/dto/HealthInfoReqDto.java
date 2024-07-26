@@ -10,9 +10,9 @@ import java.util.List;
 
 public class HealthInfoReqDto {
     private String email;
-    private int height;
-    private int weight;
-    private int targetWeight;
+    private double height;
+    private double weight;
+    private double targetWeight;
     private String date;
     private String targetDate;
     private int exerciseTime;

@@ -11,9 +11,9 @@ public class UserDto {
     private String email;
     private String name;
     private String password;
-    private int height;
-    private int weight;
-    private int targetWeight;
+    private double height;
+    private double weight;
+    private double targetWeight;
     private String date;
     private String targetDate;
     private int exerciseTime;
@@ -21,7 +21,7 @@ public class UserDto {
     private List<String> exercisePart;
     private List<String> exerciseIntensity;
 
-    public UserDto(Long id, String email, String name, String password, int height, int weight, int targetWeight, String date, String targetDate, int exerciseTime, List<String> exercisePurpose, List<String> exercisePart, List<String> exerciseIntensity) {
+    public UserDto(Long id, String email, String name, String password, double height, double weight, double targetWeight, String date, String targetDate, int exerciseTime, List<String> exercisePurpose, List<String> exercisePart, List<String> exerciseIntensity) {
         this.id = id;
         this.email = email;
         this.name = name;
