@@ -15,12 +15,11 @@ public class PostDto {
 
     private Long userId;
     private String userName;
-    private String profileUrl;
     private String categoryName;
     private int likeCnt;
     private int declarationCnt;
 
-    public PostDto(Long id, String title, String content, String pictureUrl, LocalDateTime createdAt, Long userId, String userName, String profileUrl, String categoryName, int likeCnt, int declarationCnt) {
+    public PostDto(Long id, String title, String content, String pictureUrl, LocalDateTime createdAt, Long userId, String userName,  String categoryName, int likeCnt, int declarationCnt) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -28,7 +27,6 @@ public class PostDto {
         this.createdAt = createdAt;
         this.userId = userId;
         this.userName = userName;
-        this.profileUrl = profileUrl;
         this.categoryName = categoryName;
         this.declarationCnt =declarationCnt;
         this. likeCnt = likeCnt;
@@ -43,7 +41,6 @@ public class PostDto {
                 post.getCreatedAt(),
                 post.getUser().getId(),
                 post.getUser().getName(),
-                post.getUser().getProfilePictureUrl(),
                 post.getCategory().getCategoryName(),
                 post.getDeclarations().size(),
                 post.getPostLikes().size()
