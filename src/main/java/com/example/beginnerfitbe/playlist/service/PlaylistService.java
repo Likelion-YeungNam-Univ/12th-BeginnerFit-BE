@@ -55,8 +55,8 @@ public class PlaylistService {
     }
 
 
-    // 매일 자정에 실행
-    @Scheduled(cron = "0 0 0 * * *", zone = "Asia/Seoul")
+    // 매일 자정에 실행 (일단 정지)
+//    @Scheduled(cron = "0 0 0 * * *", zone = "Asia/Seoul")
     public void createPlaylistDaily() {
         userRepository.findAll().forEach(user -> {
             try {
@@ -111,6 +111,7 @@ public class PlaylistService {
     public List<PlaylistDto> me(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
         return playlistRepository.findByUserOrderByCreatedAtDesc(user).stream()
+                .limit(5)
                 .map(PlaylistDto::fromEntity)
                 .collect(Collectors.toList());
     }
