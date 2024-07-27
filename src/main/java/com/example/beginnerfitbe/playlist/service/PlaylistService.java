@@ -3,6 +3,7 @@ package com.example.beginnerfitbe.playlist.service;
 import com.example.beginnerfitbe.playlist.domain.Playlist;
 import com.example.beginnerfitbe.playlist.dto.PlaylistDto;
 import com.example.beginnerfitbe.playlist.repository.PlaylistRepository;
+import com.example.beginnerfitbe.user.dto.UserDto;
 import com.example.beginnerfitbe.youtube.dto.SelectedVideoDto;
 import com.example.beginnerfitbe.user.domain.User;
 import com.example.beginnerfitbe.user.repository.UserRepository;
@@ -19,7 +20,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 @Service
@@ -67,19 +70,22 @@ public class PlaylistService {
         });
     }
 
-    private String searchKeyword(User user) {
+    public String searchKeyword(User user) {
+        List<String> keywords = new ArrayList<>();
 
-        String query= "운동";
-//        if(user.getExerciseIntensity()<=3){
-//            query = user.getExercisePart() + " " + user.getExercisePurpose() +" 쉬운 운동";
-//        }
-//        else if(user.getExerciseIntensity()>=7){
-//            query = user.getExercisePart() + " " + user.getExercisePurpose() +" 매운맛 운동";
-//        }
-//        else{
-//            query = user.getExercisePart() + " " + user.getExercisePurpose()+" 운동";
-//        }
-        return query;
+        String areas = String.join(" ", user.getConcernedAreas()); // 고정된 부위
+        List<String> goals = user.getExerciseGoals();
+        List<String> intensities = user.getExerciseIntensity();
+
+        // 목표와 강도를 조합하여 키워드 생성
+        for (String goal : goals) {
+            for (String intensity : intensities) {
+                keywords.add(areas + " " + goal + " " + intensity + " 운동");
+            }
+        }
+        Random random = new Random();
+        int randomIndex = random.nextInt(keywords.size());
+        return keywords.get(randomIndex);
     }
 
     @Transactional
