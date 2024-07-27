@@ -1,6 +1,5 @@
 package com.example.beginnerfitbe.user.dto;
 
-import com.example.beginnerfitbe.user.domain.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -10,21 +9,4 @@ public class SignUpReqDto {
     private String email;
     private String name;
     private String password;
-    private String exercisePurpose;
-    private String exercisePart;
-    private int exerciseTime;
-    private int exerciseIntensity;
-
-    public User toEntity() {
-        return User.builder()
-                .email(email)
-                .name(name)
-                .password(password)
-                .profilePictureUrl(null)
-                .exercisePurpose(exercisePurpose)
-                .exercisePart(exercisePart)
-                .exerciseTime(exerciseTime)
-                .exerciseIntensity(exerciseIntensity)
-                .build();
-    }
 }
