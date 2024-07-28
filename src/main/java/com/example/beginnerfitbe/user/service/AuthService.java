@@ -28,6 +28,9 @@ public class AuthService {
         if(userService.nameCheck(name)){
             throw new IllegalArgumentException("이미 등록된 닉네임입니다.");
         }
+        else if(userService.emailCheck(email)){
+            throw new IllegalArgumentException("이미 등록된 이메일입니다.");
+        }
         //회원 기본 정보만 입력
         return User.builder()
                 .email(email)

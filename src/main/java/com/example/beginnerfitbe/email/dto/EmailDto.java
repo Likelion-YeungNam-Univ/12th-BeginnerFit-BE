@@ -1,4 +1,4 @@
-package com.example.beginnerfitbe.email;
+package com.example.beginnerfitbe.email.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

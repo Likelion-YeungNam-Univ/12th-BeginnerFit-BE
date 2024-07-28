@@ -48,7 +48,6 @@ public class UserService {
         User user = userRepository.findByName(name).orElseThrow(() -> new IllegalArgumentException("User not found"));
         return user.getEmail();
     }
-
     public List<UserDto> me(Long id){
         return userRepository.findById(id).stream()
                 .map(UserDto::fromEntity)
@@ -97,6 +96,10 @@ public class UserService {
                 .build();
 
     }
+    public StateResponse resetPassword(String email, String password){
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("User not found"));
+        return
+    }
     //회원 탈퇴
     public ResponseEntity<StateResponse> withdrawal(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("User not found"));
@@ -109,6 +112,12 @@ public class UserService {
     public Boolean nameCheck(String name) {
         Optional<User> checkUserName = userRepository.findByName(name);
         return checkUserName.isPresent();
+    }
+
+    //이름 중복 x
+    public Boolean emailCheck(String email) {
+        Optional<User> checkEmail = userRepository.findByEmail(email);
+        return checkEmail.isPresent();
     }
 
 
