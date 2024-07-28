@@ -20,7 +20,7 @@ public class User {
     @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String name;
 
     @Column(nullable = false)
@@ -91,4 +91,5 @@ public class User {
     public void updateName(String newName){
         this.name= newName;
     }
+    public void updatePassword(String newPassword){this.password = newPassword;}
 }

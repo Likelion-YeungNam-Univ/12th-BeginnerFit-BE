@@ -2,7 +2,7 @@ package com.example.beginnerfitbe.email.service;
 
 import java.util.Random;
 
-import com.example.beginnerfitbe.email.EmailDto;
+import com.example.beginnerfitbe.email.dto.EmailDto;
 import com.example.beginnerfitbe.error.StateResponse;
 import com.example.beginnerfitbe.redis.service.RedisService;
 import jakarta.mail.internet.InternetAddress;

@@ -10,5 +10,6 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long> {
     //중복 가입 확인
     Optional<User> findByEmail(String id);
+    Optional<User> findByName(String name);
 }
 

@@ -44,6 +44,10 @@ public class UserService {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("User not found"));
         return UserDto.fromEntity(user);
     }
+    public String getEmailByName(String name){
+        User user = userRepository.findByName(name).orElseThrow(() -> new IllegalArgumentException("User not found"));
+        return user.getEmail();
+    }
     public List<UserDto> me(Long id){
         return userRepository.findById(id).stream()
                 .map(UserDto::fromEntity)
@@ -92,6 +96,18 @@ public class UserService {
                 .build();
 
     }
+    public StateResponse resetPassword(String email,String password){
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        user. updatePassword(password);
+        userRepository.save(user);
+
+        return StateResponse.builder()
+                .code("SUCCESS")
+                .message("비밀번호가 재발급 되었습니다.")
+                .build();
+
+    }
     //회원 탈퇴
     public ResponseEntity<StateResponse> withdrawal(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("User not found"));
@@ -100,11 +116,17 @@ public class UserService {
         return ResponseEntity.ok(StateResponse.builder().code("SUCCESS").message("성공적으로 회원탈퇴 처리되었습니다.").build());
     }
 
-    public Boolean emailCheck(String email) {
-        Optional<User> checkUserEmail = userRepository.findByEmail(email);
-        return checkUserEmail.isPresent();
+    //이름 중복 x
+    public Boolean nameCheck(String name) {
+        Optional<User> checkUserName = userRepository.findByName(name);
+        return checkUserName.isPresent();
     }
 
+    //이름 중복 x
+    public Boolean emailCheck(String email) {
+        Optional<User> checkEmail = userRepository.findByEmail(email);
+        return checkEmail.isPresent();
+    }
 
 
 
