@@ -44,6 +44,11 @@ public class UserService {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("User not found"));
         return UserDto.fromEntity(user);
     }
+    public String getEmailByName(String name){
+        User user = userRepository.findByName(name).orElseThrow(() -> new IllegalArgumentException("User not found"));
+        return user.getEmail();
+    }
+
     public List<UserDto> me(Long id){
         return userRepository.findById(id).stream()
                 .map(UserDto::fromEntity)
@@ -105,7 +110,6 @@ public class UserService {
         Optional<User> checkUserName = userRepository.findByName(name);
         return checkUserName.isPresent();
     }
-
 
 
 

@@ -6,10 +6,7 @@ import com.example.beginnerfitbe.user.service.AuthService;
 import com.example.beginnerfitbe.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
@@ -29,6 +26,11 @@ public class AuthController {
     public ResponseEntity<?> signIn(@RequestBody SignInReqDto dto) {
         return ResponseEntity.ok(authService.signIn(dto));
     }
-    
+
+    @PostMapping("/find-id")
+    public ResponseEntity<?> findId(@RequestParam String name) {
+        return ResponseEntity.ok(userService.getEmailByName(name));
+    }
+
 
 }
