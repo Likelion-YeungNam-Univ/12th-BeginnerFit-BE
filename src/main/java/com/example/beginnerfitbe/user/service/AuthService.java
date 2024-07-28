@@ -54,7 +54,7 @@ public class AuthService {
     public SignInResDto signIn(SignInReqDto dto) {
         UserDto userDto = userService.readByEmail(dto.getEmail());
         if (passwordEncoder.matches(dto.getPassword(), userDto.getPassword())) {
-            return new SignInResDto(jwtUtil.generateToken(userDto.getEmail(), userDto.getId()));
+            return new SignInResDto(userDto.getId(), jwtUtil.generateToken(userDto.getEmail(), userDto.getId()));
         } else {
             throw new IllegalArgumentException("Invalid password");
         }
