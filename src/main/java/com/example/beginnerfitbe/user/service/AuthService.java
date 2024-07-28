@@ -24,9 +24,9 @@ public class AuthService {
         String name=dto.getName();
         String password=passwordEncoder.encode(dto.getPassword());
 
-        //중복 가입 확인
-        if(userService.emailCheck(email)){
-            throw new IllegalArgumentException("이미 등록된 사용자입니다.");
+        //중복 닉네임 확인
+        if(userService.nameCheck(name)){
+            throw new IllegalArgumentException("이미 등록된 닉네임입니다.");
         }
         //회원 기본 정보만 입력
         return User.builder()

@@ -100,9 +100,10 @@ public class UserService {
         return ResponseEntity.ok(StateResponse.builder().code("SUCCESS").message("성공적으로 회원탈퇴 처리되었습니다.").build());
     }
 
-    public Boolean emailCheck(String email) {
-        Optional<User> checkUserEmail = userRepository.findByEmail(email);
-        return checkUserEmail.isPresent();
+    //이름 중복 x
+    public Boolean nameCheck(String name) {
+        Optional<User> checkUserName = userRepository.findByName(name);
+        return checkUserName.isPresent();
     }
 
 
