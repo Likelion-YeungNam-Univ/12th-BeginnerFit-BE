@@ -2,6 +2,7 @@ package com.example.beginnerfitbe.playlist.service;
 
 import com.example.beginnerfitbe.playlist.domain.Playlist;
 import com.example.beginnerfitbe.playlist.dto.PlaylistDto;
+import com.example.beginnerfitbe.playlist.dto.TagDto;
 import com.example.beginnerfitbe.playlist.repository.PlaylistRepository;
 import com.example.beginnerfitbe.user.dto.UserDto;
 import com.example.beginnerfitbe.youtube.dto.SelectedVideoDto;
@@ -21,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -43,7 +45,7 @@ public class PlaylistService {
         SelectedVideoDto selectVideoDto = youtubeUtil.selectVideos(query, requestTime);
 
         Playlist playlist = Playlist.builder()
-                .title(query + " 집중 공략하기 플리")
+                .title(query + " 집중공략 플리")
                 .createdAt(LocalDateTime.now())
                 .isCompleted(false)
                 .totalTime(selectVideoDto.getTotalTime())
@@ -54,6 +56,7 @@ public class PlaylistService {
         playlist = playlistRepository.save(playlist);
 
         youtubeVideoService.create(selectVideoDto, playlist);
+
         return PlaylistDto.fromEntity(playlist);
     }
 
