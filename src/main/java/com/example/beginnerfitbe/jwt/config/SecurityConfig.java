@@ -29,6 +29,7 @@ public class SecurityConfig {
             "/auth/email-send",
             "/auth/email-verify",
             "/auth/find-id",
+            "/auth/find-password",
             "/users/health-info",
             "/swagger-ui.html",
             "/swagger-ui/**",

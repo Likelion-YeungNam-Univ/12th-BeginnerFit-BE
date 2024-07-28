@@ -96,9 +96,17 @@ public class UserService {
                 .build();
 
     }
-    public StateResponse resetPassword(String email, String password){
+    public StateResponse resetPassword(String email,String password){
         User user = userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("User not found"));
-        return
+
+        user. updatePassword(password);
+        userRepository.save(user);
+
+        return StateResponse.builder()
+                .code("SUCCESS")
+                .message("비밀번호가 재발급 되었습니다.")
+                .build();
+
     }
     //회원 탈퇴
     public ResponseEntity<StateResponse> withdrawal(Long id) {

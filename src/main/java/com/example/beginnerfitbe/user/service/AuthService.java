@@ -1,5 +1,6 @@
 package com.example.beginnerfitbe.user.service;
 
+import com.example.beginnerfitbe.error.StateResponse;
 import com.example.beginnerfitbe.jwt.util.JwtUtil;
 import com.example.beginnerfitbe.user.domain.User;
 import com.example.beginnerfitbe.user.dto.SignInReqDto;
@@ -56,6 +57,10 @@ public class AuthService {
         } else {
             throw new IllegalArgumentException("Invalid password");
         }
+    }
+    public StateResponse resetPassword(String email, String password){
+        String newPassword=passwordEncoder.encode(password);
+        return userService.resetPassword(email,newPassword);
     }
 
 }

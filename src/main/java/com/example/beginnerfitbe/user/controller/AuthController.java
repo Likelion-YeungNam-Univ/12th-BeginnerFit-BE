@@ -1,5 +1,6 @@
 package com.example.beginnerfitbe.user.controller;
 
+import com.example.beginnerfitbe.user.dto.ResetPasswordDto;
 import com.example.beginnerfitbe.user.dto.SignInReqDto;
 import com.example.beginnerfitbe.user.dto.SignUpReqDto;
 import com.example.beginnerfitbe.user.service.AuthService;
@@ -30,6 +31,12 @@ public class AuthController {
     @PostMapping("/find-id")
     public ResponseEntity<?> findId(@RequestParam String name) {
         return ResponseEntity.ok(userService.getEmailByName(name));
+    }
+    @PostMapping("/find-password")
+    public ResponseEntity<?> updatePw(@RequestBody ResetPasswordDto resetPasswordDto) {
+        String email = resetPasswordDto.getEmail();
+        String password = resetPasswordDto.getPassword();
+        return ResponseEntity.ok(authService.resetPassword(email, password));
     }
 
 

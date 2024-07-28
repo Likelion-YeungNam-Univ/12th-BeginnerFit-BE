@@ -91,4 +91,5 @@ public class User {
     public void updateName(String newName){
         this.name= newName;
     }
+    public void updatePassword(String newPassword){this.password = newPassword;}
 }
