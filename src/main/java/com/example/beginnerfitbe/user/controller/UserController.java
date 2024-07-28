@@ -67,11 +67,4 @@ public class UserController{
         return userService.withdrawal(userId);
     }
 
-    @GetMapping("/emailcheck")
-    @Operation(summary="이메일 중복 확인 메서드", description = "이메일을 받아 존재하는지 확인하는 메서드입니다.")
-    ResponseEntity<Boolean> emailCheck(@RequestParam(value = "email") String email){
-        return ResponseEntity.ok(userService.emailCheck(email));
-    }
-
-
 }
