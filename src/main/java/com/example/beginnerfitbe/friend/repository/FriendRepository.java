@@ -22,4 +22,6 @@ public interface FriendRepository extends JpaRepository<Friend, Long> {
 
     boolean existsByReceiverIdAndSenderIdAndIsAcceptedTrue(Long userId, Long id);
 
+    List<Friend> findBySenderIdOrReceiverId(Long senderId, Long receiverId);
+
 }

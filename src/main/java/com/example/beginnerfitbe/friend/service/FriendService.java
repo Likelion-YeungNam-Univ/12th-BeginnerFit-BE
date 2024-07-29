@@ -5,6 +5,7 @@ import com.example.beginnerfitbe.friend.dto.FriendDTO;
 import com.example.beginnerfitbe.friend.repository.FriendRepository;
 import com.example.beginnerfitbe.user.domain.User;
 import com.example.beginnerfitbe.user.dto.OtherUserDto;
+import com.example.beginnerfitbe.user.dto.UserResponseDto;
 import com.example.beginnerfitbe.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -201,6 +202,35 @@ public class FriendService {
                 friend.getConcernedAreas(),
                 friend.getExerciseIntensity()
         );
+    }
+
+    @Transactional(readOnly = true)
+    public List<UserResponseDto> getNonFriendUsers(Long userId) {
+        // 모든 사용자 조회
+        List<User> allUsers = userRepository.findAll();
+
+        // 친구 목록 조회
+        List<Friend> friends = friendRepository.findBySenderIdOrReceiverId(userId, userId);
+
+        // 친구가 아닌 사용자 필터링
+        List<Long> friendIds = friends.stream()
+                .filter(Friend::isAccepted)
+                .map(friend -> friend.getSender().getId() == userId ? friend.getReceiver().getId() : friend.getSender().getId())
+                .collect(Collectors.toList());
+
+        // 친구 요청을 보낸 사용자 목록 추가
+        List<Long> pendingFriendRequests = friends.stream()
+                .filter(friend -> !friend.isAccepted() && friend.getSender().getId().equals(userId))
+                .map(friend -> friend.getReceiver().getId())
+                .collect(Collectors.toList());
+
+        // 친구가 아닌 사용자 목록 반환
+        return allUsers.stream()
+                .filter(user -> !friendIds.contains(user.getId()) // 친구 목록에 없는 사용자
+                        && !pendingFriendRequests.contains(user.getId()) // 친구 요청을 보낸 사용자
+                        && !user.getId().equals(userId)) // 자신 제외
+                .map(user -> new UserResponseDto(user.getId(), user.getEmail(), user.getName(), user.getProfileUrl()))
+                .collect(Collectors.toList());
     }
 
 }
