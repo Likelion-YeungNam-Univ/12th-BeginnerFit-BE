@@ -85,4 +85,12 @@ public class PostLikeService {
                 .collect(Collectors.toList());
     }
 
+    public boolean liked(Long userId, Long postId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("not found user"));
+        Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("not found post"));
+
+        Optional<PostLike> postLikeOpt = postLikeRepository.findByUserAndPost(user, post);
+        return postLikeOpt.isPresent();
+
+    }
 }
