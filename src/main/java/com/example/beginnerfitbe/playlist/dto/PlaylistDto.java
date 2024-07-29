@@ -39,7 +39,7 @@ public class PlaylistDto {
     }
 
     public static PlaylistDto fromEntity(Playlist playlist) {
-        Set<String> excludedWords = Set.of("운동", "집중공략", "플리");
+        Set<String> excludedWords = Set.of("운동", "집중", "공략", "공략하기","집중공략", "플리");
         String titleWithoutExcludedWords = Arrays.stream(playlist.getTitle().split(" "))
                 .filter(word -> !excludedWords.contains(word))
                 .collect(Collectors.joining(" "));
