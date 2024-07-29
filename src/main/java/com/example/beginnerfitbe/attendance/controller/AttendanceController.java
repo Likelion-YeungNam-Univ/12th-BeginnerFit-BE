@@ -1,5 +1,6 @@
 package com.example.beginnerfitbe.attendance.controller;
 
+import com.example.beginnerfitbe.attendance.dto.AttendanceCountDTO;
 import com.example.beginnerfitbe.attendance.dto.AttendanceDateDTO;
 import com.example.beginnerfitbe.attendance.service.AttendanceService;
 import com.example.beginnerfitbe.jwt.util.JwtUtil;
@@ -20,12 +21,21 @@ public class AttendanceController {
     private final AttendanceService attendanceService;
     private final JwtUtil jwtUtil;
 
-    @GetMapping("")
+    @GetMapping("/dates")
     public ResponseEntity<List<AttendanceDateDTO>> getAttendanceDates(HttpServletRequest request) {
         String token = jwtUtil.resolveToken(request);
         Long userId = jwtUtil.getUserId(token.substring(7)); // JWT에서 사용자 ID 추출
 
         List<AttendanceDateDTO> attendanceDates = attendanceService.getAttendanceDatesByUserId(userId);
         return ResponseEntity.ok(attendanceDates); // AttendanceDateDTO 리스트 반환
+    }
+
+    @GetMapping("/monthly-count")
+    public ResponseEntity<List<AttendanceCountDTO>> getMonthlyAttendanceCount(HttpServletRequest request) {
+        String token = jwtUtil.resolveToken(request);
+        Long userId = jwtUtil.getUserId(token.substring(7)); // JWT에서 사용자 ID 추출
+
+        List<AttendanceCountDTO> monthlyCounts = attendanceService.getMonthlyAttendanceCountByUserId(userId);
+        return ResponseEntity.ok(monthlyCounts); // AttendanceCountDTO 리스트 반환
     }
 }
