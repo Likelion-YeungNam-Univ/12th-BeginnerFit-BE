@@ -1,17 +1,16 @@
 package com.example.beginnerfitbe.user.domain;
 
+import com.example.beginnerfitbe.attendance.domain.Attendance;
 import com.example.beginnerfitbe.weight.domain.WeightRecord;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
-
+@Data
 @Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PUBLIC)
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -59,6 +58,10 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<WeightRecord> weightRecords;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private List<Attendance> attendances = new ArrayList<>();
+
 
     @Builder
     public User(String email, String name, String password, String profileUrl, double height, double weight, double targetWeight, String date, String targetDate, int exerciseTime, List<String> exerciseIntensity, List<String> exerciseGoals, List<String> concernedAreas) {

@@ -1,5 +1,7 @@
 package com.example.beginnerfitbe.user.service;
 
+import com.example.beginnerfitbe.attendance.domain.Attendance;
+import com.example.beginnerfitbe.attendance.repostitory.AttendanceRepository;
 import com.example.beginnerfitbe.error.StateResponse;
 import com.example.beginnerfitbe.jwt.util.JwtUtil;
 import com.example.beginnerfitbe.user.domain.User;
@@ -10,15 +12,17 @@ import com.example.beginnerfitbe.user.dto.UserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 @Service
+
 @RequiredArgsConstructor
 public class AuthService {
     private final UserService userService;
     private final JwtUtil jwtUtil;
     private final PasswordEncoder passwordEncoder;
+    private final AttendanceRepository attendanceRepository;
 
     public User signUp (SignUpReqDto dto){
         String email=dto.getEmail();
@@ -54,6 +58,24 @@ public class AuthService {
     public SignInResDto signIn(SignInReqDto dto) {
         UserDto userDto = userService.readByEmail(dto.getEmail());
         if (passwordEncoder.matches(dto.getPassword(), userDto.getPassword())) {
+
+            // 오늘 날짜 가져오기
+            LocalDate today = LocalDate.now();
+
+            // 출석 기록 확인
+            boolean hasAttendance = attendanceRepository.existsByUserIdAndPresentDate(userDto.getId(), today);
+
+            // 출석 기록이 없으면 새로 생성
+            if (!hasAttendance) {
+                Attendance attendance = new Attendance();
+                attendance.setPresentDate(today);
+                User user = new User();
+                user.setId(userDto.getId());
+                attendance.setUser(user);
+                attendanceRepository.save(attendance); // Attendance 저장
+            }
+
+
             return new SignInResDto(jwtUtil.generateToken(userDto.getEmail(), userDto.getId()));
         } else {
             throw new IllegalArgumentException("Invalid password");
