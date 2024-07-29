@@ -1,10 +1,8 @@
 package com.example.beginnerfitbe.jwt.util;
 
+import com.example.beginnerfitbe.redis.service.RedisService;
 import com.example.beginnerfitbe.user.service.UserService;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -14,46 +12,83 @@ import java.util.Date;
 @Component
 public class JwtUtil {
     private final String secretKey;
-    private final long expiration;
+    private final long accessExpiration;
+    private final long refreshExpiration;
     private final String issuer;
     private final UserService userService;
+    private final RedisService redisService;
 
     public JwtUtil(
             @Value("${jwt.secret}") String secretKey,
-            @Value("${jwt.expiration}") long expiration,
+            @Value("${jwt.accessExpiration}") long accessExpiration,
+            @Value("${jwt.refreshExpiration}") long refreshExpiration,
             @Value("${jwt.issuer}") String issuer,
-            UserService userService
+            UserService userService,
+            RedisService redisService
     ) {
         this.secretKey = secretKey;
-        this.expiration = expiration;
+        this.accessExpiration = accessExpiration;
+        this.refreshExpiration = refreshExpiration;
         this.issuer = issuer;
         this.userService = userService;
+        this.redisService = redisService;
     }
 
-
-    public String generateToken(String email, Long userId) {
+    public String generateAccessToken(String email, Long userId) {
         return Jwts.builder()
                 .setSubject(email)
                 .claim("userId", userId)
                 .setIssuer(issuer)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + expiration))
+                .setExpiration(new Date(System.currentTimeMillis() + accessExpiration))
                 .signWith(SignatureAlgorithm.HS256, secretKey.getBytes())
                 .compact();
     }
 
+    public String generateRefreshToken(String email) {
+        String refreshToken = Jwts.builder()
+                .setIssuer(issuer)
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + refreshExpiration))
+                .signWith(SignatureAlgorithm.HS256, secretKey.getBytes())
+                .compact();
+        redisService.setDataExpire(email, refreshToken, refreshExpiration);
+        return refreshToken;
+    }
+
     public boolean validateToken(String token) {
         try {
-            Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(secretKey.getBytes()).build().parseClaimsJws(token);
-            // 존재하는 회원인지 확인
+            Jws<Claims> claims = Jwts.parserBuilder()
+                    .setSigningKey(secretKey.getBytes())
+                    .build()
+                    .parseClaimsJws(token);
             if (userService.read(claims.getBody().get("userId", Long.class)) == null) {
                 return false;
             }
-
-            // 만료되었을 시 false
             return !claims.getBody().getExpiration().before(new Date());
         } catch (Exception e) {
+        }
+        return false;
+    }
+
+    public boolean validateTokenExceptExpiration(String token) {
+        try {
+            Jwts.parserBuilder()
+                    .setSigningKey(secretKey.getBytes())
+                    .build()
+                    .parseClaimsJws(token);
+            return true;
+        } catch (ExpiredJwtException e) {
+            return true;
+        } catch (Exception e) {
             return false;
+        }
+    }
+
+    public void validateRefreshToken(String email, String refreshToken) {
+        String redisRefreshToken = redisService.getData(email);
+        if (!refreshToken.equals(redisRefreshToken)) {
+            throw new IllegalArgumentException("유저 정보 일치 x");
         }
     }
 
@@ -61,9 +96,20 @@ public class JwtUtil {
         return request.getHeader("Authorization");
     }
 
-    public Long getUserId(String token) {
-        Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(secretKey.getBytes()).build().parseClaimsJws(token);
-        return claims.getBody().get("userId", Long.class);
+    public Claims parseClaims(String token) {
+        try {
+            return Jwts.parserBuilder()
+                    .setSigningKey(secretKey.getBytes())
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+        } catch (ExpiredJwtException e) {
+            return e.getClaims();
+        }
     }
 
+    public Long getUserId(String token) {
+        Claims claims = parseClaims(token);
+        return claims.get("userId", Long.class);
+    }
 }

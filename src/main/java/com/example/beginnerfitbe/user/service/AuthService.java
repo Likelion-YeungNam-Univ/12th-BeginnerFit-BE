@@ -74,7 +74,10 @@ public class AuthService {
             }
 
 
-            return new SignInResDto(userDto.getId(), jwtUtil.generateToken(userDto.getEmail(), userDto.getId()));
+            return new SignInResDto(userDto.getId(),
+                    jwtUtil.generateAccessToken(userDto.getEmail(), userDto.getId()),
+                    jwtUtil.generateRefreshToken( userDto.getEmail())
+            );
         } else {
             throw new IllegalArgumentException("Invalid password");
         }
@@ -83,5 +86,42 @@ public class AuthService {
         String newPassword=passwordEncoder.encode(password);
         return userService.resetPassword(email,newPassword);
     }
+
+    public SignInResDto refresh(String accessToken, String refreshToken) {
+        String email;
+
+        if (!jwtUtil.validateTokenExceptExpiration(accessToken)) {
+            throw new IllegalArgumentException("Invalid access token");
+        }
+
+        try {
+            email = jwtUtil.parseClaims(accessToken).getSubject();
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Invalid access token");
+        }
+
+        try {
+            jwtUtil.validateRefreshToken(email, refreshToken);
+        } catch (IllegalArgumentException e) {
+            // 4. Access Token과 Refresh Token 모두 만료되었을 때
+            UserDto userDto = userService.readByEmail(email);
+            String newAccessToken = jwtUtil.generateAccessToken(userDto.getEmail(), userDto.getId());
+            String newRefreshToken = jwtUtil.generateRefreshToken(userDto.getEmail());
+            return new SignInResDto(
+                    userDto.getId(),
+                    newAccessToken,
+                    newRefreshToken
+            );
+        }
+
+        // 5. Access Token 만료, Refresh Token 유효
+        UserDto userDto = userService.readByEmail(email);
+        return new SignInResDto(
+                userDto.getId(),
+                jwtUtil.generateAccessToken(userDto.getEmail(), userDto.getId()),
+                refreshToken
+        );
+    }
+
 
 }

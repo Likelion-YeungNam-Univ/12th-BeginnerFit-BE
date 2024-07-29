@@ -5,6 +5,7 @@ import com.example.beginnerfitbe.user.dto.SignInReqDto;
 import com.example.beginnerfitbe.user.dto.SignUpReqDto;
 import com.example.beginnerfitbe.user.service.AuthService;
 import com.example.beginnerfitbe.user.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -38,6 +39,13 @@ public class AuthController {
         String password = resetPasswordDto.getPassword();
         return ResponseEntity.ok(authService.resetPassword(email, password));
     }
+    @PostMapping("/refresh")
+    public ResponseEntity<?> refresh(
+            @RequestHeader("X-Access-Token") String accessToken,
+            @RequestHeader("X-Refresh-Token") String refreshToken
 
+    ) {
+        return ResponseEntity.ok(authService.refresh(accessToken, refreshToken));
+    }
 
 }
