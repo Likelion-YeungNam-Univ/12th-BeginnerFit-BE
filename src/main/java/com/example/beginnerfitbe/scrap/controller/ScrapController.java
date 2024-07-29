@@ -50,4 +50,11 @@ public class ScrapController {
         return ResponseEntity.ok(scrapService.checkScrap(userId, postId));
     }
 
+    @DeleteMapping("/{postId}/scraps")
+    @Operation(summary = "스크랩 취소 메소드", description = "게시글을 스크랩을 취소합니다.")
+    private ResponseEntity<?> delete(HttpServletRequest request, @PathVariable Long postId){
+        Long userId = jwtUtil.getUserId(jwtUtil.resolveToken(request).substring(7));
+        return ResponseEntity.ok(scrapService.delete(userId, postId));
+    }
+
 }

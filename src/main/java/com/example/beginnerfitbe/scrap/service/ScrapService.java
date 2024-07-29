@@ -78,4 +78,23 @@ public class ScrapService {
         return scrapOpt.isPresent();
     }
 
+    public StateResponse delete(Long userId, Long postId){
+        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("not found user"));
+        Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("not found post"));
+        Optional<Scrap> scrapOpt = scrapRepository.findByUserAndPost(user, post);
+
+        if(scrapOpt.isPresent()){
+            scrapRepository.delete(scrapOpt.get());
+            return StateResponse.builder()
+                    .code("SUCCESS")
+                    .message("스크랩을 취소했습니다.")
+                    .build();
+        }
+        return StateResponse.builder()
+                .code("FAIL")
+                .message("스크랩 내역이 없습니다.")
+                .build();
+
+    }
+
 }
