@@ -59,10 +59,8 @@ public class AuthService {
         UserDto userDto = userService.readByEmail(dto.getEmail());
         if (passwordEncoder.matches(dto.getPassword(), userDto.getPassword())) {
 
-            // 오늘 날짜 가져오기
             LocalDate today = LocalDate.now();
 
-            // 출석 기록 확인
             boolean hasAttendance = attendanceRepository.existsByUserIdAndPresentDate(userDto.getId(), today);
 
             // 출석 기록이 없으면 새로 생성
