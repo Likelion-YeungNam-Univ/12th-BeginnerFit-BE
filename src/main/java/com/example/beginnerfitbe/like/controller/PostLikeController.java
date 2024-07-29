@@ -41,4 +41,12 @@ public class PostLikeController {
     public ResponseEntity<?> getLikesByPost(@PathVariable Long postId) {
         return ResponseEntity.ok(postLikeService.getLikesByPost(postId));
     }
+
+    @GetMapping("/{postId}/likes/check")
+    @Operation(summary = "좋아요 여부 조회 메소드", description = "게시글에 좋아요를 눌렀는 지 조회합니다.")
+    public ResponseEntity<?> checkLikes(HttpServletRequest request, @PathVariable Long postId) {
+        Long userId = jwtUtil.getUserId(jwtUtil.resolveToken(request).substring(7));
+        return ResponseEntity.ok(postLikeService.liked(userId, postId));
+    }
+
 }
