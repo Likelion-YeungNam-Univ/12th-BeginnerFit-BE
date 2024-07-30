@@ -22,6 +22,7 @@ public class OtherUserDto {
     private List<String> exercisePurpose;
     private List<String> exercisePart;
     private List<String> exerciseIntensity;
+    private String profileUrl;
 
     public User toEntity() {
         return User.builder()
@@ -36,6 +37,7 @@ public class OtherUserDto {
                 .exerciseGoals(exercisePurpose)
                 .concernedAreas(exercisePart)
                 .exerciseIntensity(exerciseIntensity)
+                .profileUrl(profileUrl)
                 .build();
     }
 }

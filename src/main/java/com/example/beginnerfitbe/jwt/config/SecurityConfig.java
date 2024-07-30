@@ -37,7 +37,7 @@ public class SecurityConfig {
             "/swagger-resources/**",
             "/webjars/**",
             "/error",
-            "/challenge/test"
+            "/challengelist/test"
     };
 
     @Bean

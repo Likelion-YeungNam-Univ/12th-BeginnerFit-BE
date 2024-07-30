@@ -82,7 +82,8 @@ public class FriendService {
                             sender.getExerciseTime(),
                             sender.getExerciseGoals(),
                             sender.getConcernedAreas(),
-                            sender.getExerciseIntensity()
+                            sender.getExerciseIntensity(),
+                            sender.getProfileUrl()
                     );
                 })
                 .collect(Collectors.toList());
@@ -106,7 +107,8 @@ public class FriendService {
                             receiver.getExerciseTime(),
                             receiver.getExerciseGoals(),
                             receiver.getConcernedAreas(),
-                            receiver.getExerciseIntensity()
+                            receiver.getExerciseIntensity(),
+                            receiver.getProfileUrl()
                     );
                 })
                 .collect(Collectors.toList());
@@ -133,7 +135,8 @@ public class FriendService {
                             sender.getExerciseTime(),
                             sender.getExerciseGoals(),
                             sender.getConcernedAreas(),
-                            sender.getExerciseIntensity()
+                            sender.getExerciseIntensity(),
+                            sender.getProfileUrl()
                     );
                 })
                 .collect(Collectors.toList());
@@ -151,7 +154,8 @@ public class FriendService {
                     receiver.getExerciseTime(),
                     receiver.getExerciseGoals(),
                     receiver.getConcernedAreas(),
-                    receiver.getExerciseIntensity()
+                    receiver.getExerciseIntensity(),
+                    receiver.getProfileUrl()
             ));
         }
 
@@ -199,7 +203,8 @@ public class FriendService {
                 friend.getExerciseTime(),
                 friend.getExerciseGoals(),
                 friend.getConcernedAreas(),
-                friend.getExerciseIntensity()
+                friend.getExerciseIntensity(),
+                friend.getProfileUrl()
         );
     }
 

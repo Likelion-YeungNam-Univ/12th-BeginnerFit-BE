@@ -45,5 +45,22 @@ public class ChallengeService {
                 challengeParticipantRepository.save(participant); // ChallengeParticipant 저장
             }
         }
+
+
+    }
+
+    // 특정 사용자에게 랜덤 챌린지를 부여하는 메서드 추가
+    public void assignRandomChallengesToUser(User user) {
+        List<Challenge> randomChallenges = getRandomChallenges(3); // 랜덤 챌린지 3개 가져오기
+
+        for (Challenge challenge : randomChallenges) {
+            ChallengeParticipant participant = ChallengeParticipant.builder()
+                    .user(user)
+                    .challenge(challenge)
+                    .isCompleted(false) // 초기 상태는 미완료
+                    .challengeCompletedDate(LocalDate.now()) // 오늘 날짜
+                    .build();
+            challengeParticipantRepository.save(participant); // ChallengeParticipant 저장
+        }
     }
 }
