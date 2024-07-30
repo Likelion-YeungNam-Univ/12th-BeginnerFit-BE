@@ -4,6 +4,7 @@ import com.example.beginnerfitbe.attendance.domain.Attendance;
 import com.example.beginnerfitbe.attendance.repostitory.AttendanceRepository;
 import com.example.beginnerfitbe.error.StateResponse;
 import com.example.beginnerfitbe.jwt.util.JwtUtil;
+import com.example.beginnerfitbe.redis.service.RedisService;
 import com.example.beginnerfitbe.user.domain.User;
 import com.example.beginnerfitbe.user.dto.SignInReqDto;
 import com.example.beginnerfitbe.user.dto.SignInResDto;
@@ -23,6 +24,7 @@ public class AuthService {
     private final JwtUtil jwtUtil;
     private final PasswordEncoder passwordEncoder;
     private final AttendanceRepository attendanceRepository;
+    private final RedisService redisService;
 
     public User signUp (SignUpReqDto dto){
         String email=dto.getEmail();
@@ -74,7 +76,10 @@ public class AuthService {
             }
 
 
-            return new SignInResDto(userDto.getId(), jwtUtil.generateToken(userDto.getEmail(), userDto.getId()));
+            return new SignInResDto(userDto.getId(),
+                    jwtUtil.generateAccessToken(userDto.getEmail(), userDto.getId()),
+                    jwtUtil.generateRefreshToken( userDto.getEmail())
+            );
         } else {
             throw new IllegalArgumentException("Invalid password");
         }
@@ -83,5 +88,57 @@ public class AuthService {
         String newPassword=passwordEncoder.encode(password);
         return userService.resetPassword(email,newPassword);
     }
+
+    public SignInResDto refresh(String refreshToken) {
+        String email;
+
+        try {
+            email = redisService.getEmailByRefreshToken(refreshToken);
+
+            if (email == null || email.isEmpty()) {
+                throw new IllegalArgumentException("Invalid refresh token");
+            }
+
+            jwtUtil.validateRefreshToken(email, refreshToken);
+        } catch (IllegalArgumentException e) {
+            if (e.getMessage().equals("Expired refresh token")) {
+                throw new IllegalArgumentException("Refresh token has expired, please log in again");
+            } else {
+                throw new IllegalArgumentException("Invalid refresh token");
+            }
+        }
+
+        UserDto userDto = userService.readByEmail(email);
+        return new SignInResDto(
+                userDto.getId(),
+                jwtUtil.generateAccessToken(userDto.getEmail(), userDto.getId()),
+                refreshToken
+        );
+    }
+
+
+    public StateResponse signOut(Long userId) {
+        UserDto userDto = userService.read(userId);
+        if (userDto != null) {
+            boolean tokenDeleted = jwtUtil.deleteRegisterToken(userDto.getEmail());
+            if (tokenDeleted) {
+                return StateResponse.builder()
+                        .code("SUCCESSFUL")
+                        .message("로그아웃 되었습니다.")
+                        .build();
+            } else {
+                return StateResponse.builder()
+                        .code("FAILED")
+                        .message("로그아웃 실패. 토큰 삭제에 실패했습니다.")
+                        .build();
+            }
+        } else {
+            return StateResponse.builder()
+                    .code("FAILED")
+                    .message("사용자를 찾을 수 없습니다.")
+                    .build();
+        }
+    }
+
 
 }

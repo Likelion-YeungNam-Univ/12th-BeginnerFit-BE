@@ -46,7 +46,8 @@ spring:
 
 jwt:
   secret: ${JWT_SECRET}
-  expiration: ${JWT_EXPIRATION}
+  accessExpiration: ${JWT_ACCESS_EXPIRATION}
+  refreshExpiration: ${JWT_REFRESH_EXPIRATION}
   issuer: ${JWT_ISSUER}
 
 cloud:

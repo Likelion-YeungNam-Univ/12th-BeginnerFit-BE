@@ -6,6 +6,7 @@ import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -27,5 +28,19 @@ public class RedisService {
     }
     public void deleteData(String key){
         redisTemplate.delete(key);
+    }
+
+    public boolean hasKey(String key) {
+        return Boolean.TRUE.equals(redisTemplate.hasKey(key));
+    }
+
+    public String getEmailByRefreshToken(String refreshToken) {
+        Set<String> keys = redisTemplate.keys("*");
+        for (String key : keys) {
+            if (refreshToken.equals(redisTemplate.opsForValue().get(key))) {
+                return key;
+            }
+        }
+        return null;
     }
 }
