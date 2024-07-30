@@ -54,7 +54,7 @@ public class AuthController {
         }
         return ResponseEntity.ok(authService.refresh(refreshToken));
     }
-    @PostMapping("/sign-out")
+    @GetMapping("/sign-out")
     public ResponseEntity<?> signOut(HttpServletRequest request) {
         Long userId = jwtUtil.getUserId(jwtUtil.resolveToken(request).substring(7));
         return ResponseEntity.ok(authService.signOut(userId));
