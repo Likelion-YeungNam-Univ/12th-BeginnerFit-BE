@@ -25,9 +25,19 @@ public class DataInitializer implements CommandLineRunner {
                     "챌린지이름",
                     "챌린지 이름2",
                     "챌린지,",
-                    "헬스장가기,",
-                    "밥 먹기,ㅓ",
-                    "밥밥"
+                    "헬스장가기1,",
+                    "밥 먹기,ㅓ2",
+                    "밥밥3",
+                    "채린지34",
+                    "챌린지5,",
+                    "헬스장가기6,",
+                    "밥 먹기7,ㅓ",
+                    "밥밥8",
+                    "채린9지3",
+                    "밥0밥",
+                    "채6린지3",
+                    "밥밥4",
+                    "채린3지3"
             };
 
             for (String content : challengeContents) {
