@@ -112,4 +112,15 @@ public class JwtUtil {
         Claims claims = parseClaims(token);
         return claims.get("userId", Long.class);
     }
+
+    public boolean deleteRegisterToken(String email){
+        try{
+            if(redisService.hasKey(email)){
+                redisService.deleteData(email);
+                return true;
+            }
+        }
+        catch (Exception e){e.printStackTrace();}
+        return false;
+    }
 }

@@ -1,11 +1,13 @@
 package com.example.beginnerfitbe.user.controller;
 
+import com.example.beginnerfitbe.error.StateResponse;
 import com.example.beginnerfitbe.user.dto.ResetPasswordDto;
 import com.example.beginnerfitbe.user.dto.SignInReqDto;
 import com.example.beginnerfitbe.user.dto.SignUpReqDto;
 import com.example.beginnerfitbe.user.service.AuthService;
 import com.example.beginnerfitbe.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -46,6 +48,10 @@ public class AuthController {
 
     ) {
         return ResponseEntity.ok(authService.refresh(accessToken, refreshToken));
+    }
+    @PostMapping("/sign-out/{userId}")
+    public ResponseEntity<?> signOut(@PathVariable Long userId) {
+        return ResponseEntity.ok(authService.signOut(userId));
     }
 
 }

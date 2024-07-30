@@ -123,5 +123,28 @@ public class AuthService {
         );
     }
 
+    public StateResponse signOut(Long userId) {
+        UserDto userDto = userService.read(userId);
+        if (userDto != null) {
+            boolean tokenDeleted = jwtUtil.deleteRegisterToken(userDto.getEmail());
+            if (tokenDeleted) {
+                return StateResponse.builder()
+                        .code("SUCCESSFUL")
+                        .message("로그아웃 되었습니다.")
+                        .build();
+            } else {
+                return StateResponse.builder()
+                        .code("FAILED")
+                        .message("로그아웃 실패. 토큰 삭제에 실패했습니다.")
+                        .build();
+            }
+        } else {
+            return StateResponse.builder()
+                    .code("FAILED")
+                    .message("사용자를 찾을 수 없습니다.")
+                    .build();
+        }
+    }
+
 
 }
