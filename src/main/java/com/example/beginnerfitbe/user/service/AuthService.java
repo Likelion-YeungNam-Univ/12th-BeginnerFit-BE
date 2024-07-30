@@ -2,6 +2,7 @@ package com.example.beginnerfitbe.user.service;
 
 import com.example.beginnerfitbe.attendance.domain.Attendance;
 import com.example.beginnerfitbe.attendance.repostitory.AttendanceRepository;
+import com.example.beginnerfitbe.challenge.service.ChallengeService;
 import com.example.beginnerfitbe.error.StateResponse;
 import com.example.beginnerfitbe.jwt.util.JwtUtil;
 import com.example.beginnerfitbe.redis.service.RedisService;
@@ -10,6 +11,7 @@ import com.example.beginnerfitbe.user.dto.SignInReqDto;
 import com.example.beginnerfitbe.user.dto.SignInResDto;
 import com.example.beginnerfitbe.user.dto.SignUpReqDto;
 import com.example.beginnerfitbe.user.dto.UserDto;
+import com.example.beginnerfitbe.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -24,23 +26,26 @@ public class AuthService {
     private final JwtUtil jwtUtil;
     private final PasswordEncoder passwordEncoder;
     private final AttendanceRepository attendanceRepository;
+    private final UserRepository userRepository;
+    private final ChallengeService challengeService;
     private final RedisService redisService;
 
-    public User signUp (SignUpReqDto dto){
-        String email=dto.getEmail();
-        String name=dto.getName();
-        String password=passwordEncoder.encode(dto.getPassword());
+    public User signUp(SignUpReqDto dto) {
+        String email = dto.getEmail();
+        String name = dto.getName();
+        String password = passwordEncoder.encode(dto.getPassword());
 
-        //중복이메일 확인
-        if(userService.emailCheck(email)){
+        // 중복 이메일 확인
+        if (userService.emailCheck(email)) {
             throw new IllegalArgumentException("이미 등록된 이메일입니다.");
         }
-        //중복 닉네임 확인
-        else if(userService.nameCheck(name)){
+        // 중복 닉네임 확인
+        else if (userService.nameCheck(name)) {
             throw new IllegalArgumentException("이미 등록된 닉네임입니다.");
         }
-        //회원 기본 정보만 입력
-        return User.builder()
+
+        // 회원 기본 정보만 입력
+        User newUser = User.builder()
                 .email(email)
                 .name(name)
                 .password(password)
@@ -56,6 +61,12 @@ public class AuthService {
                 .exerciseGoals(new ArrayList<>())
                 .build();
 
+        userRepository.save(newUser); // 사용자 저장
+
+        // 새로 가입한 사용자에게 랜덤 챌린지 부여
+        challengeService.assignChallengesToUser(newUser);
+
+        return newUser;
     }
     public SignInResDto signIn(SignInReqDto dto) {
         try {
