@@ -59,4 +59,16 @@ public class ChallengeParticipantService {
         participant.setCompleted(false); // setter 메서드 필요
         challengeParticipantRepository.save(participant); // 변경사항 저장
     }
+
+    public List<ChallengeParticipantDTO> getCompletedChallengesByDate(Long userId, int year, int month) {
+        List<ChallengeParticipant> participants = challengeParticipantRepository.findByUserIdAndIsCompletedTrue(userId);
+
+        return participants.stream()
+                .filter(participant -> {
+                    LocalDate completedDate = participant.getChallengeCompletedDate();
+                    return completedDate.getYear() == year && completedDate.getMonthValue() == month;
+                })
+                .map(ChallengeParticipantDTO::fromEntity)
+                .collect(Collectors.toList());
+    }
 }
