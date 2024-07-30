@@ -58,32 +58,50 @@ public class AuthService {
 
     }
     public SignInResDto signIn(SignInReqDto dto) {
-        UserDto userDto = userService.readByEmail(dto.getEmail());
-        if (passwordEncoder.matches(dto.getPassword(), userDto.getPassword())) {
+        try {
+            System.out.println("Starting sign in process for email: " + dto.getEmail());
+            UserDto userDto = userService.readByEmail(dto.getEmail());
 
-            LocalDate today = LocalDate.now();
-
-            boolean hasAttendance = attendanceRepository.existsByUserIdAndPresentDate(userDto.getId(), today);
-
-            // 출석 기록이 없으면 새로 생성
-            if (!hasAttendance) {
-                Attendance attendance = new Attendance();
-                attendance.setPresentDate(today);
-                User user = new User();
-                user.setId(userDto.getId());
-                attendance.setUser(user);
-                attendanceRepository.save(attendance); // Attendance 저장
+            if (userDto == null) {
+                throw new IllegalArgumentException("User not found");
             }
 
+            System.out.println("User found: " + userDto.getEmail());
 
-            return new SignInResDto(userDto.getId(),
-                    jwtUtil.generateAccessToken(userDto.getEmail(), userDto.getId()),
-                    jwtUtil.generateRefreshToken( userDto.getEmail())
-            );
-        } else {
-            throw new IllegalArgumentException("Invalid password");
+            if (passwordEncoder.matches(dto.getPassword(), userDto.getPassword())) {
+                System.out.println("Password match successful for user: " + userDto.getEmail());
+                LocalDate today = LocalDate.now();
+
+                boolean hasAttendance = attendanceRepository.existsByUserIdAndPresentDate(userDto.getId(), today);
+                System.out.println("Attendance record exists: " + hasAttendance);
+
+                // 출석 기록이 없으면 새로 생성
+                if (!hasAttendance) {
+                    Attendance attendance = new Attendance();
+                    attendance.setPresentDate(today);
+                    User user = new User();
+                    user.setId(userDto.getId());
+                    attendance.setUser(user);
+                    attendanceRepository.save(attendance); // Attendance 저장
+                    System.out.println("New attendance record created for user: " + userDto.getEmail());
+                }
+
+                return new SignInResDto(
+                        userDto.getId(),
+                        jwtUtil.generateAccessToken(userDto.getEmail(), userDto.getId()),
+                        jwtUtil.generateRefreshToken(userDto.getEmail())
+                );
+            } else {
+                throw new IllegalArgumentException("Invalid password");
+            }
+        } catch (Exception e) {
+            // 에러 로그 출력
+            System.err.println("Error during sign in: " + e.getMessage());
+            e.printStackTrace();
+            throw e; // 혹은 적절한 사용자 정의 예외로 래핑
         }
     }
+
     public StateResponse resetPassword(String email, String password){
         String newPassword=passwordEncoder.encode(password);
         return userService.resetPassword(email,newPassword);
