@@ -4,6 +4,7 @@ import com.example.beginnerfitbe.category.domain.Category;
 import com.example.beginnerfitbe.comment.domain.Comment;
 import com.example.beginnerfitbe.declaration.domain.Declaration;
 import com.example.beginnerfitbe.like.domain.PostLike;
+import com.example.beginnerfitbe.scrap.domain.Scrap;
 import com.example.beginnerfitbe.user.domain.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -44,6 +45,7 @@ public class Post {
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
+
     @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JsonIgnore
     private List<Comment> comments;
@@ -55,6 +57,10 @@ public class Post {
     @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JsonIgnore
     private List<PostLike> postLikes;
+
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @JsonIgnore
+    private List<Scrap> scraps;
 
 
     @Builder

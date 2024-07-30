@@ -2,6 +2,11 @@ package com.example.beginnerfitbe.user.domain;
 
 import com.example.beginnerfitbe.attendance.domain.Attendance;
 import com.example.beginnerfitbe.challengeparticipant.domain.ChallengeParticipant;
+import com.example.beginnerfitbe.declaration.domain.Declaration;
+import com.example.beginnerfitbe.like.domain.PostLike;
+import com.example.beginnerfitbe.playlist.domain.Playlist;
+import com.example.beginnerfitbe.post.domain.Post;
+import com.example.beginnerfitbe.scrap.domain.Scrap;
 import com.example.beginnerfitbe.weight.domain.WeightRecord;
 import jakarta.persistence.*;
 import lombok.*;
@@ -66,6 +71,21 @@ public class User {
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<ChallengeParticipant> challengeParticipants = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Post> posts;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Playlist> playlists;
+
+    //연결 entity
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Scrap> scraps;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<PostLike> postLikes;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Declaration> declarations;
 
     @Builder
     public User(String email, String name, String password, String profileUrl, double height, double weight, double targetWeight, String date, String targetDate, int exerciseTime, List<String> exerciseIntensity, List<String> exerciseGoals, List<String> concernedAreas) {

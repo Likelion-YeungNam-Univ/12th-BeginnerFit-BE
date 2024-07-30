@@ -9,6 +9,7 @@ import com.example.beginnerfitbe.user.dto.UserDto;
 import com.example.beginnerfitbe.user.dto.UserUpdateDto;
 import com.example.beginnerfitbe.user.repository.UserRepository;
 import com.example.beginnerfitbe.weight.service.WeightRecordService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -108,6 +109,7 @@ public class UserService {
                 .build();
 
     }
+    @Transactional
     //회원 탈퇴
     public ResponseEntity<StateResponse> withdrawal(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("User not found"));
