@@ -40,7 +40,7 @@ public class ChallengeService {
                         .user(user)
                         .challenge(challenge)
                         .isCompleted(false) // 초기 상태는 미완료
-                        .ChallengeCompletedDate(LocalDate.now()) // 오늘 날짜
+                        .challengeCompletedDate(LocalDate.now()) // 오늘 날짜
                         .build();
                 challengeParticipantRepository.save(participant); // ChallengeParticipant 저장
             }
