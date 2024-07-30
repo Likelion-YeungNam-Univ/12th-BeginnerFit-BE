@@ -86,9 +86,21 @@ public class JwtUtil {
     }
 
     public void validateRefreshToken(String email, String refreshToken) {
-        String redisRefreshToken = redisService.getData(email);
-        if (!refreshToken.equals(redisRefreshToken)) {
-            throw new IllegalArgumentException("유저 정보 일치 x");
+        String storedRefreshToken = redisService.getData(email);
+
+        if (storedRefreshToken == null || !storedRefreshToken.equals(refreshToken)) {
+            throw new IllegalArgumentException("Invalid refresh token");
+        }
+        // refreshToken의 유효성 검사
+        try {
+            Claims claims = Jwts.parser()
+                    .setSigningKey(secretKey.getBytes())
+                    .parseClaimsJws(refreshToken)
+                    .getBody();
+        } catch (ExpiredJwtException e) {
+            throw new IllegalArgumentException("Expired refresh token");
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Invalid refresh token");
         }
     }
 

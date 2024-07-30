@@ -1,6 +1,7 @@
 package com.example.beginnerfitbe.user.controller;
 
 import com.example.beginnerfitbe.error.StateResponse;
+import com.example.beginnerfitbe.jwt.util.JwtUtil;
 import com.example.beginnerfitbe.user.dto.ResetPasswordDto;
 import com.example.beginnerfitbe.user.dto.SignInReqDto;
 import com.example.beginnerfitbe.user.dto.SignUpReqDto;
@@ -20,6 +21,7 @@ import java.io.IOException;
 public class AuthController {
     private final AuthService authService;
     private final UserService userService;
+    private final JwtUtil jwtUtil;
 
     @PostMapping("/sign-up")
     public ResponseEntity<?> signUp(@RequestBody SignUpReqDto dto) throws IOException {
@@ -43,14 +45,18 @@ public class AuthController {
     }
     @PostMapping("/refresh")
     public ResponseEntity<?> refresh(
-            @RequestHeader("X-Access-Token") String accessToken,
-            @RequestHeader("X-Refresh-Token") String refreshToken
+            @RequestHeader("Authorization") String refreshToken
 
     ) {
-        return ResponseEntity.ok(authService.refresh(accessToken, refreshToken));
+        // Bearer 접두사를 제거
+        if (refreshToken.startsWith("Bearer ")) {
+            refreshToken = refreshToken.substring(7);
+        }
+        return ResponseEntity.ok(authService.refresh(refreshToken));
     }
-    @PostMapping("/sign-out/{userId}")
-    public ResponseEntity<?> signOut(@PathVariable Long userId) {
+    @PostMapping("/sign-out")
+    public ResponseEntity<?> signOut(HttpServletRequest request) {
+        Long userId = jwtUtil.getUserId(jwtUtil.resolveToken(request).substring(7));
         return ResponseEntity.ok(authService.signOut(userId));
     }
 

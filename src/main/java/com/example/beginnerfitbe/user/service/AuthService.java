@@ -4,6 +4,7 @@ import com.example.beginnerfitbe.attendance.domain.Attendance;
 import com.example.beginnerfitbe.attendance.repostitory.AttendanceRepository;
 import com.example.beginnerfitbe.error.StateResponse;
 import com.example.beginnerfitbe.jwt.util.JwtUtil;
+import com.example.beginnerfitbe.redis.service.RedisService;
 import com.example.beginnerfitbe.user.domain.User;
 import com.example.beginnerfitbe.user.dto.SignInReqDto;
 import com.example.beginnerfitbe.user.dto.SignInResDto;
@@ -23,6 +24,7 @@ public class AuthService {
     private final JwtUtil jwtUtil;
     private final PasswordEncoder passwordEncoder;
     private final AttendanceRepository attendanceRepository;
+    private final RedisService redisService;
 
     public User signUp (SignUpReqDto dto){
         String email=dto.getEmail();
@@ -87,34 +89,25 @@ public class AuthService {
         return userService.resetPassword(email,newPassword);
     }
 
-    public SignInResDto refresh(String accessToken, String refreshToken) {
+    public SignInResDto refresh(String refreshToken) {
         String email;
 
-        if (!jwtUtil.validateTokenExceptExpiration(accessToken)) {
-            throw new IllegalArgumentException("Invalid access token");
-        }
-
         try {
-            email = jwtUtil.parseClaims(accessToken).getSubject();
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Invalid access token");
-        }
+            email = redisService.getEmailByRefreshToken(refreshToken);
 
-        try {
+            if (email == null || email.isEmpty()) {
+                throw new IllegalArgumentException("Invalid refresh token");
+            }
+
             jwtUtil.validateRefreshToken(email, refreshToken);
         } catch (IllegalArgumentException e) {
-            // 4. Access Token과 Refresh Token 모두 만료되었을 때
-            UserDto userDto = userService.readByEmail(email);
-            String newAccessToken = jwtUtil.generateAccessToken(userDto.getEmail(), userDto.getId());
-            String newRefreshToken = jwtUtil.generateRefreshToken(userDto.getEmail());
-            return new SignInResDto(
-                    userDto.getId(),
-                    newAccessToken,
-                    newRefreshToken
-            );
+            if (e.getMessage().equals("Expired refresh token")) {
+                throw new IllegalArgumentException("Refresh token has expired, please log in again");
+            } else {
+                throw new IllegalArgumentException("Invalid refresh token");
+            }
         }
 
-        // 5. Access Token 만료, Refresh Token 유효
         UserDto userDto = userService.readByEmail(email);
         return new SignInResDto(
                 userDto.getId(),
@@ -122,6 +115,7 @@ public class AuthService {
                 refreshToken
         );
     }
+
 
     public StateResponse signOut(Long userId) {
         UserDto userDto = userService.read(userId);
