@@ -94,7 +94,7 @@ public class AuthService {
         userRepository.save(newUser); // 사용자 저장
 
         // 새로 가입한 사용자에게 랜덤 챌린지 부여
-        challengeService.assignRandomChallengesToUser(newUser);
+        challengeService.assignChallengesToUser(newUser);
 
         return newUser;
     }

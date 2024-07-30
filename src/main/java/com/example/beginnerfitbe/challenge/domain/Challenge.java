@@ -15,8 +15,6 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Challenge {
 
-
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long challengeId;
@@ -33,8 +31,5 @@ public class Challenge {
         this.challengeContent = challengeContent;
 
     }
-
-
-
 
 }

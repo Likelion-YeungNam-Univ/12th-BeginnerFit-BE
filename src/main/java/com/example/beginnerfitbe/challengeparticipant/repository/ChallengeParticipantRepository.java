@@ -15,5 +15,6 @@ public interface ChallengeParticipantRepository extends JpaRepository<ChallengeP
     Optional<ChallengeParticipant> findByUserIdAndChallenge_ChallengeIdAndChallengeCompletedDate(Long userId, Long challengeId, LocalDate challengeCompletedDate);
     List<ChallengeParticipant> findByUserIdAndIsCompletedTrue(Long userId);
     long countByUserIdAndIsCompletedTrueAndChallengeCompletedDate(Long userId, LocalDate date);
+    boolean existsByChallengeCompletedDate(LocalDate date);
 
 }
