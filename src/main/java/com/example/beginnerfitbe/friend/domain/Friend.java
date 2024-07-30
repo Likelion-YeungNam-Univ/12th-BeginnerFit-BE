@@ -45,9 +45,5 @@ public class Friend {
         this.isAccepted = true;
     }
 
-    public void reject() {
-        this.isAccepted = false;
-    }
-
 }
 

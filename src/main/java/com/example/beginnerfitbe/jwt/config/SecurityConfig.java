@@ -26,6 +26,7 @@ public class SecurityConfig {
     private static final String[] publicEndpoints = {
             "/auth/sign-in",
             "/auth/sign-up",
+            "/auth/refresh",
             "/auth/email-send",
             "/auth/email-verify",
             "/auth/find-id",
@@ -48,7 +49,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Collections.singletonList("http://localhost:5173")); // Vite 개발 서버 주소
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173", "http://43.201.203.128:5173")); // Vite 개발 서버 주소
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Collections.singletonList("*"));
         configuration.setAllowCredentials(true); // 인증 정보를 포함한 요청 허용

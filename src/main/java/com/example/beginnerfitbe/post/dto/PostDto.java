@@ -28,8 +28,8 @@ public class PostDto {
         this.userId = userId;
         this.userName = userName;
         this.categoryName = categoryName;
-        this.declarationCnt =declarationCnt;
         this. likeCnt = likeCnt;
+        this.declarationCnt =declarationCnt;
     }
 
     public static PostDto fromEntity(Post post) {
@@ -42,8 +42,8 @@ public class PostDto {
                 post.getUser().getId(),
                 post.getUser().getName(),
                 post.getCategory().getCategoryName(),
-                post.getDeclarations().size(),
-                post.getPostLikes().size()
+                post.getPostLikes().size(),
+                post.getDeclarations().size()
         );
     }
 }

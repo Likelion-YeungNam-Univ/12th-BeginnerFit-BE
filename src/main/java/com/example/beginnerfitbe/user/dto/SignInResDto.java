@@ -9,5 +9,6 @@ import lombok.Getter;
 public class SignInResDto {
     private Long userId;
     private String accessToken;
+    private String refreshToken;
 }
 
