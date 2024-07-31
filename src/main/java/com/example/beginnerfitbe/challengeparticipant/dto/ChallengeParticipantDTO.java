@@ -18,6 +18,7 @@ public class ChallengeParticipantDTO {
     private String challengeContent;
     private boolean isCompleted;
     private LocalDate challengeCompletedDate;
+    private Long successCount; // 친구들의 성공 카운트 추가
 
     public static ChallengeParticipantDTO fromEntity(ChallengeParticipant challengeParticipant) {
         return ChallengeParticipantDTO.builder()

@@ -24,11 +24,14 @@ public class ChallengeParticipantController {
 
     @GetMapping("/today-challenges") // 현재 로그인한 유저의 챌린지 참가 정보 조회
     public ResponseEntity<List<ChallengeParticipantDTO>> getMyChallenges(HttpServletRequest request) {
-
+        // JWT 토큰에서 사용자 ID 추출
         String token = jwtUtil.resolveToken(request);
-        Long userId = jwtUtil.getUserId(token.substring(7));
+        Long userId = jwtUtil.getUserId(token.substring(7)); // "Bearer "를 제외한 부분
 
+        // 사용자 ID를 이용하여 챌린지 참가 정보 조회
         List<ChallengeParticipantDTO> challengeParticipants = challengeParticipantService.getUserChallenges(userId);
+
+        // 조회된 챌린지 참가 정보를 응답으로 반환
         return ResponseEntity.ok(challengeParticipants);
     }
 
@@ -77,7 +80,5 @@ public class ChallengeParticipantController {
         List<ChallengeRankingDto> rankings = challengeParticipantService.getChallengeRankings(userId);
         return ResponseEntity.ok(rankings);
     }
-
-
 
 }

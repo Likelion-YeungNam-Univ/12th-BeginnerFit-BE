@@ -30,17 +30,78 @@ public class ChallengeParticipantService {
     @Transactional(readOnly = true)
     public List<ChallengeParticipantDTO> getUserChallenges(Long userId) {
 
-
         // 현재 날짜
         LocalDate currentDate = LocalDate.now();
 
         // userId와 현재 날짜로 ChallengeParticipant 리스트 반환
         List<ChallengeParticipant> participants = challengeParticipantRepository.findByUserIdAndChallengeCompletedDate(userId, currentDate);
 
-        // DTO로 변환하여 반환
-        return participants.stream()
-                .map(ChallengeParticipantDTO::fromEntity)
+        List<Friend> acceptedFriendRequests = friendRepository.findByReceiverIdAndIsAcceptedTrue(userId);
+        List<Long> receiverIds = friendRepository.findReceiverIdsBySenderId(userId);
+        List<User> receivers = userRepository.findAllById(receiverIds);
+
+        List<OtherUserDto> acceptedRequestsDtos = acceptedFriendRequests.stream()
+                .map(friend -> {
+                    User sender = friend.getSender();
+                    return new OtherUserDto(
+                            sender.getId(),
+                            sender.getEmail(),
+                            sender.getName(),
+                            sender.getHeight(),
+                            sender.getWeight(),
+                            sender.getTargetWeight(),
+                            sender.getDate(),
+                            sender.getTargetDate(),
+                            sender.getExerciseTime(),
+                            sender.getExerciseGoals(),
+                            sender.getConcernedAreas(),
+                            sender.getExerciseIntensity(),
+                            sender.getProfileUrl()
+                    );
+                })
                 .collect(Collectors.toList());
+
+        for (User receiver : receivers) {
+            acceptedRequestsDtos.add(new OtherUserDto(
+                    receiver.getId(),
+                    receiver.getEmail(),
+                    receiver.getName(),
+                    receiver.getHeight(),
+                    receiver.getWeight(),
+                    receiver.getTargetWeight(),
+                    receiver.getDate(),
+                    receiver.getTargetDate(),
+                    receiver.getExerciseTime(),
+                    receiver.getExerciseGoals(),
+                    receiver.getConcernedAreas(),
+                    receiver.getExerciseIntensity(),
+                    receiver.getProfileUrl()
+            ));
+        }
+
+        List<Long> friendIds = acceptedRequestsDtos.stream()
+                .map(OtherUserDto::getId)
+                .collect(Collectors.toList());
+
+        // ID 리스트 출력
+        System.out.println("Friend IDs: " + friendIds);
+
+        // 친구들의 성공 카운트를 위한 결과 리스트
+        List<ChallengeParticipantDTO> challengeParticipantDTOs = new ArrayList<>();
+
+        for (ChallengeParticipant participant : participants) {
+            Long challengeId = participant.getChallenge().getChallengeId();
+
+            // 해당 챌린지에 대해 친구들의 성공 카운트
+            long successCount = challengeParticipantRepository.countByChallengeIdAndUserIdIn(challengeId, friendIds);
+
+            // DTO 변환 후 성공 카운트 설정
+            ChallengeParticipantDTO dto = ChallengeParticipantDTO.fromEntity(participant);
+            dto.setSuccessCount(successCount); // 성공 카운트 추가
+            challengeParticipantDTOs.add(dto);
+        }
+
+        return challengeParticipantDTOs;
     }
 
     public void completeChallenge(Long userId, Long challengeId) {
@@ -155,12 +216,6 @@ public class ChallengeParticipantService {
             ));
         }
 
-        // 랭크 매기기
-        rankings.sort((r1, r2) -> Integer.compare(r2.getCompletedCount(), r1.getCompletedCount()));
-        for (int i = 0; i < rankings.size(); i++) {
-            rankings.get(i).setRank(i + 1); // 순위는 1부터 시작
-        }
-
         // 로그인한 사용자의 완료된 챌린지 수를 랭크에 포함
         rankings.add(new ChallengeRankingDto(
                 userId,
@@ -170,12 +225,23 @@ public class ChallengeParticipantService {
                 0 // 초기 랭크는 0으로 설정
         ));
 
-        // 전체 리스트 다시 정렬
+        // 랭크 매기기
         rankings.sort((r1, r2) -> Integer.compare(r2.getCompletedCount(), r1.getCompletedCount()));
+
+        int rank = 1; // 현재 랭크
         for (int i = 0; i < rankings.size(); i++) {
-            rankings.get(i).setRank(i + 1);
+            // 첫 번째 사용자이거나 이전 사용자와 완료된 수가 다른 경우
+            if (i == 0 || rankings.get(i).getCompletedCount() != rankings.get(i - 1).getCompletedCount()) {
+                rankings.get(i).setRank(rank); // 현재 랭크 부여
+                rank++; // 다음 랭크로 증가
+            } else {
+                // 이전 사용자와 완료된 수가 같으면 같은 랭크 부여
+                rankings.get(i).setRank(rank - 1); // 이전 랭크 유지
+            }
         }
 
         return rankings;
     }
+
+
 }
