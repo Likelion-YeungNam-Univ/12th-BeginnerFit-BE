@@ -27,6 +27,7 @@ public class YoutubeVideoService {
     private final UserRepository userRepository;
 
 
+    @Transactional
     public void create(SelectedVideoDto playlistDto, Playlist playlist){
         List<YoutubeVideo> youtubeVideos = playlistDto.getYoutubeVideos();
         youtubeVideos.forEach(video -> video.updatePlaylist(playlist));
@@ -114,6 +115,8 @@ public class YoutubeVideoService {
         YoutubeVideo nextVideo = videos.get(lastWatchedIndex+1);
         return RecentVideoDto.fromEntity(nextVideo);
     }
-
-
+    @Transactional
+    public void deleteByPlaylistID(Long playlistId){
+        youtubeVideoRepository.deleteByPlaylistId(playlistId);
+    }
 }

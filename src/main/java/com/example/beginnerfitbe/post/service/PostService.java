@@ -139,5 +139,8 @@ public class PostService {
         return ResponseEntity.ok(StateResponse.builder().code("SUCCESS").message("글을 성공적으로 삭제했습니다.").build());
     }
 
+    public void deleteByUserId(Long userId){
+        postRepository.deleteAllByUserId(userId);
+    }
 
 }

@@ -39,10 +39,12 @@ public class PlaylistService {
     private final YoutubeVideoService youtubeVideoService;
     private final YoutubeUtil youtubeUtil;
 
+    @Transactional
     public PlaylistDto create(User user) throws IOException {
         String query = searchKeyword(user);
         String requestTime = String.valueOf(user.getExerciseTime());
         SelectedVideoDto selectVideoDto = youtubeUtil.selectVideos(query, requestTime);
+        System.out.println("엥");
 
         Playlist playlist = Playlist.builder()
                 .title(query + " 집중공략 플리")
@@ -53,9 +55,15 @@ public class PlaylistService {
                 .videos(selectVideoDto.getYoutubeVideos())
                 .build();
 
-        playlist = playlistRepository.save(playlist);
+        System.out.println("Playlist Title: " + playlist.getTitle());
+        System.out.println("Playlist CreatedAt: " + playlist.getCreatedAt());
+        System.out.println("Playlist TotalTime: " + playlist.getTotalTime());
+
+        playlistRepository.save(playlist);
 
         youtubeVideoService.create(selectVideoDto, playlist);
+
+
 
         return PlaylistDto.fromEntity(playlist);
     }
@@ -130,6 +138,17 @@ public class PlaylistService {
         User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
         Playlist playlist = playlistRepository.findFirstByUserOrderByCreatedAtDesc(user).orElseThrow(() -> new IllegalArgumentException("Playlist not found"));
         return PlaylistDto.fromEntity(playlist);
+    }
+
+    @Transactional
+    public void deleteByUserId(Long userId) {
+        List<Playlist> playlists = playlistRepository.findByUserId(userId);
+
+        for (Playlist playlist : playlists) {
+            youtubeVideoService.deleteByPlaylistID(playlist.getId());
+        }
+
+        playlistRepository.deleteAllByUserId(userId);
     }
 
 }

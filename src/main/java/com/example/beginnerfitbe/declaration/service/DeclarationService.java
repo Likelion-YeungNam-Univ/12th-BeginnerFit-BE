@@ -13,6 +13,7 @@ import com.example.beginnerfitbe.user.domain.User;
 import com.example.beginnerfitbe.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -113,4 +114,5 @@ public class DeclarationService {
                 .message("신고 내역이 없습니다.")
                 .build();
     }
+
 }
