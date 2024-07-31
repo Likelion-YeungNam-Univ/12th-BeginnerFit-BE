@@ -23,6 +23,15 @@ public class FriendController {
     private final FriendService friendService;
     private final JwtUtil jwtUtil;
 
+    @PostMapping("/request/{userId}")
+    public ResponseEntity<String> sendPathRequest(@PathVariable Long userId, HttpServletRequest request) {
+        String token = jwtUtil.resolveToken(request);
+        Long currentUserId = jwtUtil.getUserId(token.substring(7));
+
+        friendService.sendPathRequest(currentUserId, userId);
+        return ResponseEntity.ok("Friend request sent.");
+    }
+
     @PostMapping("/request")
     @Operation(summary = "친구 요청 메서드", description = "친구를 맺고싶은 유저의 이메일을 입력하여 친구 요청을 합니다.")
     public ResponseEntity<FriendDTO> sendFriendRequest(HttpServletRequest request, @RequestBody FriendRequestDTO friendRequestDTO) {

@@ -24,6 +24,47 @@ public class FriendService {
     private final FriendRepository friendRepository;
     private final UserRepository userRepository;
 
+    @Transactional
+    public FriendDTO sendPathRequest(Long senderId, Long receiverId) {
+
+        User sender = userRepository.findById(senderId)
+                .orElseThrow(() -> new RuntimeException("Sender user not found"));
+        User receiver = userRepository.findById(receiverId)
+                .orElseThrow(() -> new RuntimeException("요청을 보낼 사용자가 존재하지 않습니다."));
+
+        // 이미 친구인지 확인
+        Optional<Friend> existingFriend = friendRepository.findBySenderIdAndReceiverId(senderId, receiver.getId());
+        Optional<Friend> reexistingFriend = friendRepository.findBySenderIdAndReceiverId( receiver.getId(), senderId);
+        if (existingFriend.isPresent() && existingFriend.get().isAccepted()) {
+            throw new RuntimeException("이미 친구입니다.");
+        }
+
+        else if (existingFriend.isPresent() ) {
+            // 친구 요청이 이미 존재하지만 승인되지 않은 경우
+            throw new RuntimeException("친구 요청 목록을 확인해주세요.");
+        }
+
+        else if (reexistingFriend.isPresent()) {
+            if(reexistingFriend.get().isAccepted()){
+                throw new RuntimeException("이미 친구입니다.");
+            }
+            throw new RuntimeException("이미 친구 요청이 온 사용자입니다. 친구 요청을 수락해주세요.");
+        }
+
+
+        else {
+            Friend friend = Friend.builder()
+                    .sender(sender)
+                    .receiver(receiver)
+                    .isAccepted(false)
+                    .createdAt(LocalDateTime.now())
+                    .build();
+
+            Friend savedFriend = friendRepository.save(friend);
+            return FriendDTO.fromEntity(savedFriend);
+        }
+    }
+
 
     public FriendDTO sendFriendRequest(Long senderId, String receiverEmail) {
         User sender = userRepository.findById(senderId)
