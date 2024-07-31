@@ -2,6 +2,11 @@ package com.example.beginnerfitbe.user.domain;
 
 import com.example.beginnerfitbe.attendance.domain.Attendance;
 import com.example.beginnerfitbe.challengeparticipant.domain.ChallengeParticipant;
+import com.example.beginnerfitbe.declaration.domain.Declaration;
+import com.example.beginnerfitbe.like.domain.PostLike;
+import com.example.beginnerfitbe.playlist.domain.Playlist;
+import com.example.beginnerfitbe.post.domain.Post;
+import com.example.beginnerfitbe.scrap.domain.Scrap;
 import com.example.beginnerfitbe.weight.domain.WeightRecord;
 import jakarta.persistence.*;
 import lombok.*;
@@ -57,7 +62,7 @@ public class User {
     private List<String> concernedAreas;
 
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<WeightRecord> weightRecords;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)

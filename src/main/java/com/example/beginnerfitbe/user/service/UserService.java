@@ -1,14 +1,20 @@
 package com.example.beginnerfitbe.user.service;
 
 
+import com.example.beginnerfitbe.comment.repository.CommentRepository;
+import com.example.beginnerfitbe.declaration.repository.DeclarationRepository;
 import com.example.beginnerfitbe.error.StateResponse;
+import com.example.beginnerfitbe.like.repository.PostLikeRepository;
 import com.example.beginnerfitbe.playlist.service.PlaylistService;
+import com.example.beginnerfitbe.post.service.PostService;
+import com.example.beginnerfitbe.scrap.repository.ScrapRepository;
 import com.example.beginnerfitbe.user.domain.User;
 import com.example.beginnerfitbe.user.dto.HealthInfoReqDto;
 import com.example.beginnerfitbe.user.dto.UserDto;
 import com.example.beginnerfitbe.user.dto.UserUpdateDto;
 import com.example.beginnerfitbe.user.repository.UserRepository;
 import com.example.beginnerfitbe.weight.service.WeightRecordService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -25,6 +31,12 @@ public class UserService {
     private final UserRepository userRepository;
     private final PlaylistService playlistService;
     private final WeightRecordService weightRecordService;
+    private final PostService postService;
+
+    private final PostLikeRepository postLikeRepository;
+    private final CommentRepository commentRepository;
+    private final ScrapRepository scrapRepository;
+    private final DeclarationRepository declarationRepository;
 
     public List<UserDto> list(){
         return userRepository.findAll().stream()
@@ -108,11 +120,22 @@ public class UserService {
                 .build();
 
     }
+    @Transactional
     //회원 탈퇴
     public ResponseEntity<StateResponse> withdrawal(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("User not found"));
 
+
+        scrapRepository.deleteAllByUserId(id);
+        declarationRepository.deleteAllByUserId(id);
+        postLikeRepository.deleteAllByUserId(id);
+        commentRepository.deleteAllByUserId(id);
+
+        postService.deleteByUserId(id);
+        playlistService.deleteByUserId(id);
+
         userRepository.delete(user);
+
         return ResponseEntity.ok(StateResponse.builder().code("SUCCESS").message("성공적으로 회원탈퇴 처리되었습니다.").build());
     }
 

@@ -36,7 +36,7 @@ public class Playlist {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @OneToMany(mappedBy = "playlist",  fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "playlist")
     private List<YoutubeVideo> videos;
 
     @Builder
