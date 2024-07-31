@@ -27,6 +27,69 @@ public class ChallengeParticipantService {
     private final UserRepository userRepository;
     private final FriendRepository friendRepository;
 
+    public List<OtherUserDto> getAcceptedFriends(Long userId) {
+        // 수락된 친구 목록 가져오기
+        List<Friend> acceptedFriendRequests = friendRepository.findByReceiverIdAndIsAcceptedTrue(userId);
+        List<Long> receiverIds = friendRepository.findReceiverIdsBySenderId(userId);
+        List<User> receivers = userRepository.findAllById(receiverIds);
+
+        List<OtherUserDto> acceptedRequestsDtos = acceptedFriendRequests.stream()
+                .map(friend -> {
+                    User sender = friend.getSender();
+                    return new OtherUserDto(
+                            sender.getId(),
+                            sender.getEmail(),
+                            sender.getName(),
+                            sender.getHeight(),
+                            sender.getWeight(),
+                            sender.getTargetWeight(),
+                            sender.getDate(),
+                            sender.getTargetDate(),
+                            sender.getExerciseTime(),
+                            sender.getExerciseGoals(),
+                            sender.getConcernedAreas(),
+                            sender.getExerciseIntensity(),
+                            sender.getProfileUrl()
+                    );
+                })
+                .collect(Collectors.toList());
+
+        for (User receiver : receivers) {
+            acceptedRequestsDtos.add(new OtherUserDto(
+                    receiver.getId(),
+                    receiver.getEmail(),
+                    receiver.getName(),
+                    receiver.getHeight(),
+                    receiver.getWeight(),
+                    receiver.getTargetWeight(),
+                    receiver.getDate(),
+                    receiver.getTargetDate(),
+                    receiver.getExerciseTime(),
+                    receiver.getExerciseGoals(),
+                    receiver.getConcernedAreas(),
+                    receiver.getExerciseIntensity(),
+                    receiver.getProfileUrl()
+            ));
+        }
+
+        return acceptedRequestsDtos;
+    }
+
+    public long countCompletedFriends(List<Long> friendIds) {
+        LocalDate today = LocalDate.now();
+
+        // 친구 목록에서 오늘 날짜에 해당하는 모든 ChallengeParticipant가 isCompleted가 true인 친구의 수 카운트
+        return friendIds.stream()
+                .filter(friendId -> {
+                    // 해당 친구의 오늘 날짜에 해당하는 ChallengeParticipant 목록을 가져옴
+                    List<ChallengeParticipant> participants = challengeParticipantRepository.findByUserIdAndChallengeCompletedDate(friendId, today);
+
+                    // 모든 ChallengeParticipant의 isCompleted가 true인지 확인
+                    return participants.stream().allMatch(ChallengeParticipant::isCompleted);
+                })
+                .count();
+    }
+
     @Transactional(readOnly = true)
     public List<ChallengeParticipantDTO> getUserChallenges(Long userId) {
 
@@ -242,6 +305,9 @@ public class ChallengeParticipantService {
 
         return rankings;
     }
+
+
+
 
 
 }
