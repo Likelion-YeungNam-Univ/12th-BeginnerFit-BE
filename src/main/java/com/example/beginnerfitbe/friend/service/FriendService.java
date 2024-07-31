@@ -208,9 +208,8 @@ public class FriendService {
                 friend.getProfileUrl()
         );
     }
-
     @Transactional(readOnly = true)
-    public List<UserResponseDto> getNonFriendUsers(Long userId) {
+    public List<UserResponseDto> getNonFriendUsers(Long userId, String searchName) {
         // 모든 사용자 조회
         List<User> allUsers = userRepository.findAll();
 
@@ -223,19 +222,28 @@ public class FriendService {
                 .map(friend -> friend.getSender().getId() == userId ? friend.getReceiver().getId() : friend.getSender().getId())
                 .collect(Collectors.toList());
 
-        // 친구 요청을 보낸 사용자 목록 추가
+         //친구 요청을 보낸 사용자 목록 추가
         List<Long> pendingFriendRequests = friends.stream()
                 .filter(friend -> !friend.isAccepted() && friend.getSender().getId().equals(userId))
                 .map(friend -> friend.getReceiver().getId())
+                .collect(Collectors.toList());
+
+        // 친구 요청을 받은 사용자 목록 추가
+        List<Long> receivedFriendRequests = friends.stream()
+                .filter(friend -> !friend.isAccepted() && friend.getReceiver().getId().equals(userId))
+                .map(friend -> friend.getSender().getId())
                 .collect(Collectors.toList());
 
         // 친구가 아닌 사용자 목록 반환
         return allUsers.stream()
                 .filter(user -> !friendIds.contains(user.getId()) // 친구 목록에 없는 사용자
                         && !pendingFriendRequests.contains(user.getId()) // 친구 요청을 보낸 사용자
+                        && !receivedFriendRequests.contains(user.getId()) // 친구 요청을 받은 사용자
                         && !user.getId().equals(userId)) // 자신 제외
+                .filter(user -> user.getName().contains(searchName)) // 이름에 searchName이 포함된 사용자 필터링
                 .map(user -> new UserResponseDto(user.getId(), user.getEmail(), user.getName(), user.getProfileUrl()))
                 .collect(Collectors.toList());
     }
+
 
 }
