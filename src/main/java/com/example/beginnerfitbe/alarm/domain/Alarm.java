@@ -1,4 +1,4 @@
-package com.example.beginnerfitbe.notification.domain;
+package com.example.beginnerfitbe.alarm.domain;
 
 import com.example.beginnerfitbe.user.domain.User;
 import jakarta.persistence.*;
@@ -12,32 +12,31 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Notification {
+public class Alarm {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long notificationId;
+    private Long alarmId;
 
     @Column(nullable = false)
-    private boolean notificationCheck;
+    private boolean alarmChecked;
 
     @Column(nullable = false)
-    private LocalDateTime notificationDate;
+    private LocalDateTime alarmDate;
 
     @Column(nullable = false)
-    private String notificationMessage;
+    private String alarmMessage;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId")
     private User users;
 
     @Builder
-    public Notification(User users, boolean notificationCheck, String notificationMessage ) {
+    public Alarm(User users, boolean alarmChecked, String notificationMessage ) {
         this.users = users;
-        this.notificationCheck = notificationCheck;
-        this.notificationDate = LocalDateTime.now();
-        this.notificationMessage = notificationMessage;
+        this.alarmChecked = alarmChecked;
+        this.alarmDate = LocalDateTime.now();
+        this.alarmMessage = alarmMessage;
     }
-
 
 }

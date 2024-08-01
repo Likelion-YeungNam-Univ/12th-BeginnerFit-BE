@@ -2,7 +2,6 @@ package com.example.beginnerfitbe.user.domain;
 
 import com.example.beginnerfitbe.attendance.domain.Attendance;
 import com.example.beginnerfitbe.challengeparticipant.domain.ChallengeParticipant;
-import com.example.beginnerfitbe.notification.domain.Notification;
 import com.example.beginnerfitbe.weight.domain.WeightRecord;
 import jakarta.persistence.*;
 import lombok.*;
@@ -67,8 +66,6 @@ public class User {
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<ChallengeParticipant> challengeParticipants = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    private List<Notification> notifications = new ArrayList<>();
 
 
     @Builder
