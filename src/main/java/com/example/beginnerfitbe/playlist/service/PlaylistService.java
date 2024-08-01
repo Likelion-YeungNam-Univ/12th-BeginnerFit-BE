@@ -70,7 +70,7 @@ public class PlaylistService {
 
 
     // 매일 자정에 실행 (일단 정지)
-//    @Scheduled(cron = "0 0 0 * * *", zone = "Asia/Seoul")
+    @Scheduled(cron = "0 0 0 * * *", zone = "Asia/Seoul")
     public void createPlaylistDaily() {
         userRepository.findAll().forEach(user -> {
             try {
