@@ -23,5 +23,7 @@ public interface ChallengeParticipantRepository extends JpaRepository<ChallengeP
     @Query("SELECT COUNT(cp) FROM ChallengeParticipant cp WHERE cp.challenge.challengeId = :challengeId AND cp.user.id IN :userIds AND cp.isCompleted = true")
     long countByChallengeIdAndUserIdIn(@Param("challengeId") Long challengeId, @Param("userIds") List<Long> userIds);
 
+    @Query("SELECT cp FROM ChallengeParticipant cp WHERE cp.user.id = :userId AND cp.challengeCompletedDate = :today")
+    List<ChallengeParticipant> findByUserIdAndCompletedDate(Long userId, LocalDate today);
 
 }

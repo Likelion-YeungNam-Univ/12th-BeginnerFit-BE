@@ -306,6 +306,16 @@ public class ChallengeParticipantService {
         return rankings;
     }
 
+    public List<ChallengeParticipantDTO> getChallengeContentsForToday(Long userId) {
+        LocalDate today = LocalDate.now();
+        List<ChallengeParticipant> participants = challengeParticipantRepository.findByUserIdAndCompletedDate(userId, today);
+
+        return participants.stream()
+                .map(ChallengeParticipantDTO::fromEntity)
+                .distinct() // 중복 제거
+                .limit(3) // 최대 3개로 제한
+                .collect(Collectors.toList());
+    }
 
 
 
