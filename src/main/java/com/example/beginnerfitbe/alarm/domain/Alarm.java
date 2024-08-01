@@ -29,11 +29,11 @@ public class Alarm {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId")
-    private User users;
+    private User user;
 
     @Builder
-    public Alarm(User users, boolean alarmChecked, String notificationMessage ) {
-        this.users = users;
+    public Alarm(User user, boolean alarmChecked, String alarmMessage ) {
+        this.user = user;
         this.alarmChecked = alarmChecked;
         this.alarmDate = LocalDateTime.now();
         this.alarmMessage = alarmMessage;

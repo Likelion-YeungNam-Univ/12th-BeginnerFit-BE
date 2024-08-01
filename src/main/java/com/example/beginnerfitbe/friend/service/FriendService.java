@@ -1,5 +1,6 @@
 package com.example.beginnerfitbe.friend.service;
 
+import com.example.beginnerfitbe.alarm.service.AlarmService;
 import com.example.beginnerfitbe.friend.domain.Friend;
 import com.example.beginnerfitbe.friend.dto.FriendDTO;
 import com.example.beginnerfitbe.friend.repository.FriendRepository;
@@ -23,6 +24,7 @@ public class FriendService {
 
     private final FriendRepository friendRepository;
     private final UserRepository userRepository;
+    private final AlarmService alarmService;
 
     @Transactional
     public FriendDTO sendPathRequest(Long senderId, Long receiverId) {
@@ -61,6 +63,11 @@ public class FriendService {
                     .build();
 
             Friend savedFriend = friendRepository.save(friend);
+
+            // 알림 메시지 생성
+            String alarmMessage = sender.getName() + " 님이 친구신청을 보냈습니다.";
+            alarmService.createAlarm(receiver, alarmMessage); // 알림 생성
+
             return FriendDTO.fromEntity(savedFriend);
         }
     }
@@ -101,6 +108,11 @@ public class FriendService {
                     .build();
 
             Friend savedFriend = friendRepository.save(friend);
+
+            // 알림 메시지 생성
+            String alarmMessage = sender.getName() + " 님이 친구신청을 보냈습니다.";
+            alarmService.createAlarm(receiver, alarmMessage); // 알림 생성
+
             return FriendDTO.fromEntity(savedFriend);
         }
 
