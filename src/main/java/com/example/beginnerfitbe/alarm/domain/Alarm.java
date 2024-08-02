@@ -31,12 +31,16 @@ public class Alarm {
     @JoinColumn(name = "userId")
     private User user;
 
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING) // Enum 값을 문자열로 저장
+    private AlarmType alarmType; // 추가된 enum 필드
+
     @Builder
-    public Alarm(User user, boolean alarmChecked, String alarmMessage ) {
+    public Alarm(User user, boolean alarmChecked, String alarmMessage, AlarmType alarmType) {
         this.user = user;
         this.alarmChecked = alarmChecked;
         this.alarmDate = LocalDateTime.now();
         this.alarmMessage = alarmMessage;
+        this.alarmType = alarmType;
     }
-
 }

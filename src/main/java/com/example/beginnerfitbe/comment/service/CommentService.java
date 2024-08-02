@@ -1,5 +1,6 @@
 package com.example.beginnerfitbe.comment.service;
 
+import com.example.beginnerfitbe.alarm.domain.AlarmType;
 import com.example.beginnerfitbe.alarm.service.AlarmService;
 import com.example.beginnerfitbe.comment.domain.Comment;
 import com.example.beginnerfitbe.comment.dto.CommentCreateDto;
@@ -42,8 +43,8 @@ public class CommentService {
 
         commentRepository.save(comment);
 
-        String alarmMessage = user.getName() + " 님이 댓글을 달았습니다.";
-        alarmService.createAlarm(post.getUser(), alarmMessage); // 알림 생성
+        String alarmMessage = user.getName() + " "+postId;
+        alarmService.createAlarm(post.getUser(), alarmMessage, AlarmType.COMMENT_ALARM); // 알림 생성
 
         return ResponseEntity.ok(StateResponse.builder().code("SUCCESS").message("댓글을 성공적으로 생성했습니다.").build());
     }

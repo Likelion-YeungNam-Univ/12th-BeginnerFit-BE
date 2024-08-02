@@ -1,6 +1,7 @@
 package com.example.beginnerfitbe.alarm.service;
 
 import com.example.beginnerfitbe.alarm.domain.Alarm;
+import com.example.beginnerfitbe.alarm.domain.AlarmType;
 import com.example.beginnerfitbe.alarm.repository.AlarmRepository;
 import com.example.beginnerfitbe.user.domain.User;
 import com.example.beginnerfitbe.user.repository.UserRepository;
@@ -18,15 +19,14 @@ public class AlarmService {
     private final AlarmRepository alarmRepository;
     private final UserRepository userRepository;
 
-    public void createAlarm(User receiver, String alarmMessage) {
+    public void createAlarm(User receiver, String alarmMessage, AlarmType alarmType) {
         Alarm alarm = Alarm.builder()
                 .user(receiver)
                 .alarmChecked(false)
                 .alarmMessage(alarmMessage)
+                .alarmType(alarmType) // 알림 타입 추가
                 .build();
         alarmRepository.save(alarm);
-
-        System.out.println("Alarm created: " + alarm);
     }
 
 

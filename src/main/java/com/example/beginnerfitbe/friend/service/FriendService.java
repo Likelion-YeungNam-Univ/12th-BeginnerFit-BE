@@ -1,5 +1,6 @@
 package com.example.beginnerfitbe.friend.service;
 
+import com.example.beginnerfitbe.alarm.domain.AlarmType;
 import com.example.beginnerfitbe.alarm.service.AlarmService;
 import com.example.beginnerfitbe.friend.domain.Friend;
 import com.example.beginnerfitbe.friend.dto.FriendDTO;
@@ -53,7 +54,6 @@ public class FriendService {
             throw new RuntimeException("이미 친구 요청이 온 사용자입니다. 친구 요청을 수락해주세요.");
         }
 
-
         else {
             Friend friend = Friend.builder()
                     .sender(sender)
@@ -64,9 +64,8 @@ public class FriendService {
 
             Friend savedFriend = friendRepository.save(friend);
 
-            // 알림 메시지 생성
-            String alarmMessage = sender.getName() + " 님이 친구신청을 보냈습니다.";
-            alarmService.createAlarm(receiver, alarmMessage); // 알림 생성
+            String alarmMessage = sender.getName();
+            alarmService.createAlarm(receiver, alarmMessage, AlarmType.FRIEND_REQUEST);
 
             return FriendDTO.fromEntity(savedFriend);
         }
@@ -109,9 +108,8 @@ public class FriendService {
 
             Friend savedFriend = friendRepository.save(friend);
 
-            // 알림 메시지 생성
-            String alarmMessage = sender.getName() + " 님이 친구신청을 보냈습니다.";
-            alarmService.createAlarm(receiver, alarmMessage); // 알림 생성
+            String alarmMessage = sender.getName();
+            alarmService.createAlarm(receiver, alarmMessage, AlarmType.FRIEND_REQUEST);
 
             return FriendDTO.fromEntity(savedFriend);
         }
@@ -222,6 +220,12 @@ public class FriendService {
 
         friend.accept();
         friendRepository.save(friend);
+
+        // 알림 메시지 생성
+        String alarmMessage =friend.getReceiver().getName();
+
+        // 알림 생성
+        alarmService.createAlarm(friend.getSender(), alarmMessage, AlarmType.FRIEND_ACCEPTANCE);
     }
 
     public void rejectFriendRequest(Long senderId, Long receiverId) {
