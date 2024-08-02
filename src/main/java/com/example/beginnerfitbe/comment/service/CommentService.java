@@ -1,5 +1,7 @@
 package com.example.beginnerfitbe.comment.service;
 
+import com.example.beginnerfitbe.alarm.domain.AlarmType;
+import com.example.beginnerfitbe.alarm.service.AlarmService;
 import com.example.beginnerfitbe.comment.domain.Comment;
 import com.example.beginnerfitbe.comment.dto.CommentCreateDto;
 import com.example.beginnerfitbe.comment.dto.CommentDto;
@@ -26,8 +28,9 @@ public class CommentService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
+    private final AlarmService alarmService;
 
-    public ResponseEntity<StateResponse> create(Long userId, Long postId,CommentCreateDto commentCreateDto){
+    public ResponseEntity<StateResponse> create(Long userId, Long postId, CommentCreateDto commentCreateDto){
         Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("not found post"));
         User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("not found user"));
 
@@ -39,6 +42,10 @@ public class CommentService {
                 .build();
 
         commentRepository.save(comment);
+
+        String alarmMessage = user.getName() + " "+postId;
+        alarmService.createAlarm(post.getUser(), alarmMessage, AlarmType.COMMENT_ALARM); // 알림 생성
+
         return ResponseEntity.ok(StateResponse.builder().code("SUCCESS").message("댓글을 성공적으로 생성했습니다.").build());
     }
 

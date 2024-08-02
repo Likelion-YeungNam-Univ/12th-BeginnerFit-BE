@@ -1,5 +1,7 @@
 package com.example.beginnerfitbe.challengeparticipant.service;
 
+import com.example.beginnerfitbe.alarm.domain.AlarmType;
+import com.example.beginnerfitbe.alarm.service.AlarmService;
 import com.example.beginnerfitbe.challengeparticipant.domain.ChallengeParticipant;
 import com.example.beginnerfitbe.challengeparticipant.dto.ChallengeParticipantDTO;
 import com.example.beginnerfitbe.challengeparticipant.dto.ChallengeRankingDto;
@@ -26,6 +28,7 @@ public class ChallengeParticipantService {
     private final ChallengeParticipantRepository challengeParticipantRepository;
     private final UserRepository userRepository;
     private final FriendRepository friendRepository;
+    private final AlarmService alarmService;
 
     public List<OtherUserDto> getAcceptedFriends(Long userId) {
         // 수락된 친구 목록 가져오기
@@ -175,9 +178,30 @@ public class ChallengeParticipantService {
                 .findByUserIdAndChallenge_ChallengeIdAndChallengeCompletedDate(userId, challengeId, currentDate)
                 .orElseThrow(() -> new RuntimeException("Challenge participant not found")); // 예외 처리
 
-        // isCompleted를 true로 변경
-        participant.setCompleted(true); // setter 메서드 필요
+
+        participant.setCompleted(true); // isCompleted를 true로 변경
         challengeParticipantRepository.save(participant); // 변경사항 저장
+
+
+        // 해당 사용자의 오늘 날짜에 해당하는 챌린지 참가자 목록 가져오기 (challengeId 제거)
+        List<ChallengeParticipant> participants = challengeParticipantRepository
+                .findByUserIdAndChallengeCompletedDate(userId, currentDate);
+
+        // isCompleted가 true인 참가자의 수를 세기
+        long completedCount = participants.stream()
+                .filter(ChallengeParticipant::isCompleted)
+                .count();
+
+        // completedCount가 2일 경우 알림 생성
+        if (completedCount == 2) {
+            String alarmMessage = "";
+            // 알림 생성
+            alarmService.createAlarm(participant.getUser(), alarmMessage, AlarmType.CHALLENGE_REMINDER);
+        }
+
+
+
+
     }
 
     public void notcompleteChallenge(Long userId, Long challengeId) {

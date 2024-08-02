@@ -1,12 +1,8 @@
 package com.example.beginnerfitbe.user.domain;
 
+import com.example.beginnerfitbe.alarm.domain.Alarm;
 import com.example.beginnerfitbe.attendance.domain.Attendance;
 import com.example.beginnerfitbe.challengeparticipant.domain.ChallengeParticipant;
-import com.example.beginnerfitbe.declaration.domain.Declaration;
-import com.example.beginnerfitbe.like.domain.PostLike;
-import com.example.beginnerfitbe.playlist.domain.Playlist;
-import com.example.beginnerfitbe.post.domain.Post;
-import com.example.beginnerfitbe.scrap.domain.Scrap;
 import com.example.beginnerfitbe.weight.domain.WeightRecord;
 import jakarta.persistence.*;
 import lombok.*;
@@ -70,6 +66,9 @@ public class User {
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<ChallengeParticipant> challengeParticipants = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private List<Alarm> alarms = new ArrayList<>();
 
 
     @Builder
