@@ -98,4 +98,13 @@ public class ChallengeParticipantController {
         return ResponseEntity.ok(rankings);
     }
 
+    @GetMapping("/today")
+    public List<ChallengeParticipantDTO> getTodayChallengeContents(HttpServletRequest request) {
+        String token = jwtUtil.resolveToken(request);
+        Long userId = jwtUtil.getUserId(token.substring(7)); // "Bearer "를 제외한 부분
+
+        return challengeParticipantService.getChallengeContentsForToday(userId);
+    }
+
+
 }
