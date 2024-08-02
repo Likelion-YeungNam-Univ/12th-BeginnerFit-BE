@@ -2,15 +2,13 @@ package com.example.beginnerfitbe.alarm.domain;
 
 import com.example.beginnerfitbe.user.domain.User;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Alarm {
 

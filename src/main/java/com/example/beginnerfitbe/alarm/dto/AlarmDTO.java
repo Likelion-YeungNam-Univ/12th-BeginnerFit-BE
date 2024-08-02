@@ -1,6 +1,7 @@
 package com.example.beginnerfitbe.alarm.dto;
 
 import com.example.beginnerfitbe.alarm.domain.Alarm;
+import com.example.beginnerfitbe.alarm.domain.AlarmType;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -17,6 +18,7 @@ public class AlarmDTO {
     private LocalDateTime alarmDate;
     private String alarmMessage;
     private Long userId;
+    private AlarmType alarmType;
 
     public static AlarmDTO fromEntity(Alarm alarm) {
         return AlarmDTO.builder()
@@ -25,6 +27,7 @@ public class AlarmDTO {
                 .alarmDate(alarm.getAlarmDate())
                 .alarmMessage(alarm.getAlarmMessage())
                 .userId(alarm.getUser().getId())
+                .alarmType(alarm.getAlarmType())
                 .build();
     }
 

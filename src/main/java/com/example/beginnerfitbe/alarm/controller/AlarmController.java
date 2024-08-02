@@ -7,9 +7,7 @@ import com.example.beginnerfitbe.jwt.util.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,6 +32,19 @@ public class AlarmController {
                 .map(AlarmDTO::fromEntity)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(alarmDTOs);
+    }
+
+    // 알림 체크 처리
+    @PutMapping("/{alarmId}/check")
+    public ResponseEntity<Void> checkAlarm(HttpServletRequest request, @PathVariable Long alarmId) {
+
+        String token = jwtUtil.resolveToken(request);
+        Long userId = jwtUtil.getUserId(token.substring(7));
+
+        // 알림 체크 처리
+        alarmService.checkAlarm(userId, alarmId);
+
+        return ResponseEntity.ok().build();
     }
 
 
