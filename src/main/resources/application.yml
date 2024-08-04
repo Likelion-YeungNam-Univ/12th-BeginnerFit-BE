@@ -8,13 +8,61 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
 
+
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}
+    url: jdbc:mysql://${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}?serverTimezone=Asia/Seoul
     username: ${DATABASE_USER}
     password: ${DATABASE_PASSWORD}
 
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${EMAIL}
+    password: ${PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+    auth-code-expiration-millis: 1800000
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      timeout: 6000ms
+      lettuce:
+        pool:
+          max-active: 50
+          max-idle: 30
+          min-idle: 10
+          max-wait: 10000ms
+        shutdown-timeout: 200ms
+  jackson:
+    time-zone: Asia/Seoul
+
 jwt:
   secret: ${JWT_SECRET}
-  expiration: ${JWT_EXPIRATION}
+  accessExpiration: ${JWT_ACCESS_EXPIRATION}
+  refreshExpiration: ${JWT_REFRESH_EXPIRATION}
   issuer: ${JWT_ISSUER}
+
+cloud:
+  aws:
+    s3:
+      bucket: ${BUCKET_NAME}
+    stack.auto: false
+    region.static: ap-northeast-2
+    credentials:
+      accessKey: ${BUCKET_ACCESS}
+      secretKey: ${BUCKET_SECRET}
+
+youtube:
+  api:
+    key: ${API_KEY}
