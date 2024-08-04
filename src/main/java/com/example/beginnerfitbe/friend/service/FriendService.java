@@ -64,7 +64,7 @@ public class FriendService {
 
             Friend savedFriend = friendRepository.save(friend);
 
-            String alarmMessage = sender.getName();
+            String alarmMessage = sender.getName() + " " + sender.getId();
             alarmService.createAlarm(receiver, alarmMessage, AlarmType.FRIEND_REQUEST);
 
             return FriendDTO.fromEntity(savedFriend);
@@ -108,7 +108,7 @@ public class FriendService {
 
             Friend savedFriend = friendRepository.save(friend);
 
-            String alarmMessage = sender.getName();
+            String alarmMessage = sender.getName()+" " + sender.getId();
             alarmService.createAlarm(receiver, alarmMessage, AlarmType.FRIEND_REQUEST);
 
             return FriendDTO.fromEntity(savedFriend);
@@ -221,10 +221,8 @@ public class FriendService {
         friend.accept();
         friendRepository.save(friend);
 
-        // 알림 메시지 생성
-        String alarmMessage =friend.getReceiver().getName();
 
-        // 알림 생성
+        String alarmMessage =friend.getReceiver().getName();
         alarmService.createAlarm(friend.getSender(), alarmMessage, AlarmType.FRIEND_ACCEPTANCE);
     }
 
