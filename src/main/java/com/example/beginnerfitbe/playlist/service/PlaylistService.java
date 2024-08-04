@@ -44,7 +44,6 @@ public class PlaylistService {
         String query = searchKeyword(user);
         String requestTime = String.valueOf(user.getExerciseTime());
         SelectedVideoDto selectVideoDto = youtubeUtil.selectVideos(query, requestTime);
-        System.out.println("엥");
 
         Playlist playlist = Playlist.builder()
                 .title(query + " 집중공략 플리")
@@ -69,7 +68,7 @@ public class PlaylistService {
     }
 
 
-    @Scheduled(cron = "0 0 13 * * *", zone = "Asia/Seoul")
+    @Scheduled(cron = "0 0 0 * * *", zone = "Asia/Seoul")
     public void createPlaylistDaily() {
         userRepository.findAll().forEach(user -> {
             try {
@@ -80,12 +79,14 @@ public class PlaylistService {
         });
     }
 
+
     public String searchKeyword(User user) {
+        UserDto userDto = UserDto.fromEntity(user);
         List<String> keywords = new ArrayList<>();
 
-        String areas = String.join(" ", user.getConcernedAreas()); // 고정된 부위
-        List<String> goals = user.getExerciseGoals();
-        List<String> intensities = user.getExerciseIntensity();
+        String areas = String.join(" ", userDto.getConcernedAreas()); // 고정된 부위
+        List<String> goals = userDto.getExerciseGoals();
+        List<String> intensities = userDto.getExerciseIntensity();
 
         // 목표와 강도를 조합하여 키워드 생성
         for (String goal : goals) {

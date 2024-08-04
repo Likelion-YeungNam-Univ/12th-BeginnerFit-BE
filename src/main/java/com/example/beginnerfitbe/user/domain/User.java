@@ -48,13 +48,13 @@ public class User {
     @Column
     private int exerciseTime;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     private List<String> exerciseIntensity;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     private List<String> exerciseGoals;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     private List<String> concernedAreas;
 
 
