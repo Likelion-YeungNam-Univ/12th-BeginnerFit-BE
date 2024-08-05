@@ -1,0 +1,58 @@
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/dc352726-846f-474d-a26f-56e74e86f462" />
+</p>
+
+# [👟BiginnerFit 이용하러 가기](http://43.201.203.128:5173/)
+건강관리를 위해 운동을 시작하고싶지만 헬스/관리/운동 등에 무지한 사람들 위해 나에게 맞는 홈트 영상 추천/운동 종목 추천 해주는 서비스 🏃
+
+## 기능
+### 🎯사용자 맞춤 운동 추천
+<img src="https://github.com/user-attachments/assets/6b1e5801-bed5-4e9b-83e6-c2f097c2cea2" width=400 />
+
+- 자신에게 맞는 운동 플레이리스트를 추천해줘요
+- 사용자가 마지막에 본 영상부터 이어볼 수 있어요
+- 여러가지 플레이리스트 추천해 사용자가 원하는 대로 골라서 운동할 수 있어요
+
+### 😊챌린지
+<img src="https://github.com/user-attachments/assets/b4c689aa-2ab2-4cce-961e-7ab77bf49982" width=400 />
+
+- 간단히 진행할 수 있는 오늘의 챌린지를 제공하여 사용자의 운동을 돕고 있어요
+- 친구와 함께하는 챌린지로 친구와의 순위 싸움을 할 수 있어요
+
+### 📈몸무게 기록
+<img src="https://github.com/user-attachments/assets/13258527-543b-4862-8e22-2819ae785c84" width=400 />
+
+- 자신의 몸무게를 기록하며 목표 무게를 달성하도록 도와줘요
+- 그래프를 통해 자신의 몸무게 변화를 시각적으로 확인할 수 있게 해줘요
+
+### 📅출석
+<img src="https://github.com/user-attachments/assets/838c782a-e6c6-4f44-b1de-f39db0cae62e" width=400 />
+
+- 캘린더와 차트를 이용해 사용자의 출석률을 확인할 수 있어요
+
+### 📹한달 동안 완료한 챌린지, 본 영상 모아보기
+<img src="https://github.com/user-attachments/assets/b10f2b6d-cb21-4d98-aaee-894595de76eb" width=400 />
+
+- 한달 동안 자신이 완료한 챌린지를 모아서 볼 수 있어요
+- 한달 동안 시청한 운동 영상을 모아서 볼 수 있어요
+
+### 🔔알림
+<img src="https://github.com/user-attachments/assets/b6868ce5-381c-4f07-9a05-f88e8a0b9f4a" width=400 />
+
+- 알림을 모아볼 수 있어요
+
+## 기술스택
+<img src="https://img.shields.io/badge/java-007396?style=for-the-badge&logo=OpenJDK&logoColor=white"> <img src="https://img.shields.io/badge/springboot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white"> <img src="https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=MySQL&logoColor=white"> <img src="https://img.shields.io/badge/Amazon%20EC2-FF9900?style=for-the-badge&logo=Amazon%20EC2&logoColor=white"> <img src="https://img.shields.io/badge/Amazon%20S3-569A31?style=for-the-badge&logo=Amazon%20S3&logoColor=white"> <img src="https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=Redis&logoColor=white"> 
+
+## 팀원
+### FRONT
+[박연기](https://github.com/yeongipark)
+[김도연](https://github.com/tkv00)
+[김지현](https://github.com/jihyun132)
+
+### BACKEND
+[진서연](https://github.com/jjjjjinseo)
+[박하](https://github.com/HaHaPark)
+
+### DESGIN
+[김규희](https://github.com/9ooi)
