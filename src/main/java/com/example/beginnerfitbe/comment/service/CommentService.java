@@ -43,8 +43,14 @@ public class CommentService {
 
         commentRepository.save(comment);
 
-        String alarmMessage = user.getName() + " "+postId;
-        alarmService.createAlarm(post.getUser(), alarmMessage, AlarmType.COMMENT_ALARM); // 알림 생성
+//        String alarmMessage = user.getName() + " "+postId;
+//        alarmService.createAlarm(post.getUser(), alarmMessage, AlarmType.COMMENT_ALARM); // 알림 생성
+
+        // 알람 생성 조건 추가
+        if (!user.getId().equals(post.getUser().getId())) {
+            String alarmMessage = user.getName() + " " + postId;
+            alarmService.createAlarm(post.getUser(), alarmMessage, AlarmType.COMMENT_ALARM); // 알림 생성
+        }
 
         return ResponseEntity.ok(StateResponse.builder().code("SUCCESS").message("댓글을 성공적으로 생성했습니다.").build());
     }
