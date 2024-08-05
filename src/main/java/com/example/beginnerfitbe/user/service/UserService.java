@@ -66,9 +66,15 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
-    //건강정보 업데이트
+    // 건강정보 업데이트
     public StateResponse updateHealthInfo(HealthInfoReqDto dto) throws IOException {
-        User user = userRepository.findByEmail(dto.getEmail()).orElseThrow(() -> new IllegalArgumentException("User not found"));
+        User user = userRepository.findByEmail(dto.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        boolean shouldCreatePlaylist = user.getExerciseTime() != dto.getExerciseTime() ||
+                !areListsEqual(user.getExerciseIntensity(), dto.getExerciseIntensity()) ||
+                !areListsEqual(user.getExerciseGoals(), dto.getExerciseGoals()) ||
+                !areListsEqual(user.getConcernedAreas(), dto.getConcernedAreas());
 
         user.updateHealthInfo(
                 dto.getHeight(),
@@ -84,8 +90,11 @@ public class UserService {
 
         userRepository.save(user);
 
-        //플레이리스트 생성
-        playlistService.create(user);
+        if (shouldCreatePlaylist) {
+            System.out.println("엥");
+            //플레이리스트 생성
+            playlistService.create(user);
+        }
 
         //몸무게 기록
         weightRecordService.create(user.getId(), user.getWeight());
@@ -94,6 +103,16 @@ public class UserService {
                 .code("SUCCESS")
                 .message("건강정보가 업데이트 되었습니다.")
                 .build();
+    }
+
+    private boolean areListsEqual(List<String> list1, List<String> list2) {
+        if (list1 == null && list2 == null) {
+            return true;
+        }
+        if (list1 == null || list2 == null) {
+            return false;
+        }
+        return list1.size() == list2.size() && list1.containsAll(list2) && list2.containsAll(list1);
     }
 
     public StateResponse update(Long userId, UserUpdateDto dto){
