@@ -76,6 +76,9 @@
 
 <hr/>
 
+## 📖 ERD 다이어그램
+![멋사 (1)](https://github.com/user-attachments/assets/b091a77c-bc51-4dda-9618-cc82aa1a7395)
+
 ## 🛠️기술스택
 ### FE
 <img src="https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=React&logoColor=black"> <img src="https://img.shields.io/badge/react query-FF4154?style=for-the-badge&logo=react query&logoColor=purple"> <img src="https://img.shields.io/badge/zustand-000000?style=for-the-badge&logo=zustand&logoColor=white"> <img src="https://img.shields.io/badge/javascript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=white"> <img src="https://img.shields.io/badge/styled-components-DB7093?style=for-the-badge&logo=styled-components&logoColor=white"> 
